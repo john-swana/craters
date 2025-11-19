@@ -19,7 +19,7 @@
 
 ## Installation
 ```bash
-npm install craters
+npm install @swashvirus/craters
 ```
 
 ## Usage

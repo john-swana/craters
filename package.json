@@ -1,5 +1,8 @@
 {
-  "name": "craters",
+  "name": "@swashvirus/craters",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "Craters is a modular JavaScript framework reimplemented in TypeScript for HTML5 game development in a spartan-programmer's way",
   "version": "0.1.1",
   "homepage": "https://github.com/john-swana/craters",
