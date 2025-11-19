@@ -1,24 +1,24 @@
 {
   "name": "craters",
   "description": "Craters is a modular JavaScript framework reimplemented in TypeScript for HTML5 game development in a spartan-programmer's way",
-  "version": "0.1.0-rebase.12",
-  "homepage": "https://github.com/swashvirus/craters",
+  "version": "0.1.1",
+  "homepage": "https://github.com/john-swana/craters",
   "author": {
     "name": "John Swana",
     "email": "Johnswana49@gmail.com",
-    "url": "https://s1.sbs"
+    "url": "https://swana.dev"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/swashvirus/craters.git"
+    "url": "git://github.com/john-swana/craters.git"
   },
   "bugs": {
-    "url": "https://github.com/swashvirus/craters/issues"
+    "url": "https://github.com/john-swana/craters/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/swashvirus/craters/blob/master/LICENSE"
+      "url": "https://github.com/john-swana/craters/blob/master/LICENSE"
     }
   ],
   "main": "dist/index.js",
