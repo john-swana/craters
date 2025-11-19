@@ -2,9 +2,9 @@
 <a href="#craters" id="craters" style="color: inherit; text-decoration: none;">
   <h1>Craters</h1>
 </a>
-<p><a href="https://github.com/swashvirus/craters/actions/workflows/commit.yml"><img src="https://github.com/swashvirus/craters/actions/workflows/commit.yml/badge.svg" alt="CI commit action"></a>
-<a href="https://github.com/swashvirus/craters/actions/workflows/release.yml"><img src="https://github.com/swashvirus/craters/actions/workflows/release.yml/badge.svg" alt="Release publish action"></a>
-<img src="https://swashvirus.github.io/craters/media/craters.gif" alt="craters logo"></p>
+<p><a href="https://github.com/john-swana/craters/actions/workflows/commit.yml"><img src="https://github.com/john-swana/craters/actions/workflows/commit.yml/badge.svg" alt="CI commit action"></a>
+<a href="https://github.com/john-swana/craters/actions/workflows/release.yml"><img src="https://github.com/john-swana/craters/actions/workflows/release.yml/badge.svg" alt="Release publish action"></a>
+<img src="https://john-swana.github.io/craters/media/craters.gif" alt="craters logo"></p>
 <blockquote>
 <p><em>Craters is a modular JavaScript framework reimplemented in TypeScript for rapid HTML5 game development</em></p>
 </blockquote>
@@ -12,12 +12,44 @@
 <a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
   <h2>Documentation</h2>
 </a>
-<p><a href="https://swashvirus.github.io/craters/index.html">Read documentation</a></p>
+<p><a href="https://john-swana.github.io/craters/index.html">Read documentation</a></p>
+
+<a href="#features" id="features" style="color: inherit; text-decoration: none;">
+  <h2>Features</h2>
+</a>
+<ul>
+<li><strong>Entity Component System (ECS):</strong> A robust, functional ECS architecture for managing game logic (<code>World</code>, <code>Entity</code>, <code>System</code>, <code>Query</code>).</li>
+<li><strong>Rendering:</strong><ul>
+<li><strong>WebGLRenderer:</strong> High-performance sprite batching.</li>
+<li><strong>Canvas2DRenderer:</strong> Fallback or simple 2D rendering.</li>
+</ul>
+</li>
+<li><strong>Input Management:</strong> Unified keyboard input handling using modern <code>KeyboardEvent.code</code>.</li>
+<li><strong>Sound:</strong> Web Audio API wrapper for sound effects and music.</li>
+<li><strong>Asset Management:</strong> Simple loader for images and other resources.</li>
+<li><strong>Tilemaps:</strong> Support for loading and rendering tilemaps.</li>
+</ul>
+
+<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+  <h2>Installation</h2>
+</a>
+<pre><code class="language-bash"><span class="hl-0">npm install craters</span>
+</code></pre>
+
+<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+  <h2>Usage</h2>
+</a>
+
+<a href="#basic-ecs-setup" id="basic-ecs-setup" style="color: inherit; text-decoration: none;">
+  <h3>Basic ECS Setup</h3>
+</a>
+<pre><code class="language-typescript"><span class="hl-1">import</span><span class="hl-0"> { </span><span class="hl-2">EntityComponentSystem</span><span class="hl-0"> </span><span class="hl-1">as</span><span class="hl-0"> </span><span class="hl-2">ECS</span><span class="hl-0">, </span><span class="hl-2">RenderLoop</span><span class="hl-0"> } </span><span class="hl-1">from</span><span class="hl-0"> </span><span class="hl-3">&quot;craters&quot;</span><span class="hl-0">;</span><br/><br/><span class="hl-4">// 1. Define Components</span><br/><span class="hl-5">class</span><span class="hl-0"> </span><span class="hl-6">Position</span><span class="hl-0"> </span><span class="hl-5">extends</span><span class="hl-0"> </span><span class="hl-6">ECS</span><span class="hl-0">.</span><span class="hl-6">Component</span><span class="hl-0"> {</span><br/><span class="hl-0">  </span><span class="hl-5">constructor</span><span class="hl-0">(</span><span class="hl-5">public</span><span class="hl-0"> </span><span class="hl-2">x</span><span class="hl-0">: </span><span class="hl-6">number</span><span class="hl-0">, </span><span class="hl-5">public</span><span class="hl-0"> </span><span class="hl-2">y</span><span class="hl-0">: </span><span class="hl-6">number</span><span class="hl-0">) { </span><span class="hl-5">super</span><span class="hl-0">(); }</span><br/><span class="hl-0">}</span><br/><br/><span class="hl-5">class</span><span class="hl-0"> </span><span class="hl-6">Velocity</span><span class="hl-0"> </span><span class="hl-5">extends</span><span class="hl-0"> </span><span class="hl-6">ECS</span><span class="hl-0">.</span><span class="hl-6">Component</span><span class="hl-0"> {</span><br/><span class="hl-0">  </span><span class="hl-5">constructor</span><span class="hl-0">(</span><span class="hl-5">public</span><span class="hl-0"> </span><span class="hl-2">dx</span><span class="hl-0">: </span><span class="hl-6">number</span><span class="hl-0">, </span><span class="hl-5">public</span><span class="hl-0"> </span><span class="hl-2">dy</span><span class="hl-0">: </span><span class="hl-6">number</span><span class="hl-0">) { </span><span class="hl-5">super</span><span class="hl-0">(); }</span><br/><span class="hl-0">}</span><br/><br/><span class="hl-4">// 2. Define System</span><br/><span class="hl-5">class</span><span class="hl-0"> </span><span class="hl-6">MovementSystem</span><span class="hl-0"> </span><span class="hl-5">extends</span><span class="hl-0"> </span><span class="hl-6">ECS</span><span class="hl-0">.</span><span class="hl-6">System</span><span class="hl-0"> {</span><br/><span class="hl-0">  </span><span class="hl-5">public</span><span class="hl-0"> </span><span class="hl-7">execute</span><span class="hl-0">(</span><span class="hl-2">delta</span><span class="hl-0">: </span><span class="hl-6">number</span><span class="hl-0">): </span><span class="hl-6">void</span><span class="hl-0"> {</span><br/><span class="hl-0">    </span><span class="hl-4">// Query entities with Position and Velocity</span><br/><span class="hl-0">    </span><span class="hl-5">const</span><span class="hl-0"> </span><span class="hl-8">query</span><span class="hl-0"> = </span><span class="hl-5">this</span><span class="hl-0">.</span><span class="hl-2">world</span><span class="hl-0">.</span><span class="hl-7">createQuery</span><span class="hl-0">([</span><span class="hl-2">Position</span><span class="hl-0">, </span><span class="hl-2">Velocity</span><span class="hl-0">]);</span><br/><span class="hl-0">    </span><br/><span class="hl-0">    </span><span class="hl-2">query</span><span class="hl-0">.</span><span class="hl-2">entities</span><span class="hl-0">.</span><span class="hl-7">forEach</span><span class="hl-0">(</span><span class="hl-2">entity</span><span class="hl-0"> </span><span class="hl-5">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">      </span><span class="hl-5">const</span><span class="hl-0"> </span><span class="hl-8">pos</span><span class="hl-0"> = </span><span class="hl-2">entity</span><span class="hl-0">.</span><span class="hl-7">getComponent</span><span class="hl-0">(</span><span class="hl-2">Position</span><span class="hl-0">);</span><br/><span class="hl-0">      </span><span class="hl-5">const</span><span class="hl-0"> </span><span class="hl-8">vel</span><span class="hl-0"> = </span><span class="hl-2">entity</span><span class="hl-0">.</span><span class="hl-7">getComponent</span><span class="hl-0">(</span><span class="hl-2">Velocity</span><span class="hl-0">);</span><br/><span class="hl-0">      </span><span class="hl-2">pos</span><span class="hl-0">.</span><span class="hl-2">x</span><span class="hl-0"> += </span><span class="hl-2">vel</span><span class="hl-0">.</span><span class="hl-2">dx</span><span class="hl-0"> * </span><span class="hl-2">delta</span><span class="hl-0">;</span><br/><span class="hl-0">      </span><span class="hl-2">pos</span><span class="hl-0">.</span><span class="hl-2">y</span><span class="hl-0"> += </span><span class="hl-2">vel</span><span class="hl-0">.</span><span class="hl-2">dy</span><span class="hl-0"> * </span><span class="hl-2">delta</span><span class="hl-0">;</span><br/><span class="hl-0">    });</span><br/><span class="hl-0">  }</span><br/><span class="hl-0">}</span><br/><br/><span class="hl-4">// 3. Setup World</span><br/><span class="hl-5">const</span><span class="hl-0"> </span><span class="hl-8">world</span><span class="hl-0"> = </span><span class="hl-5">new</span><span class="hl-0"> </span><span class="hl-8">ECS</span><span class="hl-0">.</span><span class="hl-7">World</span><span class="hl-0">();</span><br/><span class="hl-2">world</span><span class="hl-0">.</span><span class="hl-7">registerSystem</span><span class="hl-0">(</span><span class="hl-5">new</span><span class="hl-0"> </span><span class="hl-7">MovementSystem</span><span class="hl-0">());</span><br/><br/><span class="hl-4">// 4. Create Entity</span><br/><span class="hl-5">const</span><span class="hl-0"> </span><span class="hl-8">player</span><span class="hl-0"> = </span><span class="hl-2">world</span><span class="hl-0">.</span><span class="hl-7">createEntity</span><span class="hl-0">();</span><br/><span class="hl-2">player</span><span class="hl-0">.</span><span class="hl-7">addComponent</span><span class="hl-0">(</span><span class="hl-5">new</span><span class="hl-0"> </span><span class="hl-7">Position</span><span class="hl-0">(</span><span class="hl-9">0</span><span class="hl-0">, </span><span class="hl-9">0</span><span class="hl-0">));</span><br/><span class="hl-2">player</span><span class="hl-0">.</span><span class="hl-7">addComponent</span><span class="hl-0">(</span><span class="hl-5">new</span><span class="hl-0"> </span><span class="hl-7">Velocity</span><span class="hl-0">(</span><span class="hl-9">1</span><span class="hl-0">, </span><span class="hl-9">0</span><span class="hl-0">));</span><br/><br/><span class="hl-4">// 5. Run Loop</span><br/><span class="hl-5">const</span><span class="hl-0"> </span><span class="hl-8">loop</span><span class="hl-0"> = </span><span class="hl-5">new</span><span class="hl-0"> </span><span class="hl-7">RenderLoop</span><span class="hl-0">((</span><span class="hl-2">delta</span><span class="hl-0">) </span><span class="hl-5">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">  </span><span class="hl-2">world</span><span class="hl-0">.</span><span class="hl-7">execute</span><span class="hl-0">(</span><span class="hl-2">delta</span><span class="hl-0">);</span><br/><span class="hl-0">});</span>
+</code></pre>
 
 <a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
   <h2>Examples</h2>
 </a>
-<p><a href="https://swashvirus.github.io/craters-sandbox/">Play craters sandbox</a></p>
+<p><a href="https://john-swana.github.io/craters-sandbox/">Play craters sandbox</a></p>
 
 <a href="#contributing" id="contributing" style="color: inherit; text-decoration: none;">
   <h2>Contributing</h2>
