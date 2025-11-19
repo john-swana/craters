@@ -1,60 +1,66 @@
 import chai from "chai";
 import Input from "../src/input";
 var should = chai.should();
+var expect = chai.expect;
+
 describe("Input", function() {
   var input: Input;
-  before("prepare input instance", function() {
+  
+  beforeEach("prepare input instance", function() {
     input = new Input();
   });
-  after("destroy input instance", function() {
-    // delete input;
+  
+  afterEach("destroy input instance", function() {
+    input.unbindKeys();
   });
-  describe("bind()", async () => {
-    it("should bind", async (): Promise < void > => {
+
+  describe("Key Binding", async () => {
+    it("should bind a key to an action", async () => {
       input.bind(Input.KEY.BACKSPACE, "BACKSPACE");
-      input.bind(Input.KEY.ENTER, void 0);
+      // No public way to check bindings directly without private access or firing events,
+      // but we assume if it doesn't throw it worked.
     });
   });
-  describe("bindKeys()", async () => {
-    it("should bindKeys", async (): Promise < void > => {
-      input.bindKeys();
+
+  describe("Key States", async () => {
+    it("should detect a key press", async () => {
+      input.bind(Input.KEY.SPACEBAR, "JUMP");
+      
+      var event: any = new KeyboardEvent("keydown", { code: "Space" });
+      document.dispatchEvent(event);
+      
+      expect(input.isPressed("JUMP")).to.equal(2); // Just pressed
     });
-  });
-  describe("isPressed()", async () => {
-    it("should assert isPressed", async (): Promise < void > => {
-      input.isPressed("BACKSPACE");
-      input.isPressed("ENTER");
+
+    it("should transition from pressed (2) to held (1)", async () => {
+      input.bind(Input.KEY.SPACEBAR, "JUMP");
+      
+      var event: any = new KeyboardEvent("keydown", { code: "Space" });
+      document.dispatchEvent(event);
+      
+      expect(input.isPressed("JUMP")).to.equal(2); // First check
+      expect(input.isPressed("JUMP")).to.equal(1); // Second check (held)
     });
-  });
-  describe("keydown()", async () => {
-    it("should dispatch", async (): Promise < void > => {
-      var event: any = document.createEvent("Event");
-      ["8", "13", "11"].forEach((key) => {
-        event.key = key;
-        event.initEvent("keydown");
-        document.dispatchEvent(event);
-      })
+
+    it("should detect a key release", async () => {
+      input.bind(Input.KEY.SPACEBAR, "JUMP");
+      
+      // Press
+      var downEvent: any = new KeyboardEvent("keydown", { code: "Space" });
+      document.dispatchEvent(downEvent);
+      expect(input.isPressed("JUMP")).to.equal(2);
+      
+      // Release
+      var upEvent: any = new KeyboardEvent("keyup", { code: "Space" });
+      document.dispatchEvent(upEvent);
+      
+      expect(input.isPressed("JUMP")).to.equal(0);
     });
-  });
-  describe("isPressed()", async () => {
-    it("should assert isPressed", async (): Promise < void > => {
-      input.isPressed("BACKSPACE");
-      input.isPressed("BACKSPACE");
-    });
-  });
-  describe("keyup()", async () => {
-    it("should dispatch", async (): Promise < void > => {
-      ["8", "13", "11"].forEach((key) => {
-        var event: any = document.createEvent("Event");
-        event.key = key;
-        event.initEvent("keyup");
-        document.dispatchEvent(event);
-      })
-    });
-  });
-  describe("unbindKeys()", async () => {
-    it("should unbindKeys", async (): Promise < void > => {
-      input.unbindKeys();
+    
+    it("should ignore unbound keys", async () => {
+       var event: any = new KeyboardEvent("keydown", { code: "KeyZ" }); // Z is not bound
+       document.dispatchEvent(event);
+       // Should not throw or cause issues
     });
   });
 });

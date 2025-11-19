@@ -104,6 +104,13 @@ export default class WebGLRenderer {
       texture
     }
   }
+  private workingMatrix: mat4 = mat4.create();
+  private translationVector: vec3 = vec3.create();
+  private scaleVector: vec3 = vec3.create();
+  private textureMatrix: mat4 = mat4.create();
+  private textureScaleVector: vec3 = vec3.create();
+  private textureTranslationVector: vec3 = vec3.create();
+
   public drawImage(texture: {
       width: number,
       height: number,
@@ -119,19 +126,37 @@ export default class WebGLRenderer {
     destinationHeight: number = texture.height
   ): void {
     var gl: WebGLRenderingContext = this.gl;
-    var matrix: mat4 = this.matrix,
-      {
+    var {
         matrixLocation,
         textureMatrixLocation,
         textureLocation,
+        workingMatrix,
+        translationVector,
+        scaleVector,
+        textureMatrix,
+        textureScaleVector,
+        textureTranslationVector
       } = this;
+
     gl.bindTexture(gl.TEXTURE_2D, texture.texture);
-    matrix = mat4.translate(mat4.create(), matrix, vec3.fromValues(destinationX, destinationY, 0));
-    matrix = mat4.scale(mat4.create(), matrix, vec3.fromValues(destinationWidth, destinationHeight, 1));
-    gl.uniformMatrix4fv(matrixLocation, false, matrix);
-    var textureMatrix = mat4.fromScaling(mat4.create(), vec3.fromValues(1 / texture.width, 1 / texture.height, 1));
-    textureMatrix = mat4.translate(mat4.create(), textureMatrix, vec3.fromValues(sourceX, sourceY, 0));
-    textureMatrix = mat4.scale(mat4.create(), textureMatrix, vec3.fromValues(sourceWidth, sourceHeight, 1));
+
+    // Destination Matrix
+    mat4.copy(workingMatrix, this.matrix);
+    vec3.set(translationVector, destinationX, destinationY, 0);
+    mat4.translate(workingMatrix, workingMatrix, translationVector);
+    vec3.set(scaleVector, destinationWidth, destinationHeight, 1);
+    mat4.scale(workingMatrix, workingMatrix, scaleVector);
+    gl.uniformMatrix4fv(matrixLocation, false, workingMatrix);
+
+    // Texture Matrix
+    mat4.identity(textureMatrix);
+    vec3.set(textureScaleVector, 1 / texture.width, 1 / texture.height, 1);
+    mat4.scale(textureMatrix, textureMatrix, textureScaleVector);
+    vec3.set(textureTranslationVector, sourceX, sourceY, 0);
+    mat4.translate(textureMatrix, textureMatrix, textureTranslationVector);
+    vec3.set(textureScaleVector, sourceWidth, sourceHeight, 1);
+    mat4.scale(textureMatrix, textureMatrix, textureScaleVector);
+    
     gl.uniformMatrix4fv(textureMatrixLocation, false, textureMatrix);
     gl.uniform1i(textureLocation, 0);
     gl.drawElements(gl.TRIANGLES, this.n, gl.UNSIGNED_BYTE, 0);

@@ -1,6 +1,18 @@
-## ARCHATECTURE
-Craters mainly consists of craters render-loop, canvas-2d-renderer as well as assets-manger. most modules are dependant on these three core modules.
+## ARCHITECTURE
+Craters mainly consists of:
+*   **Renderers:** `Canvas2DRenderer`, `WebGLRenderer`
+*   **Core Loop:** `RenderLoop`
+*   **ECS:** `World`, `System`, `Entity`, `Component`, `Query`
+*   **Input:** `Input` (Keyboard handling)
+*   **Audio:** `SoundManager`
+*   **Assets:** `AssetsManager`
+
+Most modules are modular and can be used independently or together.
+
 ### DESIGN
-A tile is a most simple graphic a renderer can draw. All other types of elements such as sprites, tilemaps and font maps are directly derived from it; For instance a Sprite is a single tile drawn at a specified offset and size, a tilemap is a Sprite drawn at a specified offset and size, on multiple positions during each render cycle, fontmaps are nothing different and like tilemaps but with fontmaps each character is represented by its own offset.
+*   **ECS:** The game logic is driven by an Entity Component System. `Entities` are containers for data (`Components`). `Systems` iterate over entities that match specific criteria (`Queries`) to perform logic (movement, rendering, collision) every frame.
+*   **Graphics:** A `Tile` is the fundamental graphic unit. `Sprites` extend this concept to handle animations (sequences of frames). `Tilemaps` and `Fonts` are specialized abstractions for rendering grids of tiles or characters efficiently.
+*   **Input/Sound:** Event-driven modules to handle user interaction and audio feedback.
+
 ### PHILOSOPHY
-Craters is built to be modular and relatively simple to understand.
+Craters is built to be modular, type-safe, and performance-oriented, suitable for rapid HTML5 game development.

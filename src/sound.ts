@@ -1,28 +1,67 @@
 class Sound {
-  private source: AudioBufferSourceNode;
-  private gainNode: GainNode;
+  private audioContext: AudioContext;
+  private buffer: AudioBuffer;
+  private source: AudioBufferSourceNode | null = null;
+  private gainNode: GainNode | null = null;
+  private volume: number = 1;
+
   constructor(audioContext: AudioContext, decodeAudioData: AudioBuffer) {
-    const source = audioContext.createBufferSource();
-    source.buffer = decodeAudioData;
-    const gainNode = audioContext.createGain();
-    source.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    this.source = source;
-    this.gainNode = gainNode;
+    this.audioContext = audioContext;
+    this.buffer = decodeAudioData;
   }
+
   public play(): void {
+    this.stop(); // Stop any previous instance before playing
+
+    this.source = this.audioContext.createBufferSource();
+    this.source.buffer = this.buffer;
+
+    this.gainNode = this.audioContext.createGain();
+    this.gainNode.gain.value = this.volume;
+
+    this.source.connect(this.gainNode);
+    this.gainNode.connect(this.audioContext.destination);
+
     this.source.start();
   }
-  public pause(): void {}
-  public resume(): void {}
+
+  public pause(): void {
+    if (this.audioContext.state === 'running') {
+      this.audioContext.suspend();
+    }
+  }
+
+  public resume(): void {
+    if (this.audioContext.state === 'suspended') {
+      this.audioContext.resume();
+    }
+  }
+
   public getVolume(): number {
-    return this.gainNode.gain.value
+    return this.volume;
   }
+
   public setVolume(value: number) {
-    this.gainNode.gain.value = value
+    this.volume = value;
+    if (this.gainNode) {
+      this.gainNode.gain.value = value;
+    }
   }
+
   public stop(): void {
-    this.source.stop();
+    if (this.source) {
+      try {
+        this.source.stop();
+      } catch (e) {
+        // Ignore error if source has already stopped
+      }
+      this.source.disconnect();
+      this.source = null;
+    }
+    if (this.gainNode) {
+      this.gainNode.disconnect();
+      this.gainNode = null;
+    }
   }
 }
 export default class SoundManager {

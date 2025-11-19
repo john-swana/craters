@@ -4,7 +4,7 @@ export class Tilemap {
   constructor(tilemap: any) {
     this.tilemap = tilemap
   }
-  public draw(): void {
+  public draw(offsetX: number = 0, offsetY: number = 0): void {
     this.tilemap.layers.forEach((layer: any) => {
       layer.data.forEach((tile: [number, number, number, number, number]) => {
         // v: Source x 
@@ -18,7 +18,7 @@ export class Tilemap {
           tilewidth: s,
           tileheight: u
         } = this.tilemap.tilesets[z];
-        sprite.draw(x * s, y * u, null, [w, v]);
+        sprite.draw((x * s) + offsetX, (y * u) + offsetY, null, [w, v]);
       });
     });
   }

@@ -3,8 +3,6 @@ module.exports = function(grunt) {
   grunt.initConfig({
     webpack: {
       dev: {
-        watch: true,
-        mode: "development",
         entry: {
           "./dist/index": "./src/index"
         },
