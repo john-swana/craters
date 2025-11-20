@@ -1,5 +1,5 @@
 {
-  "name": "@swashvirus/craters",
+  "name": "craters",
   "publishConfig": {
     "access": "public"
   },
