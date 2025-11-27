@@ -9,17 +9,20 @@
 
 ## Features
 *   **Entity Component System (ECS):** A robust, functional ECS architecture for managing game logic (`World`, `Entity`, `System`, `Query`).
+*   **Collision Detection:**
+    *   **SAT Library:** Separating Axis Theorem implementation for accurate collision detection between circles and convex polygons.
+    *   **QuadTree:** Spatial partitioning data structure for efficient broad-phase collision detection.
 *   **Rendering:**
     *   **WebGLRenderer:** High-performance sprite batching.
-    *   **Canvas2DRenderer:** Fallback or simple 2D rendering.
-*   **Input Management:** Unified keyboard input handling using modern `KeyboardEvent.code`.
+    *   **Canvas2DRenderer:** Fallback or simple 2D rendering with primitive drawing support.
+*   **Input Management:** Unified keyboard, mouse, and touch input handling using modern `KeyboardEvent.code`.
 *   **Sound:** Web Audio API wrapper for sound effects and music.
 *   **Asset Management:** Simple loader for images and other resources.
 *   **Tilemaps:** Support for loading and rendering tilemaps.
 
 ## Installation
 ```bash
-npm install @swashvirus/craters
+npm install craters
 ```
 
 ## Usage
@@ -75,7 +78,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 _Also, please don't edit files in the "dist" subdirectory as they are generated via Grunt. You'll find source code in the "src" subdirectory!_
 
 ## Release History
-_(Nothing yet)_
+See [CHANGELOG.md](CHANGELOG.md) for the full release history.
 
 ## License
 Copyright (c) 2021 John Swana 
