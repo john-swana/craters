@@ -2,11 +2,12 @@
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compileOnSave": false,
   "compilerOptions": {
-    "strictPropertyInitialization": false,
+    "strict": true,
+    "strictPropertyInitialization": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "preserveConstEnums": true,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
     "declaration": true,
@@ -17,6 +18,11 @@
     "moduleResolution": "node",
     "outDir": "./dist/"
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
 }
