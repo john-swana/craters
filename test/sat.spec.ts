@@ -77,6 +77,17 @@ describe('SAT Library', () => {
             expect(response.overlapV.x).to.equal(5);
             expect(response.overlapV.y).to.equal(0);
         });
+
+        it('should clear response', () => {
+            const response = new Response();
+            response.a = {};
+            response.b = {};
+            response.overlap = 10;
+            response.clear();
+            expect(response.a).to.be.null;
+            expect(response.b).to.be.null;
+            expect(response.overlap).to.equal(Number.MAX_VALUE);
+        });
     });
     describe('Vector Extended', () => {
         it('should copy vector', () => {
@@ -145,6 +156,14 @@ describe('SAT Library', () => {
             v1.projectN(v2);
             expect(v1.x).to.equal(10);
             expect(v1.y).to.equal(0);
+        });
+
+        it('should reflect vector with normal', () => {
+            const v1 = new Vector(10, 10);
+            const normal = new Vector(0, 1);
+            v1.reflectN(normal);
+            expect(v1.x).to.equal(-10);
+            expect(v1.y).to.equal(10);
         });
 
         it('should reflect vector', () => {

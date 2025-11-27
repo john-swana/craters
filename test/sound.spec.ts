@@ -84,5 +84,20 @@ describe("SoundManager", function () {
       sound.setVolume(0.5);
       expect(sound.getVolume()).to.equal(0.5);
     });
+
+    it("should pause sound", async () => {
+      const sound: any = await soundManager.load("test.mp3");
+      sound.play();
+      sound.pause();
+      expect(sound.audioContext.state).to.equal('suspended');
+    });
+
+    it("should resume sound", async () => {
+      const sound: any = await soundManager.load("test.mp3");
+      sound.play();
+      sound.pause();
+      sound.resume();
+      expect(sound.audioContext.state).to.equal('running');
+    });
   });
 });
