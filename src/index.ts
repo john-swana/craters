@@ -11,6 +11,8 @@ import TilemapManager, {
   Tilemap
 } from "./tilemap-manager";
 import * as EntityComponentSystem from "./ecs";
+import * as SAT from "./sat";
+import * as QuadTree from "./quadtree";
 export {
   AssetsManager,
   Canvas2DRenderer,
@@ -23,7 +25,9 @@ export {
   Sprite,
   TilemapManager,
   Tilemap,
-  EntityComponentSystem
+  EntityComponentSystem,
+  SAT,
+  QuadTree
 };
 export default {
   AssetsManager,
@@ -37,5 +41,7 @@ export default {
   Sprite,
   TilemapManager,
   Tilemap,
-  EntityComponentSystem
+  EntityComponentSystem,
+  SAT,
+  QuadTree
 };
