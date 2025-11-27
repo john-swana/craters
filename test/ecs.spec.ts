@@ -155,4 +155,14 @@ describe("ECS", function () {
     expect(queryVel.entities.has(entity)).to.be.true;
     expect(queryBoth.entities.has(entity)).to.be.true;
   });
+
+  it("should match existing entities when creating a query", function () {
+    const entity = world.createEntity();
+    entity.addComponent(new Position(0, 0));
+    world.updateEntity(entity);
+
+    const query = world.createQuery([Position]);
+
+    expect(query.entities.has(entity)).to.be.true;
+  });
 });
