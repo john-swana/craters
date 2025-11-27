@@ -19,12 +19,17 @@
 </a>
 <ul>
 <li><strong>Entity Component System (ECS):</strong> A robust, functional ECS architecture for managing game logic (<code>World</code>, <code>Entity</code>, <code>System</code>, <code>Query</code>).</li>
-<li><strong>Rendering:</strong><ul>
-<li><strong>WebGLRenderer:</strong> High-performance sprite batching.</li>
-<li><strong>Canvas2DRenderer:</strong> Fallback or simple 2D rendering.</li>
+<li><strong>Collision Detection:</strong><ul>
+<li><strong>SAT Library:</strong> Separating Axis Theorem implementation for accurate collision detection between circles and convex polygons.</li>
+<li><strong>QuadTree:</strong> Spatial partitioning data structure for efficient broad-phase collision detection.</li>
 </ul>
 </li>
-<li><strong>Input Management:</strong> Unified keyboard input handling using modern <code>KeyboardEvent.code</code>.</li>
+<li><strong>Rendering:</strong><ul>
+<li><strong>WebGLRenderer:</strong> High-performance sprite batching.</li>
+<li><strong>Canvas2DRenderer:</strong> Fallback or simple 2D rendering with primitive drawing support.</li>
+</ul>
+</li>
+<li><strong>Input Management:</strong> Unified keyboard, mouse, and touch input handling using modern <code>KeyboardEvent.code</code>.</li>
 <li><strong>Sound:</strong> Web Audio API wrapper for sound effects and music.</li>
 <li><strong>Asset Management:</strong> Simple loader for images and other resources.</li>
 <li><strong>Tilemaps:</strong> Support for loading and rendering tilemaps.</li>
@@ -33,7 +38,7 @@
 <a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
   <h2>Installation</h2>
 </a>
-<pre><code class="language-bash"><span class="hl-0">npm install @swashvirus/craters</span>
+<pre><code class="language-bash"><span class="hl-0">npm install craters</span>
 </code></pre>
 
 <a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
@@ -60,11 +65,11 @@
 <a href="#release-history" id="release-history" style="color: inherit; text-decoration: none;">
   <h2>Release History</h2>
 </a>
-<p><em>(Nothing yet)</em></p>
+<p>See <a href="CHANGELOG.md">CHANGELOG.md</a> for the full release history.</p>
 
 <a href="#license" id="license" style="color: inherit; text-decoration: none;">
   <h2>License</h2>
 </a>
 <p>Copyright (c) 2021 John Swana 
 Licensed under the MIT license.</p>
-</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Exports</a></li><li class=" tsd-kind-namespace"><a href="modules/EntityComponentSystem.html">Entity<wbr/>Component<wbr/>System</a></li></ul></nav><nav class="tsd-navigation secondary menu-sticky"><ul><li class="tsd-kind-class"><a href="classes/AssetsManager.html" class="tsd-kind-icon">Assets<wbr/>Manager</a></li><li class="tsd-kind-class"><a href="classes/Canvas2DRenderer.html" class="tsd-kind-icon">Canvas2DRenderer</a></li><li class="tsd-kind-class"><a href="classes/FontManager.html" class="tsd-kind-icon">Font<wbr/>Manager</a></li><li class="tsd-kind-class"><a href="classes/Input.html" class="tsd-kind-icon">Input</a></li><li class="tsd-kind-class"><a href="classes/RenderLoop.html" class="tsd-kind-icon">Render<wbr/>Loop</a></li><li class="tsd-kind-class"><a href="classes/SoundManager.html" class="tsd-kind-icon">Sound<wbr/>Manager</a></li><li class="tsd-kind-class"><a href="classes/Sprite.html" class="tsd-kind-icon">Sprite</a></li><li class="tsd-kind-class"><a href="classes/Tile.html" class="tsd-kind-icon">Tile</a></li><li class="tsd-kind-class"><a href="classes/Tilemap.html" class="tsd-kind-icon">Tilemap</a></li><li class="tsd-kind-class"><a href="classes/TilemapManager.html" class="tsd-kind-icon">Tilemap<wbr/>Manager</a></li><li class="tsd-kind-class"><a href="classes/WebGLRenderer.html" class="tsd-kind-icon">WebGLRenderer</a></li><li class="tsd-kind-property"><a href="modules.html#default" class="tsd-kind-icon">default</a></li></ul></nav></div></div></div><footer class=""><div class="container"><h2>Legend</h2><div class="tsd-legend-group"><ul class="tsd-legend"><li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li><li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li><li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li><li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li></ul></div><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="overlay"></div><script src="assets/main.js"></script></body></html>
+</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Exports</a></li><li class=" tsd-kind-namespace"><a href="modules/EntityComponentSystem.html">Entity<wbr/>Component<wbr/>System</a></li><li class=" tsd-kind-namespace"><a href="modules/QuadTree.html">Quad<wbr/>Tree</a></li><li class=" tsd-kind-namespace"><a href="modules/SAT.html">SAT</a></li></ul></nav><nav class="tsd-navigation secondary menu-sticky"><ul><li class="tsd-kind-class"><a href="classes/AssetsManager.html" class="tsd-kind-icon">Assets<wbr/>Manager</a></li><li class="tsd-kind-class"><a href="classes/Canvas2DRenderer.html" class="tsd-kind-icon">Canvas2DRenderer</a></li><li class="tsd-kind-class"><a href="classes/FontManager.html" class="tsd-kind-icon">Font<wbr/>Manager</a></li><li class="tsd-kind-class"><a href="classes/Input.html" class="tsd-kind-icon">Input</a></li><li class="tsd-kind-class"><a href="classes/RenderLoop.html" class="tsd-kind-icon">Render<wbr/>Loop</a></li><li class="tsd-kind-class"><a href="classes/SoundManager.html" class="tsd-kind-icon">Sound<wbr/>Manager</a></li><li class="tsd-kind-class"><a href="classes/Sprite.html" class="tsd-kind-icon">Sprite</a></li><li class="tsd-kind-class"><a href="classes/Tile.html" class="tsd-kind-icon">Tile</a></li><li class="tsd-kind-class"><a href="classes/Tilemap.html" class="tsd-kind-icon">Tilemap</a></li><li class="tsd-kind-class"><a href="classes/TilemapManager.html" class="tsd-kind-icon">Tilemap<wbr/>Manager</a></li><li class="tsd-kind-class"><a href="classes/WebGLRenderer.html" class="tsd-kind-icon">WebGLRenderer</a></li><li class="tsd-kind-property"><a href="modules.html#default" class="tsd-kind-icon">default</a></li></ul></nav></div></div></div><footer class=""><div class="container"><h2>Legend</h2><div class="tsd-legend-group"><ul class="tsd-legend"><li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li><li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li><li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li><li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li></ul></div><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="overlay"></div><script src="assets/main.js"></script></body></html>
