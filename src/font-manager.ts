@@ -1,16 +1,15 @@
 import Canvas2DRenderer from "./canvas-2d-renderer";
 import Tile from "./tile"
-type FontMap = Map < number, {
+type FontMap = Map<number, {
   x: number,
   y: number,
   width: number,
   height: number,
-} > ;
+}>;
 type FontAtlas = Tile;
 class Font {
   fontMap: FontMap;
   fontAtlas: FontAtlas;
-  canvas2DRenderer: Canvas2DRenderer;
   constructor(fontMap: FontMap, fontAtlas: FontAtlas) {
     this.fontMap = fontMap;
     this.fontAtlas = fontAtlas;
@@ -20,7 +19,7 @@ class Font {
     Array.from(text).forEach((_character) => {
       var charactercode = _character.charCodeAt(0);
       if (this.fontMap.has(charactercode)) {
-        var character = this.fontMap.get(charactercode)
+        var character = this.fontMap.get(charactercode)!;
         var {
           width,
           height
@@ -32,14 +31,14 @@ class Font {
   }
 }
 export default class FontManager {
-  canvas2DRenderer: any;
+  canvas2DRenderer: Canvas2DRenderer;
   fontName: string;
   fill: boolean;
   stroke: boolean;
   fillStyle: string;
   strokeStyle: string;
   constructor(
-    canvas2DRenderer: any,
+    canvas2DRenderer: Canvas2DRenderer,
     fontName: string,
     fillStyle: string = "#fafafa",
     strokeStyle: string = "#fafafa",
@@ -60,18 +59,18 @@ export default class FontManager {
     var fontMap: FontMap = new Map();
     var height = parseInt(context.font, 10) * 1.2;
     var measurements = Array.from(letters)
-      .filter(function(character, index, characters) {
+      .filter(function (character, index, characters) {
         return characters.indexOf(character) == index;
       })
-      .map(function(letter) {
+      .map(function (letter) {
         return {
           letter: letter,
           measurement: context.measureText(letter)
         };
       });
-    var width = measurements.map(function(measurement) {
+    var width = measurements.map(function (measurement) {
       return measurement.measurement.width;
-    }).reduce(function(previous, next) {
+    }).reduce(function (previous, next) {
       return previous + next;
     });
     canvas2DRenderer.resize(width, height);

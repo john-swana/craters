@@ -32,11 +32,11 @@ export default class WebGLRenderer {
   public width: number;
   public height: number;
   public canvasElement: HTMLCanvasElement;
-  constructor(width: number, height: number, options ? : any, devicePixelRatio: number = window.devicePixelRatio) {
+  constructor(width: number, height: number, options?: any, devicePixelRatio: number = window.devicePixelRatio) {
     this.width = width;
     this.height = height;
     this.canvasElement = document.createElement("canvas");
-    var gl: WebGLRenderingContext = this.canvasElement.getContext("webgl") !;
+    var gl: WebGLRenderingContext = this.canvasElement.getContext("webgl")!;
     this.gl = gl;
     this.devicePixelRatio = devicePixelRatio;
     this.canvasElement.style.width = width + "px";
@@ -44,22 +44,27 @@ export default class WebGLRenderer {
     this.canvasElement.width = Math.round(width * devicePixelRatio);
     this.canvasElement.height = Math.round(height * devicePixelRatio);
     gl.viewport(0, 0, Math.round(width * devicePixelRatio), Math.round(height * devicePixelRatio))
-    var vs: WebGLShader = gl.createShader(gl.VERTEX_SHADER)
+
+    var vs: WebGLShader = gl.createShader(gl.VERTEX_SHADER)!;
     gl.shaderSource(vs, vertexShader)
     gl.compileShader(vs)
-    var fs: WebGLShader = gl.createShader(gl.FRAGMENT_SHADER)
+
+    var fs: WebGLShader = gl.createShader(gl.FRAGMENT_SHADER)!;
     gl.shaderSource(fs, fragmentShader)
     gl.compileShader(fs)
-    var program: WebGLProgram = gl.createProgram()
+
+    var program: WebGLProgram = gl.createProgram()!;
     gl.attachShader(program, vs)
     gl.attachShader(program, fs)
     gl.linkProgram(program)
     gl.useProgram(program)
+
     this.positionLocation = gl.getAttribLocation(program, "a_position")
-    this.matrixLocation = gl.getUniformLocation(program, "u_matrix")
-    this.textureMatrixLocation = gl.getUniformLocation(program, "u_textureMatrix")
-    this.textureLocation = gl.getUniformLocation(program, "u_texture")
-    var positionBuffer: WebGLBuffer = gl.createBuffer()
+    this.matrixLocation = gl.getUniformLocation(program, "u_matrix")!;
+    this.textureMatrixLocation = gl.getUniformLocation(program, "u_textureMatrix")!;
+    this.textureLocation = gl.getUniformLocation(program, "u_texture")!;
+
+    var positionBuffer: WebGLBuffer = gl.createBuffer()!;
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
     var positions = [
       0, 0,
@@ -68,7 +73,8 @@ export default class WebGLRenderer {
       0, 1
     ]
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW)
-    var indexBuffer = gl.createBuffer()
+
+    var indexBuffer = gl.createBuffer()!
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
     var indices = new Uint8Array([
       2, 3,
@@ -77,18 +83,19 @@ export default class WebGLRenderer {
     ])
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW)
     this.n = indices.length
+
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
     gl.enableVertexAttribArray(this.positionLocation)
     gl.vertexAttribPointer(this.positionLocation, 2, gl.FLOAT, false, 0, 0)
     this.matrix = mat4.ortho(new Float32Array(16), 0, width, height, 0, -1, 1)
   }
-  public createImage(image: any): {
+  public createImage(image: HTMLImageElement | HTMLCanvasElement | ImageBitmap): {
     texture: WebGLTexture,
     width: number,
     height: number
   } {
     var gl: WebGLRenderingContext = this.gl
-    var texture: WebGLTexture = gl.createTexture()
+    var texture: WebGLTexture = gl.createTexture()!
     var width: number = image.width
     var height: number = image.height
     gl.bindTexture(gl.TEXTURE_2D, texture)
@@ -112,10 +119,10 @@ export default class WebGLRenderer {
   private textureTranslationVector: vec3 = vec3.create();
 
   public drawImage(texture: {
-      width: number,
-      height: number,
-      texture: WebGLTexture
-    },
+    width: number,
+    height: number,
+    texture: WebGLTexture
+  },
     sourceX: number = 0,
     sourceY: number = 0,
     sourceWidth: number = texture.width,
@@ -127,16 +134,16 @@ export default class WebGLRenderer {
   ): void {
     var gl: WebGLRenderingContext = this.gl;
     var {
-        matrixLocation,
-        textureMatrixLocation,
-        textureLocation,
-        workingMatrix,
-        translationVector,
-        scaleVector,
-        textureMatrix,
-        textureScaleVector,
-        textureTranslationVector
-      } = this;
+      matrixLocation,
+      textureMatrixLocation,
+      textureLocation,
+      workingMatrix,
+      translationVector,
+      scaleVector,
+      textureMatrix,
+      textureScaleVector,
+      textureTranslationVector
+    } = this;
 
     gl.bindTexture(gl.TEXTURE_2D, texture.texture);
 
@@ -156,7 +163,7 @@ export default class WebGLRenderer {
     mat4.translate(textureMatrix, textureMatrix, textureTranslationVector);
     vec3.set(textureScaleVector, sourceWidth, sourceHeight, 1);
     mat4.scale(textureMatrix, textureMatrix, textureScaleVector);
-    
+
     gl.uniformMatrix4fv(textureMatrixLocation, false, textureMatrix);
     gl.uniform1i(textureLocation, 0);
     gl.drawElements(gl.TRIANGLES, this.n, gl.UNSIGNED_BYTE, 0);
