@@ -36,7 +36,10 @@ export default class WebGLRenderer {
     this.width = width;
     this.height = height;
     this.canvasElement = document.createElement("canvas");
-    var gl: WebGLRenderingContext = this.canvasElement.getContext("webgl")!;
+    var gl: WebGLRenderingContext | null = this.canvasElement.getContext("webgl");
+    if (!gl) {
+      throw new Error("WebGL is not supported or unavailable in this environment.");
+    }
     this.gl = gl;
     this.devicePixelRatio = devicePixelRatio;
     this.canvasElement.style.width = width + "px";
@@ -102,7 +105,11 @@ export default class WebGLRenderer {
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 255]))
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+    // NEAREST filtering: prevents bilinear sampling from bleeding adjacent
+    // texels across tile boundaries, which shows as transparent seams on
+    // high-DPR (mobile) displays where UV coords land on texel edges.
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
     gl.bindTexture(gl.TEXTURE_2D, texture)
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
     return {
@@ -147,11 +154,24 @@ export default class WebGLRenderer {
 
     gl.bindTexture(gl.TEXTURE_2D, texture.texture);
 
+    // Snap destination to the nearest PHYSICAL pixel.
+    // The ortho matrix maps CSS px → clip space; viewport maps clip → physical px.
+    // So physical = destination_css * DPR. Math.round(CSS) is still fractional
+    // for non-integer DPR (Pixel=2.625, Samsung=2.75, Surface=1.5 etc.).
+    // Math.round(v * DPR) / DPR ensures the drawn quad edge lands on an integer
+    // physical pixel, eliminating UV boundary seams between tiles.
+    const pr = this.devicePixelRatio;
+    const snap = (v: number) => Math.round(v * pr) / pr;
+    const dX = snap(destinationX);
+    const dY = snap(destinationY);
+    const dW = snap(destinationWidth);
+    const dH = snap(destinationHeight);
+
     // Destination Matrix
     mat4.copy(workingMatrix, this.matrix);
-    vec3.set(translationVector, destinationX, destinationY, 0);
+    vec3.set(translationVector, dX, dY, 0);
     mat4.translate(workingMatrix, workingMatrix, translationVector);
-    vec3.set(scaleVector, destinationWidth, destinationHeight, 1);
+    vec3.set(scaleVector, dW, dH, 1);
     mat4.scale(workingMatrix, workingMatrix, scaleVector);
     gl.uniformMatrix4fv(matrixLocation, false, workingMatrix);
 

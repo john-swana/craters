@@ -18,7 +18,9 @@ export class Tilemap {
           tilewidth: s,
           tileheight: u
         } = this.tilemap.tilesets[z];
-        sprite.draw((x * s) + offsetX, (y * u) + offsetY, null, [w, v]);
+        // sourceInset=0.5: half-texel inset prevents the sampler at the tile
+        // edge from bleeding into the adjacent tile's pixels in the atlas.
+        sprite.draw((x * s) + offsetX, (y * u) + offsetY, null, [w, v], 0.5);
       });
     });
   }

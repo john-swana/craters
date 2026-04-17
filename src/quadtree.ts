@@ -1,4 +1,5 @@
-import { Box, Vector } from './sat';
+import { Vector } from './vector';
+import { Box } from './shapes';
 
 export interface QuadTreeObject {
     getAABBAsBox(): Box;

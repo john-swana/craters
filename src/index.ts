@@ -29,19 +29,3 @@ export {
   SAT,
   QuadTree
 };
-export default {
-  AssetsManager,
-  Canvas2DRenderer,
-  WebGLRenderer,
-  FontManager,
-  Tile,
-  Input,
-  RenderLoop,
-  SoundManager,
-  Sprite,
-  TilemapManager,
-  Tilemap,
-  EntityComponentSystem,
-  SAT,
-  QuadTree
-};

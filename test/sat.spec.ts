@@ -201,9 +201,6 @@ describe('SAT Library', () => {
             poly.setAngle(Math.PI / 2);
             expect(poly.angle).to.equal(Math.PI / 2);
             // Check a point, e.g. (10, 0) rotated 90 deg should be (0, 10)
-            // But wait, rotation is around (0,0) of the polygon's local space + pos
-            // The box is at (0,0). Points are (0,0), (10,0), (10,10), (0,10).
-            // Rotated 90 deg: (0,0), (0,10), (-10,10), (-10,0)
             expect(poly.calcPoints[1].x).to.be.closeTo(0, 0.001);
             expect(poly.calcPoints[1].y).to.be.closeTo(10, 0.001);
         });
@@ -253,14 +250,6 @@ describe('SAT Library', () => {
             const aabb = circle.getAABB();
             // Center (10,10), r=5. Box from (5,5) to (15,15).
             // Box pos is (5,5). w=10, h=10.
-            // Polygon points relative to pos (5,5): (0,0), (10,0), (10,10), (0,10) -> Absolute: (5,5), (15,5), (15,15), (5,15)
-            // Wait, Box.toPolygon creates points relative to (0,0) then adds pos?
-            // Box constructor: pos, w, h.
-            // toPolygon: new Polygon(pos, [ (0,0), (w,0), ... ])
-            // Polygon constructor: pos, points.
-            // recalc: p = points[i].clone().add(offset).rotate(angle).
-            // So points are relative to polygon pos.
-            // So AABB polygon pos is (5,5). Points are (0,0)...
             expect(aabb.pos.x).to.equal(5);
             expect(aabb.pos.y).to.equal(5);
             expect(aabb.points[2].x).to.equal(10);
@@ -290,9 +279,7 @@ describe('SAT Library', () => {
 
             expect(collided).to.be.true;
             expect(response.overlap).to.be.closeTo(5, 0.001);
-            expect(response.overlapN.x).to.be.closeTo(1, 0.001); // Vector from A to B? 
-            // Wait, differenceV = bPos - aPos = (15,0) - (0,0) = (15,0). Normalized = (1,0).
-            // So overlapN is (1,0).
+            expect(response.overlapN.x).to.be.closeTo(1, 0.001);
             expect(response.overlapN.y).to.be.closeTo(0, 0.001);
             expect(response.overlapV.x).to.be.closeTo(5, 0.001);
         });
@@ -303,32 +290,46 @@ describe('SAT Library', () => {
             // Circle at (5,5) radius 5. Overlaps box.
             // Circle center (5,5). Box left edge x=5.
             // Overlap should be significant.
-            // Wait, Box at (5,0). Points: (0,0)->(5,0), (10,0)->(15,0), etc.
-            // Box x range: 5 to 15.
-            // Circle x range: 0 to 10.
-            // Overlap x: 5 to 10. Amount 5.
 
             const response = new Response();
             const collided = testCirclePolygon(circle, box, response);
             expect(collided).to.be.true;
             expect(response.overlap).to.be.closeTo(5, 0.001);
-            // Overlap vector should push circle out of box? Or box out of circle?
-            // Usually pushes A out of B.
-            // Circle is A. Box is B.
-            // Circle needs to move Left (negative x) to get out?
-            // Or Box needs to move Right?
-            // Let's check the vector direction.
+            expect(response.overlap).to.be.closeTo(5, 0.001);
             expect(Math.abs(response.overlapV.x)).to.be.closeTo(5, 0.001);
             expect(response.overlapV.y).to.be.closeTo(0, 0.001);
 
             // Verify Normal Direction (Should be A -> B, i.e., Circle -> Polygon)
-            // Circle at (5,5). Box at (5,0) [Range 5-15].
-            // Circle is to the Left of the Box center?
-            // Box center is (10, 5). Circle is (5, 5).
-            // So Circle is Left. Box is Right.
-            // Normal A->B should point Right (Positive X).
             expect(response.overlapN.x).to.be.closeTo(1, 0.001);
             expect(response.overlapN.y).to.be.closeTo(0, 0.001);
         });
     });
 });
+
+describe('Vector Extended More', () => {
+    it('should scale vector with one argument', () => {
+        const v = new Vector(10, 20);
+        v.scale(2);
+        expect(v.x).to.equal(20);
+        expect(v.y).to.equal(40);
+    });
+});
+
+describe('Polygon Extended', () => {
+    it('should get AABB as Box', () => {
+        const poly = new Box(new Vector(0, 0), 10, 10).toPolygon();
+        const box = poly.getAABBAsBox();
+        expect(box.w).to.equal(10);
+        expect(box.h).to.equal(10);
+    });
+});
+
+describe('Circle Extended', () => {
+    it('should get AABB as Box', () => {
+        const circle = new Circle(new Vector(0, 0), 10);
+        const box = circle.getAABBAsBox();
+        expect(box.w).to.equal(20);
+        expect(box.h).to.equal(20);
+    });
+});
+

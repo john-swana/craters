@@ -1,5 +1,7 @@
 const path = require("path")
-module.exports = function(grunt) {
+const TerserPlugin = require('terser-webpack-plugin');
+
+module.exports = function (grunt) {
   grunt.initConfig({
     webpack: {
       dev: {
@@ -34,6 +36,16 @@ module.exports = function(grunt) {
           library: "CRATERS",
           libraryTarget: "umd",
           filename: "[name].js"
+        },
+        optimization: {
+          minimize: true,
+          minimizer: [new TerserPlugin({
+            terserOptions: {
+              compress: {
+                drop_console: true,
+              },
+            },
+          })],
         },
         resolve: {
           modules: ["node_modules"],

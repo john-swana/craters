@@ -10,11 +10,15 @@ export class Sound {
     this.buffer = decodeAudioData;
   }
 
-  public play(): void {
+  public play(loop: boolean = false, onEnded?: () => void): void {
     this.stop(); // Stop any previous instance before playing
 
     this.source = this.audioContext.createBufferSource();
     this.source.buffer = this.buffer;
+    this.source.loop = loop;
+    if (onEnded) {
+      this.source.onended = onEnded;
+    }
 
     this.gainNode = this.audioContext.createGain();
     this.gainNode.gain.value = this.volume;

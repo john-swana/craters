@@ -70,7 +70,7 @@ export default class Sprite {
     }
   }
 
-  draw(dX: number, dY: number, renderLoop: RenderLoop, frameIndex?: number[]) {
+  draw(dX: number, dY: number, renderLoop: RenderLoop, frameIndex?: number[], sourceInset: number = 0) {
     if (frameIndex) {
       this.index = frameIndex;
     } else {
@@ -83,7 +83,15 @@ export default class Sprite {
         const column = row[this.index[1]];
         if (column) {
           const { x: sX, y: sY } = column.position;
-          column.tile.draw(sX, sY, dX, dY);
+          // Apply half-texel source inset to prevent bleeding from adjacent
+          // tiles in the atlas. Destination size is unchanged so tiles still
+          // fill their slots exactly; only the sampled source region shrinks.
+          column.tile.draw(
+            sX + sourceInset, sY + sourceInset,
+            dX, dY,
+            column.width  - sourceInset * 2,
+            column.height - sourceInset * 2
+          );
         }
       }
     }

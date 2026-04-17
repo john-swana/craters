@@ -99,5 +99,19 @@ describe("SoundManager", function () {
       sound.resume();
       expect(sound.audioContext.state).to.equal('running');
     });
+
+    it("should play sound with loop enabled", async () => {
+      const sound: any = await soundManager.load("test.mp3");
+      sound.play(true);
+      expect(sound.source.loop).to.be.true;
+    });
+
+    it("should notify when sound ends", async () => {
+      const sound: any = await soundManager.load("test.mp3");
+      let ended = false;
+      sound.play(false, () => { ended = true; });
+      sound.source.onended();
+      expect(ended).to.be.true;
+    });
   });
 });

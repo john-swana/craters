@@ -133,9 +133,9 @@ export default class Input {
     document.addEventListener("mouseup", this.mouseup.bind(this), false);
   }
   private bindTouch(): void {
-    document.addEventListener("touchstart", this.touchstart.bind(this), false);
-    document.addEventListener("touchmove", this.touchmove.bind(this), false);
-    document.addEventListener("touchend", this.touchend.bind(this), false);
+    document.addEventListener("touchstart", this.touchstart.bind(this), { passive: false });
+    document.addEventListener("touchmove", this.touchmove.bind(this), { passive: false });
+    document.addEventListener("touchend", this.touchend.bind(this), { passive: false });
   }
   private mousemove(event: MouseEvent): void {
     this.pointerPosition.x = event.clientX;

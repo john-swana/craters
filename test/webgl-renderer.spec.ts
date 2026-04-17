@@ -12,7 +12,15 @@ describe("WebGLRenderer", function() {
     // delete assetsManager
   });
   beforeEach("prepare webGLRenderer instance", function() {
-    webGLRenderer = new WebGLRenderer(1920, 1200);
+    try {
+      webGLRenderer = new WebGLRenderer(1920, 1200);
+    } catch (e: any) {
+      if (e.message && e.message.includes("WebGL is not supported")) {
+        this.skip();
+      } else {
+        throw e;
+      }
+    }
   });
   afterEach("destroy webGLRenderer instance", function() {
     // delete webGLRenderer

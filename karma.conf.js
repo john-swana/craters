@@ -50,7 +50,10 @@ module.exports = function (config) {
         base: "ChromeHeadless",
         flags: ["--disable-translate", "--disable-extensions",
           "--no-first-run", "--disable-background-networking",
-          "--remote-debugging-port=9223"
+          "--remote-debugging-port=9223",
+          "--enable-webgl",
+          "--use-gl=swiftshader",
+          "--ignore-gpu-blocklist"
         ]
       },
     },

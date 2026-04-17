@@ -114,14 +114,8 @@ describe("Input", function () {
         preventDefault: () => { }
       };
 
-      // We need to dispatch this manually or call the handler if we can't dispatch custom events easily
-      // But let's try dispatching a custom event that looks like a TouchEvent
-      // Or better, since we are in a browser-like env (Karma/PhantomJS/ChromeHeadless), 
-      // we might need to use document.createEvent('TouchEvent') for older support or new TouchEvent()
-
       // Simplified approach: dispatch a CustomEvent that the handler might pick up if it was attached loosely,
       // but the handler expects TouchEvent.
-      // Let's try to construct it.
 
       try {
         const touchEvent = new TouchEvent("touchstart", {

@@ -15,6 +15,9 @@ export default class Canvas2DRenderer {
     this.canvasElement.width = Math.round(width * devicePixelRatio);
     this.canvasElement.height = Math.round(height * devicePixelRatio);
     this.context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+    // Prevent the 2D resampler from feathering up-scaled tile bitmaps, which
+    // causes visible seams between tiles on high-DPR (mobile) displays.
+    this.context.imageSmoothingEnabled = false;
   }
   public createImage(image: HTMLImageElement | HTMLCanvasElement | ImageBitmap): HTMLImageElement | HTMLCanvasElement | ImageBitmap {
     return image;
@@ -30,7 +33,17 @@ export default class Canvas2DRenderer {
     dWidth: number = image.width,
     dHeight: number = image.height
   ): void {
-    this.context.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)!;
+    // Snap destination to the nearest PHYSICAL pixel boundary.
+    // Math.round(CSS) is not enough: on non-integer DPR devices (Pixel=2.625,
+    // some Samsung=2.75) round(70)*2.625 = 183.75 — still sub-pixel.
+    // Math.round(v * DPR) / DPR guarantees round(v*DPR)/DPR * DPR = integer.
+    const pr = this.devicePixelRatio;
+    const snap = (v: number) => Math.round(v * pr) / pr;
+    this.context.drawImage(
+      image,
+      sx, sy, sWidth, sHeight,
+      snap(dx), snap(dy), snap(dWidth), snap(dHeight)
+    );
   }
   public clear(v?: string, w: number = 0, x: number = 0, y: number = this.width, z: number = this.height): void {
     if (v) {
@@ -103,5 +116,7 @@ export default class Canvas2DRenderer {
     this.canvasElement.width = Math.round(width * devicePixelRatio);
     this.canvasElement.height = Math.round(height * devicePixelRatio);
     this.context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+    // Re-apply after resize since resizing the canvas resets all context state.
+    this.context.imageSmoothingEnabled = false;
   }
 };
