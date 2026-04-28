@@ -34,5 +34,6 @@
       }
     ]
   },
+  "readme": "TYPEDOC_README.md",
   "out": "docs"
 }

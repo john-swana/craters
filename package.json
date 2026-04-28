@@ -33,7 +33,7 @@
     "test": "karma start --single-run --browsers ChromeHeadless_custom karma.conf.js",
     "build:dev": "grunt build:dev",
     "build:prod": "grunt build:prod",
-    "build:docs": "typedoc"
+    "build:docs": "node build-docs.js"
   },
   "keywords": [],
   "devDependencies": {
