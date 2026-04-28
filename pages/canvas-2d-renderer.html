@@ -1,0 +1,199 @@
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Canvas2DRenderer | Craters - v0.2.0</title><meta name="description" content="Documentation for Craters - v0.2.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container">
+<div class="table-cell" id="tsd-search" data-base="..">
+<div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
+<div class="field">
+<div id="tsd-toolbar-links"></div></div>
+<ul class="results">
+<li class="state loading">Preparing search index...</li>
+<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.2.0</a></div>
+<div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="7" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="11" width="14" height="2" fill="var(--color-text)"></rect></svg></a></div></div></header>
+<div class="container container-main">
+<div class="col-8 col-content">
+<div class="tsd-page-title">
+<ul class="tsd-breadcrumb">
+<li><a href="../modules.html">Craters - v0.2.0</a></li>
+<li><span>Guides</span></li>
+<li><a href="canvas-2d-renderer.html">Canvas2DRenderer</a></li></ul>
+<h1> Canvas2DRenderer</h1></div>
+<div class="tsd-panel tsd-typography">
+<a href="#canvas2drenderer-usage-guide" id="canvas2drenderer-usage-guide" style="color: inherit; text-decoration: none;">
+  <h1>Canvas2DRenderer Usage Guide</h1>
+</a>
+<p><code>Canvas2DRenderer</code> wraps an <code>HTMLCanvasElement</code> with a <code>CanvasRenderingContext2D</code> and handles
+high-DPR (Retina / mobile) scaling automatically. It is the primary 2D rendering surface for
+tiles, sprites, fonts, and particles.</p>
+
+<a href="#setup" id="setup" style="color: inherit; text-decoration: none;">
+  <h2>Setup</h2>
+</a>
+<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Canvas2DRenderer</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;craters&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">renderer</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Canvas2DRenderer</span><span class="hl-1">(</span><span class="hl-9">800</span><span class="hl-1">, </span><span class="hl-9">600</span><span class="hl-1">);</span><br/><span class="hl-4">document</span><span class="hl-1">.</span><span class="hl-4">body</span><span class="hl-1">.</span><span class="hl-0">appendChild</span><span class="hl-1">(</span><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-4">canvasElement</span><span class="hl-1">);</span>
+</code></pre>
+<p>The canvas element is created internally. The CSS size is set to <code>width × height</code> px, while
+the actual pixel buffer is scaled by <code>devicePixelRatio</code> for sharp rendering on high-DPR screens.</p>
+
+<a href="#drawing-images" id="drawing-images" style="color: inherit; text-decoration: none;">
+  <h2>Drawing Images</h2>
+</a>
+<p><code>drawImage()</code> mirrors the standard Canvas API 9-argument form but snaps destination coordinates
+to the nearest physical pixel to prevent sub-pixel seams on high-DPR displays.</p>
+<pre><code class="language-typescript"><span class="hl-5">// Draw the full source image at (dx, dy) with its natural size</span><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">drawImage</span><span class="hl-1">(</span><span class="hl-4">image</span><span class="hl-1">);</span><br/><br/><span class="hl-5">// Draw a specific region of a spritesheet</span><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">drawImage</span><span class="hl-1">(</span><br/><span class="hl-1">  </span><span class="hl-4">image</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-4">sx</span><span class="hl-1">, </span><span class="hl-4">sy</span><span class="hl-1">, </span><span class="hl-4">sWidth</span><span class="hl-1">, </span><span class="hl-4">sHeight</span><span class="hl-1">,  </span><span class="hl-5">// source rect</span><br/><span class="hl-1">  </span><span class="hl-4">dx</span><span class="hl-1">, </span><span class="hl-4">dy</span><span class="hl-1">, </span><span class="hl-4">dWidth</span><span class="hl-1">, </span><span class="hl-4">dHeight</span><span class="hl-1">   </span><span class="hl-5">// destination rect</span><br/><span class="hl-1">);</span>
+</code></pre>
+<p><code>createImage()</code> is a passthrough that keeps the API consistent with <code>WebGLRenderer</code>:</p>
+<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">img</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">assetsManager</span><span class="hl-1">.</span><span class="hl-0">loadImage</span><span class="hl-1">(</span><span class="hl-2">&quot;sprite.png&quot;</span><span class="hl-1">);</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">handle</span><span class="hl-1"> = </span><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">createImage</span><span class="hl-1">(</span><span class="hl-4">img</span><span class="hl-1">); </span><span class="hl-5">// returns img unchanged</span><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">drawImage</span><span class="hl-1">(</span><span class="hl-4">handle</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-9">100</span><span class="hl-1">, </span><span class="hl-9">100</span><span class="hl-1">, </span><span class="hl-9">64</span><span class="hl-1">, </span><span class="hl-9">64</span><span class="hl-1">);</span>
+</code></pre>
+
+<a href="#clearing-the-canvas" id="clearing-the-canvas" style="color: inherit; text-decoration: none;">
+  <h2>Clearing the Canvas</h2>
+</a>
+<pre><code class="language-typescript"><span class="hl-5">// Clear the entire canvas (transparent)</span><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">clear</span><span class="hl-1">();</span><br/><br/><span class="hl-5">// Fill the entire canvas with a solid colour</span><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">clear</span><span class="hl-1">(</span><span class="hl-2">&quot;rgba(20, 20, 30, 1)&quot;</span><span class="hl-1">);</span><br/><br/><span class="hl-5">// Clear a specific region</span><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">clear</span><span class="hl-1">(</span><span class="hl-6">undefined</span><span class="hl-1">, </span><span class="hl-4">x</span><span class="hl-1">, </span><span class="hl-4">y</span><span class="hl-1">, </span><span class="hl-4">width</span><span class="hl-1">, </span><span class="hl-4">height</span><span class="hl-1">);</span>
+</code></pre>
+
+<a href="#primitive-drawing" id="primitive-drawing" style="color: inherit; text-decoration: none;">
+  <h2>Primitive Drawing</h2>
+</a>
+<p>All primitives use <code>ctx.save()</code> / <code>ctx.restore()</code> internally, so they don&#39;t affect caller state.</p>
+<pre><code class="language-typescript"><span class="hl-5">// Filled / stroked rectangle</span><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">drawRect</span><span class="hl-1">(</span><span class="hl-4">x</span><span class="hl-1">, </span><span class="hl-4">y</span><span class="hl-1">, </span><span class="hl-4">w</span><span class="hl-1">, </span><span class="hl-4">h</span><span class="hl-1">, </span><span class="hl-2">&quot;red&quot;</span><span class="hl-1">, </span><span class="hl-6">true</span><span class="hl-1">);   </span><span class="hl-5">// filled</span><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">drawRect</span><span class="hl-1">(</span><span class="hl-4">x</span><span class="hl-1">, </span><span class="hl-4">y</span><span class="hl-1">, </span><span class="hl-4">w</span><span class="hl-1">, </span><span class="hl-4">h</span><span class="hl-1">, </span><span class="hl-2">&quot;blue&quot;</span><span class="hl-1">, </span><span class="hl-6">false</span><span class="hl-1">);  </span><span class="hl-5">// stroked (default)</span><br/><br/><span class="hl-5">// Filled / stroked circle</span><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">drawCircle</span><span class="hl-1">(</span><span class="hl-4">cx</span><span class="hl-1">, </span><span class="hl-4">cy</span><span class="hl-1">, </span><span class="hl-4">radius</span><span class="hl-1">, </span><span class="hl-2">&quot;green&quot;</span><span class="hl-1">, </span><span class="hl-6">true</span><span class="hl-1">);</span><br/><br/><span class="hl-5">// Filled / stroked convex polygon</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">points</span><span class="hl-1"> = [{ </span><span class="hl-4">x:</span><span class="hl-1"> </span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-4">y:</span><span class="hl-1"> </span><span class="hl-9">0</span><span class="hl-1"> }, { </span><span class="hl-4">x:</span><span class="hl-1"> </span><span class="hl-9">50</span><span class="hl-1">, </span><span class="hl-4">y:</span><span class="hl-1"> </span><span class="hl-9">0</span><span class="hl-1"> }, { </span><span class="hl-4">x:</span><span class="hl-1"> </span><span class="hl-9">25</span><span class="hl-1">, </span><span class="hl-4">y:</span><span class="hl-1"> </span><span class="hl-9">50</span><span class="hl-1"> }];</span><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">drawPolygon</span><span class="hl-1">(</span><span class="hl-4">points</span><span class="hl-1">, </span><span class="hl-2">&quot;purple&quot;</span><span class="hl-1">, </span><span class="hl-6">true</span><span class="hl-1">);</span><br/><br/><span class="hl-5">// Line</span><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">drawLine</span><span class="hl-1">(</span><span class="hl-4">x1</span><span class="hl-1">, </span><span class="hl-4">y1</span><span class="hl-1">, </span><span class="hl-4">x2</span><span class="hl-1">, </span><span class="hl-4">y2</span><span class="hl-1">, </span><span class="hl-2">&quot;white&quot;</span><span class="hl-1">, </span><span class="hl-4">lineWidth</span><span class="hl-1">);</span>
+</code></pre>
+
+<a href="#resizing" id="resizing" style="color: inherit; text-decoration: none;">
+  <h2>Resizing</h2>
+</a>
+<pre><code class="language-typescript"><span class="hl-5">// Resize canvas — resets all context state internally</span><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">resize</span><span class="hl-1">(</span><span class="hl-9">1280</span><span class="hl-1">, </span><span class="hl-9">720</span><span class="hl-1">);</span><br/><br/><span class="hl-5">// Resize and change DPR (e.g. on window resize or display change)</span><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">resize</span><span class="hl-1">(</span><span class="hl-4">window</span><span class="hl-1">.</span><span class="hl-4">innerWidth</span><span class="hl-1">, </span><span class="hl-4">window</span><span class="hl-1">.</span><span class="hl-4">innerHeight</span><span class="hl-1">, </span><span class="hl-4">window</span><span class="hl-1">.</span><span class="hl-4">devicePixelRatio</span><span class="hl-1">);</span>
+</code></pre>
+
+<a href="#accessing-the-context" id="accessing-the-context" style="color: inherit; text-decoration: none;">
+  <h2>Accessing the Context</h2>
+</a>
+<p>The underlying <code>CanvasRenderingContext2D</code> is exposed for custom drawing not covered by the API:</p>
+<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">ctx</span><span class="hl-1"> = </span><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-4">context</span><span class="hl-1">;</span><br/><span class="hl-4">ctx</span><span class="hl-1">.</span><span class="hl-0">save</span><span class="hl-1">();</span><br/><span class="hl-4">ctx</span><span class="hl-1">.</span><span class="hl-4">globalAlpha</span><span class="hl-1"> = </span><span class="hl-9">0.5</span><span class="hl-1">;</span><br/><span class="hl-4">ctx</span><span class="hl-1">.</span><span class="hl-4">fillStyle</span><span class="hl-1"> = </span><span class="hl-2">&quot;yellow&quot;</span><span class="hl-1">;</span><br/><span class="hl-4">ctx</span><span class="hl-1">.</span><span class="hl-0">fillRect</span><span class="hl-1">(</span><span class="hl-9">10</span><span class="hl-1">, </span><span class="hl-9">10</span><span class="hl-1">, </span><span class="hl-9">100</span><span class="hl-1">, </span><span class="hl-9">100</span><span class="hl-1">);</span><br/><span class="hl-4">ctx</span><span class="hl-1">.</span><span class="hl-0">restore</span><span class="hl-1">();</span>
+</code></pre>
+
+<a href="#high-dpr-notes" id="high-dpr-notes" style="color: inherit; text-decoration: none;">
+  <h2>High-DPR Notes</h2>
+</a>
+<ul>
+<li>CSS size = <code>width × height</code> px (layout size)</li>
+<li>Physical buffer = <code>width × devicePixelRatio</code> × <code>height × devicePixelRatio</code> px</li>
+<li><code>drawImage()</code> and <code>clear()</code> operate in CSS pixels — the DPR transform is applied transparently</li>
+</ul>
+
+<a href="#api-reference" id="api-reference" style="color: inherit; text-decoration: none;">
+  <h2>API Reference</h2>
+</a>
+
+<a href="#new-canvas2drendererwidth-height-options-devicepixelratio" id="new-canvas2drendererwidth-height-options-devicepixelratio" style="color: inherit; text-decoration: none;">
+  <h3><code>new Canvas2DRenderer(width, height, options?, devicePixelRatio?)</code></h3>
+</a>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>width</code></td>
+<td>—</td>
+<td>CSS width in pixels</td>
+</tr>
+<tr>
+<td><code>height</code></td>
+<td>—</td>
+<td>CSS height in pixels</td>
+</tr>
+<tr>
+<td><code>options</code></td>
+<td><code>undefined</code></td>
+<td>Passed to <code>document.createElement(&quot;canvas&quot;, options)</code></td>
+</tr>
+<tr>
+<td><code>devicePixelRatio</code></td>
+<td><code>window.devicePixelRatio</code></td>
+<td>Physical pixel multiplier</td>
+</tr>
+</tbody></table>
+
+<a href="#properties" id="properties" style="color: inherit; text-decoration: none;">
+  <h3>Properties</h3>
+</a>
+<ul>
+<li><code>canvasElement: HTMLCanvasElement</code></li>
+<li><code>context: CanvasRenderingContext2D</code></li>
+<li><code>width: number</code>, <code>height: number</code></li>
+<li><code>devicePixelRatio: number</code></li>
+</ul>
+
+<a href="#methods" id="methods" style="color: inherit; text-decoration: none;">
+  <h3>Methods</h3>
+</a>
+<ul>
+<li><code>createImage(image)</code> → <code>image</code> (passthrough for API parity with <code>WebGLRenderer</code>)</li>
+<li><code>drawImage(image, sx?, sy?, sw?, sh?, dx?, dy?, dw?, dh?)</code></li>
+<li><code>clear(color?, x?, y?, width?, height?)</code></li>
+<li><code>drawRect(x, y, w, h, color, fill?)</code></li>
+<li><code>drawCircle(x, y, r, color, fill?)</code></li>
+<li><code>drawPolygon(points, color, fill?)</code></li>
+<li><code>drawLine(x1, y1, x2, y2, color, width?)</code></li>
+<li><code>resize(width?, height?, devicePixelRatio?)</code></li>
+</ul>
+</div></div>
+<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+<div class="tsd-navigation settings">
+<details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
+<h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility">
+<h4 class="uppercase">Member Visibility</h4><form>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></form></div>
+<div class="tsd-theme-toggle">
+<h4 class="uppercase">Theme</h4><select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<nav class="tsd-navigation primary">
+<details class="tsd-index-accordion" open><summary class="tsd-accordion-summary">
+<h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Modules</h3></summary>
+<div class="tsd-accordion-details">
+<ul>
+<li class="current"><a href="../modules.html">Craters -<wbr/> v0.2.0</a>
+<ul>
+<li class="current pages-entry pages-entry-menu pages-entry-depth-1"><a>Guides</a>
+<ul>
+<li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="assets-manager.html">Assets<wbr/>Manager</a></li>
+<li class="current selected pages-entry pages-entry-page pages-entry-depth-2"><a href="canvas-2d-renderer.html">Canvas2DRenderer</a></li>
+<li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="ecs.html">ECS</a></li>
+<li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="font-manager.html">Font<wbr/>Manager</a></li>
+<li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="input.html">Input</a></li>
+<li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="particle.html">Particle<wbr/>System</a></li>
+<li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="quadtree.html">Quad<wbr/>Tree</a></li>
+<li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="render-loop.html">Render<wbr/>Loop</a></li>
+<li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="rigidbody.html">Rigid<wbr/>Body</a></li>
+<li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="sat.html">SAT</a></li>
+<li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="sound.html">Sound</a></li>
+<li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="sprite.html">Sprite</a></li>
+<li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="tile.html">Tile</a></li>
+<li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="tilemap-manager.html">Tilemap<wbr/>Manager</a></li>
+<li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="vector.html">Vector</a></li>
+<li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="webgl-renderer.html">WebGLRenderer</a></li></ul></li>
+<li class="tsd-kind-namespace"><a href="../modules/EntityComponentSystem.html">Entity<wbr/>Component<wbr/>System</a></li>
+<li class="tsd-kind-namespace"><a href="../modules/QuadTree.html">Quad<wbr/>Tree</a></li>
+<li class="tsd-kind-namespace"><a href="../modules/SAT.html">SAT</a></li></ul></li></ul></div></details></nav>
+<nav class="tsd-navigation secondary menu-sticky">
+<ul>
+<li class="tsd-kind-class"><a href="../classes/AssetsManager.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-class)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-128-path"></rect><path d="M11.898 16.1201C11.098 16.1201 10.466 15.8961 10.002 15.4481C9.53803 15.0001 9.30603 14.3841 9.30603 13.6001V9.64012C9.30603 8.85612 9.53803 8.24012 10.002 7.79212C10.466 7.34412 11.098 7.12012 11.898 7.12012C12.682 7.12012 13.306 7.34812 13.77 7.80412C14.234 8.25212 14.466 8.86412 14.466 9.64012H13.386C13.386 9.14412 13.254 8.76412 12.99 8.50012C12.734 8.22812 12.37 8.09212 11.898 8.09212C11.426 8.09212 11.054 8.22412 10.782 8.48812C10.518 8.75212 10.386 9.13212 10.386 9.62812V13.6001C10.386 14.0961 10.518 14.4801 10.782 14.7521C11.054 15.0161 11.426 15.1481 11.898 15.1481C12.37 15.1481 12.734 15.0161 12.99 14.7521C13.254 14.4801 13.386 14.0961 13.386 13.6001H14.466C14.466 14.3761 14.234 14.9921 13.77 15.4481C13.306 15.8961 12.682 16.1201 11.898 16.1201Z" fill="var(--color-text)" id="icon-128-text"></path></svg>Assets<wbr/>Manager</a></li>
+<li class="tsd-kind-class"><a href="../classes/Canvas2DRenderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Canvas2DRenderer</a></li>
+<li class="tsd-kind-class"><a href="../classes/FontManager.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Font<wbr/>Manager</a></li>
+<li class="tsd-kind-class"><a href="../classes/Input.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Input</a></li>
+<li class="tsd-kind-class"><a href="../classes/ParticleSystem.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Particle<wbr/>System</a></li>
+<li class="tsd-kind-class"><a href="../classes/RenderLoop.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Render<wbr/>Loop</a></li>
+<li class="tsd-kind-class"><a href="../classes/SoundManager.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sound<wbr/>Manager</a></li>
+<li class="tsd-kind-class"><a href="../classes/Sprite.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sprite</a></li>
+<li class="tsd-kind-class"><a href="../classes/Tile.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Tile</a></li>
+<li class="tsd-kind-class"><a href="../classes/Tilemap.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Tilemap</a></li>
+<li class="tsd-kind-class"><a href="../classes/TilemapManager.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Tilemap<wbr/>Manager</a></li>
+<li class="tsd-kind-class"><a href="../classes/WebGLRenderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>WebGLRenderer</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/FontInstance.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-interface)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-256-path"></rect><path d="M9.51 16V15.016H11.298V8.224H9.51V7.24H14.19V8.224H12.402V15.016H14.19V16H9.51Z" fill="var(--color-text)" id="icon-256-text"></path></svg>Font<wbr/>Instance</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/ParticleEmitConfig.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Particle<wbr/>Emit<wbr/>Config</a></li></ul></nav></div></div>
+<div class="overlay"></div><script src="../assets/main.js"></script></body></html>
