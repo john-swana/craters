@@ -1,7 +1,10 @@
 import AssetsManager from "./assets-manager";
 import Canvas2DRenderer from "./canvas-2d-renderer";
 import WebGLRenderer from "./webgl-renderer";
+import ParticleSystem from "./particle";
+export type { ParticleEmitConfig } from "./particle";
 import FontManager from "./font-manager";
+export type { FontInstance } from "./font-manager";
 import Tile from "./tile";
 import Input from "./input"
 import RenderLoop from "./render-loop";
@@ -27,5 +30,6 @@ export {
   Tilemap,
   EntityComponentSystem,
   SAT,
-  QuadTree
+  QuadTree,
+  ParticleSystem,
 };

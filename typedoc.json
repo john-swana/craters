@@ -6,5 +6,33 @@
   "entryPointStrategy": "expand",
   "media": "logo",
   "emit": "both",
+  "excludePrivate": true,
+  "pluginPages": {
+    "source": "guides",
+    "pages": [
+      {
+        "name": "Guides",
+        "childrenDir": ".",
+        "children": [
+          { "name": "AssetsManager", "source": "assets-manager.md" },
+          { "name": "Canvas2DRenderer", "source": "canvas-2d-renderer.md" },
+          { "name": "ECS", "source": "ecs.md" },
+          { "name": "FontManager", "source": "font-manager.md" },
+          { "name": "Input", "source": "input.md" },
+          { "name": "ParticleSystem", "source": "particle.md" },
+          { "name": "QuadTree", "source": "quadtree.md" },
+          { "name": "RenderLoop", "source": "render-loop.md" },
+          { "name": "RigidBody", "source": "rigidbody.md" },
+          { "name": "SAT", "source": "sat.md" },
+          { "name": "Sound", "source": "sound.md" },
+          { "name": "Sprite", "source": "sprite.md" },
+          { "name": "Tile", "source": "tile.md" },
+          { "name": "TilemapManager", "source": "tilemap-manager.md" },
+          { "name": "Vector", "source": "vector.md" },
+          { "name": "WebGLRenderer", "source": "webgl-renderer.md" }
+        ]
+      }
+    ]
+  },
   "out": "docs"
 }

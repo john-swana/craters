@@ -25,7 +25,7 @@ export default class Sprite {
   duration: number;
   dWidth: number;
   dHeight: number;
-  grid: GridCell[][];
+  private grid: GridCell[][];
   index: number[] = [];
 
   constructor(renderer: Canvas2DRenderer, image: HTMLImageElement, sWidth: number, sHeight: number, frames: number[][], duration: number, dWidth: number, dHeight: number) {

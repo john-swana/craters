@@ -7,9 +7,12 @@ type FontMap = Map<number, {
   height: number,
 }>;
 type FontAtlas = Tile;
-class Font {
-  fontMap: FontMap;
-  fontAtlas: FontAtlas;
+export interface FontInstance {
+  draw(text: string, destX: number, destY: number): void;
+}
+class Font implements FontInstance {
+  private fontMap: FontMap;
+  private fontAtlas: FontAtlas;
   constructor(fontMap: FontMap, fontAtlas: FontAtlas) {
     this.fontMap = fontMap;
     this.fontAtlas = fontAtlas;
@@ -52,7 +55,7 @@ export default class FontManager {
     this.fillStyle = fillStyle
     this.strokeStyle = strokeStyle
   }
-  load(letters: string) {
+  load(letters: string): FontInstance {
     var canvas2DRenderer = new Canvas2DRenderer(0, 0, void 0, 1)
     var context = canvas2DRenderer.context
     context.font = this.fontName;
