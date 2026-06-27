@@ -45,6 +45,9 @@ describe("SoundManager", function () {
     (window as any).AudioContext = MockAudioContext;
     (window as any).Request = class Request { constructor(public url: string) { } };
     (window as any).fetch = async () => ({
+      ok: true,
+      status: 200,
+      statusText: "OK",
       arrayBuffer: async () => new ArrayBuffer(0)
     });
   });
@@ -69,6 +72,33 @@ describe("SoundManager", function () {
     soundManager.audioContext.suspend();
     expect(soundManager.audioContext.state).to.equal('suspended');
     soundManager.unlockAudioContext();
+  });
+
+  it("should reject when the response is not ok", async () => {
+    const savedFetch = (window as any).fetch;
+    (window as any).fetch = async () => ({
+      ok: false, status: 404, statusText: "Not Found",
+      arrayBuffer: async () => new ArrayBuffer(0)
+    });
+    try {
+      await soundManager.load("missing.mp3");
+      expect.fail("expected load to reject on a 404");
+    } catch (e: any) {
+      expect(e.message).to.contain("404");
+    } finally {
+      (window as any).fetch = savedFetch;
+    }
+  });
+
+  it("should reject (not hang) when decoding fails", async () => {
+    (soundManager.audioContext as any).decodeAudioData =
+      (_buffer: any, _onOk: any, onErr: any) => onErr(new Error("corrupt audio"));
+    try {
+      await soundManager.load("corrupt.mp3");
+      expect.fail("expected load to reject on decode failure");
+    } catch (e: any) {
+      expect(e.message).to.contain("corrupt audio");
+    }
   });
 
   describe("Sound", function () {
@@ -112,6 +142,22 @@ describe("SoundManager", function () {
       sound.play(false, () => { ended = true; });
       sound.source.onended();
       expect(ended).to.be.true;
+    });
+
+    it("should layer overlapping one-shots without cutting each other off", async () => {
+      const sound: any = await soundManager.load("test.mp3");
+      sound.playOneShot();
+      sound.playOneShot();
+      // Both voices are live (play() would have stopped the first; playOneShot does not).
+      expect(sound.activeSources.length).to.equal(2);
+    });
+
+    it("stopAll should clear all one-shot voices", async () => {
+      const sound: any = await soundManager.load("test.mp3");
+      sound.playOneShot();
+      sound.playOneShot();
+      sound.stopAll();
+      expect(sound.activeSources.length).to.equal(0);
     });
   });
 });

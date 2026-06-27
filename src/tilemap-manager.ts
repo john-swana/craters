@@ -1,13 +1,34 @@
 import Sprite from "./sprite";
+import { Renderer } from "./tile";
+
+// A single placed tile: [sourceX, sourceY, destX, destY, tilesetIndex].
+export type TileEntry = [number, number, number, number, number];
+
+export interface TilemapLayer {
+  data: TileEntry[];
+}
+
+export interface Tileset {
+  image: string;
+  tilewidth: number;
+  tileheight: number;
+  sprite: Sprite;        // populated by TilemapManager.load once the image is ready
+}
+
+export interface TilemapData {
+  layers: TilemapLayer[];
+  tilesets: Tileset[];
+}
+
 export class Tilemap {
-  tilemap: any;
-  constructor(tilemap: any) {
+  tilemap: TilemapData;
+  constructor(tilemap: TilemapData) {
     this.tilemap = tilemap
   }
   public draw(offsetX: number = 0, offsetY: number = 0): void {
-    this.tilemap.layers.forEach((layer: any) => {
-      layer.data.forEach((tile: [number, number, number, number, number]) => {
-        // v: Source x 
+    this.tilemap.layers.forEach((layer) => {
+      layer.data.forEach((tile) => {
+        // v: Source x
         // w: Source y
         // x: Destination x
         // y: Destination y
@@ -20,25 +41,25 @@ export class Tilemap {
         } = this.tilemap.tilesets[z];
         // sourceInset=0.5: half-texel inset prevents the sampler at the tile
         // edge from bleeding into the adjacent tile's pixels in the atlas.
-        sprite.draw((x * s) + offsetX, (y * u) + offsetY, null, [w, v], 0.5);
+        sprite.draw((x * s) + offsetX, (y * u) + offsetY, undefined, [w, v], 0.5);
       });
     });
   }
 }
 export default class TilemapManager {
-  canvas2DRenderer: any;
-  constructor(canvas2Drenderer: any) {
+  canvas2DRenderer: Renderer;
+  constructor(canvas2Drenderer: Renderer) {
     this.canvas2DRenderer = canvas2Drenderer;
   }
-  public async load(resource: string) {
+  public async load(resource: string): Promise<Tilemap> {
     const request: Request = new Request(resource)
     return fetch(request)
       .then(function(response) {
         return response.json()
       })
-      .then(async (tilemap) => {
-        tilemap.tilesets = await Promise.all(tilemap.tilesets.map(async (tileset: any) => {
-          return new Promise((resolve, reject) => {
+      .then(async (tilemap: TilemapData) => {
+        tilemap.tilesets = await Promise.all(tilemap.tilesets.map((tileset) => {
+          return new Promise<Tileset>((resolve, reject) => {
             var image: HTMLImageElement = new Image();
             image.onload = () => {
               tileset.sprite = new Sprite(this.canvas2DRenderer, image, tileset.tilewidth, tileset.tileheight, [], 0, tileset.tilewidth, tileset.tileheight);

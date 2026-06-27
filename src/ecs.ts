@@ -9,8 +9,8 @@ export class Entity {
     this.components.set(component.constructor, component);
   }
 
-  public getComponent<T extends Component>(componentClass: ComponentClass<T>): T {
-    return this.components.get(componentClass) as T;
+  public getComponent<T extends Component>(componentClass: ComponentClass<T>): T | undefined {
+    return this.components.get(componentClass) as T | undefined;
   }
 
   public hasComponent(componentClass: Function): boolean {
@@ -91,6 +91,9 @@ export class World {
     this.systems.push(system);
   }
   
+  // Register a persistent query. It is kept in `queries` and re-evaluated on
+  // every entity add/remove, so create these ONCE (e.g. in System.initialize)
+  // and reuse them — never per frame. For a one-off count/filter use queryOnce().
   public createQuery(requiredComponents: Function[]): Query {
       const query = new Query(requiredComponents);
       this.queries.add(query);
@@ -99,22 +102,25 @@ export class World {
       return query;
   }
 
+  // Dispose a query created by createQuery so it is no longer tracked or updated.
+  // Without this, a persistent query lives forever — a query accidentally created
+  // per frame leaks and progressively slows every entity add/remove. Returns
+  // whether the query was registered.
+  public removeQuery(query: Query): boolean {
+      return this.queries.delete(query);
+  }
+
+  // One-off match: return the entities matching `requiredComponents` WITHOUT
+  // registering a persistent query. Use for per-frame counts/filters (e.g. "how
+  // many collectibles remain?") where createQuery would leak. O(entities) per
+  // call; for hot repeated use, cache a createQuery in a System instead.
+  public queryOnce(requiredComponents: Function[]): Set<Entity> {
+      const query = new Query(requiredComponents);
+      this.entities.forEach(entity => query.addEntityIfMatches(entity));
+      return query.entities;
+  }
+
   public execute(delta: number): void {
     this.systems.forEach(system => system.execute(delta));
   }
-}
-
-// Maintain compatibility exports if needed, or defining them as aliases/helpers
-export class ComponentManager {
-    // Deprecated but kept for export structure if needed, 
-    // though in this new design Entity manages its own components.
-}
-export class EntityManager {
-    // Deprecated, World handles this.
-}
-export class SystemManager {
-    // Deprecated, World handles this.
-}
-export class QueryManager {
-   // Deprecated, World handles this.
 }

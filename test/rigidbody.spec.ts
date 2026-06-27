@@ -23,6 +23,20 @@ describe('RigidBody', () => {
         expect(body.position.x).to.be.closeTo(9.9, 0.1);
     });
 
+    it('should apply damping independent of step size', () => {
+        // One 1-second step vs. 100 steps of 0.01s must yield the same result,
+        // proving damping no longer depends on frame rate.
+        const big = new RigidBody(new Vector(0, 0), 1);
+        big.velocity = new Vector(100, 0);
+        big.integrate(1);
+
+        const small = new RigidBody(new Vector(0, 0), 1);
+        small.velocity = new Vector(100, 0);
+        for (let i = 0; i < 100; i++) small.integrate(0.01);
+
+        expect(small.velocity.x).to.be.closeTo(big.velocity.x, 0.5);
+    });
+
     it('should apply forces', () => {
         const body = new RigidBody(new Vector(0, 0), 1);
         body.applyForce(new Vector(10, 0));

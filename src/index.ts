@@ -6,6 +6,7 @@ export type { ParticleEmitConfig } from "./particle";
 import FontManager from "./font-manager";
 export type { FontInstance } from "./font-manager";
 import Tile from "./tile";
+export type { Renderer } from "./tile";
 import Input from "./input"
 import RenderLoop from "./render-loop";
 import SoundManager from "./sound"

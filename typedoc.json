@@ -31,7 +31,8 @@
           { "name": "Vector", "source": "vector.md" },
           { "name": "WebGLRenderer", "source": "webgl-renderer.md" }
         ]
-      }
+      },
+      { "name": "Changelog", "source": "changelog.md" }
     ]
   },
   "readme": "TYPEDOC_README.md",

@@ -59,6 +59,11 @@ describe("ECS", function () {
     expect(pos.y).to.equal(20);
   });
 
+  it("should return undefined for a missing component", function () {
+    const entity = new Entity();
+    expect(entity.getComponent(Position)).to.be.undefined;
+  });
+
   it("should remove components", function () {
     const entity = new Entity();
     entity.addComponent(new Position(0, 0));
@@ -164,5 +169,43 @@ describe("ECS", function () {
     const query = world.createQuery([Position]);
 
     expect(query.entities.has(entity)).to.be.true;
+  });
+
+  it("removeQuery should detach a query so it is no longer updated", function () {
+    const query = world.createQuery([Position]);
+    expect(world.queries.has(query)).to.be.true;
+
+    const removed = world.removeQuery(query);
+    expect(removed).to.be.true;
+    expect(world.queries.has(query)).to.be.false;
+
+    // A detached query is not re-evaluated when entities change.
+    const entity = world.createEntity();
+    entity.addComponent(new Position(0, 0));
+    world.updateEntity(entity);
+    expect(query.entities.has(entity)).to.be.false;
+
+    // Removing a query that was never registered returns false.
+    expect(world.removeQuery(query)).to.be.false;
+  });
+
+  it("queryOnce should match entities without registering a persistent query", function () {
+    const e1 = world.createEntity();
+    e1.addComponent(new Position(0, 0));
+    e1.addComponent(new Velocity(1, 1));
+    world.updateEntity(e1);
+
+    const e2 = world.createEntity();
+    e2.addComponent(new Position(0, 0));
+    world.updateEntity(e2);
+
+    const before = world.queries.size;
+    const matched = world.queryOnce([Position, Velocity]);
+
+    expect(matched.has(e1)).to.be.true;
+    expect(matched.has(e2)).to.be.false;
+    expect(matched.size).to.equal(1);
+    // The key property: no persistent query was registered (no leak).
+    expect(world.queries.size).to.equal(before);
   });
 });

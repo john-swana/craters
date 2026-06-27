@@ -100,6 +100,11 @@ export class QuadTree {
         }
     }
 
+    // NOTE: an object whose AABB straddles a split boundary is stored in every
+    // child it overlaps, so retrieve() may return the same object multiple times.
+    // Callers doing pairwise collision checks must dedupe (see retrieveUnique).
+    // Also note objects whose AABB falls entirely outside the root bounds are
+    // dropped on insert — size the QuadTree to the world.
     retrieve(returnObjects: QuadTreeObject[], obj: QuadTreeObject): QuadTreeObject[] {
         const indexes = this.getIndex(obj.getAABBAsBox());
         if (this.nodes.length) {
@@ -114,6 +119,12 @@ export class QuadTree {
         }
 
         return returnObjects;
+    }
+
+    // Like retrieve(), but removes duplicates caused by boundary-straddling
+    // objects appearing in multiple child nodes. Prefer this for collision queries.
+    retrieveUnique(obj: QuadTreeObject): QuadTreeObject[] {
+        return Array.from(new Set(this.retrieve([], obj)));
     }
 
     getAllBounds(boundsList: Box[] = []): Box[] {

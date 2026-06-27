@@ -7,11 +7,11 @@ export default class RenderLoop {
   frameRatio: number;  // fixed step in ms (= 1000 / frameRate)
   current: number;
   previous: number;
-  execute: any;
+  execute: (loop: RenderLoop) => void;
 
   private accumulator: number;
 
-  constructor(execute: any, frameRate: number = 60) {
+  constructor(execute: (loop: RenderLoop) => void, frameRate: number = 60) {
     this.index = 0;
     this.frameRate = frameRate;
     this.frameRatio = 1000 / frameRate;   // e.g. 16.67ms at 60fps
@@ -23,6 +23,12 @@ export default class RenderLoop {
     this.previous = 0;
     this.execute = execute;
     this.start();
+  }
+
+  // Fixed step in SECONDS. Pass this to physics (e.g. RigidBody.integrate),
+  // which expects seconds — `delta`/`frameRatio` are milliseconds.
+  public get deltaSeconds(): number {
+    return this.frameRatio / 1000;
   }
 
   public start(): void {

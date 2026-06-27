@@ -1,6 +1,5 @@
 import RenderLoop from "./render-loop";
-import Tile from "./tile";
-import Canvas2DRenderer from "./canvas-2d-renderer";
+import Tile, { Renderer } from "./tile";
 
 interface GridCell {
   tile: Tile;
@@ -10,14 +9,10 @@ interface GridCell {
     x: number;
     y: number;
   };
-  positions: {
-    x: number;
-    y: number;
-  }[];
 }
 
 export default class Sprite {
-  renderer: Canvas2DRenderer;
+  renderer: Renderer;
   image: HTMLImageElement;
   sWidth: number;
   sHeight: number;
@@ -28,7 +23,7 @@ export default class Sprite {
   private grid: GridCell[][];
   index: number[] = [];
 
-  constructor(renderer: Canvas2DRenderer, image: HTMLImageElement, sWidth: number, sHeight: number, frames: number[][], duration: number, dWidth: number, dHeight: number) {
+  constructor(renderer: Renderer, image: HTMLImageElement, sWidth: number, sHeight: number, frames: number[][], duration: number, dWidth: number, dHeight: number) {
     this.frames = frames;
     this.index = [];
     this.renderer = renderer;
@@ -57,24 +52,20 @@ export default class Sprite {
           position: {
             x: c * sWidth,
             y: r * sHeight
-          },
-          positions: [
-            { x: 0, y: 0 },
-            { x: sWidth, y: 0 },
-            { x: sWidth, y: sHeight },
-            { x: 0, y: sHeight }
-          ]
+          }
         });
       }
       this.grid.push(row);
     }
   }
 
-  draw(dX: number, dY: number, renderLoop: RenderLoop, frameIndex?: number[], sourceInset: number = 0) {
+  // renderLoop is only needed for time-driven animation; it may be omitted when
+  // an explicit frameIndex is supplied (e.g. static tilemap tiles).
+  draw(dX: number, dY: number, renderLoop?: RenderLoop, frameIndex?: number[], sourceInset: number = 0) {
     if (frameIndex) {
       this.index = frameIndex;
     } else {
-      this.index = this.frames[(Math.floor((renderLoop.elapsed / 1000) / this.duration) % this.frames.length)];
+      this.index = this.frames[(Math.floor((renderLoop!.elapsed / 1000) / this.duration) % this.frames.length)];
     }
 
     if (this.index && this.index.length >= 2) {

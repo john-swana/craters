@@ -60,7 +60,10 @@ export default class FontManager {
     var context = canvas2DRenderer.context
     context.font = this.fontName;
     var fontMap: FontMap = new Map();
-    var height = parseInt(context.font, 10) * 1.2;
+    // Extract the px size from the font shorthand robustly: parseInt(font) breaks
+    // on prefixes like "bold 16px ..." (→ NaN). Fall back to 16px if absent.
+    var fontSizeMatch = /(\d+(?:\.\d+)?)px/.exec(context.font);
+    var height = (fontSizeMatch ? parseFloat(fontSizeMatch[1]) : 16) * 1.2;
     var measurements = Array.from(letters)
       .filter(function (character, index, characters) {
         return characters.indexOf(character) == index;
@@ -75,7 +78,7 @@ export default class FontManager {
       return measurement.measurement.width;
     }).reduce(function (previous, next) {
       return previous + next;
-    });
+    }, 0); // initial value so an empty letter set yields width 0 instead of throwing
     canvas2DRenderer.resize(width, height);
     measurements.forEach((measure) => {
       var letter = measure.letter,

@@ -1,6 +1,21 @@
 import Canvas2DRenderer from "./canvas-2d-renderer";
+
+// Minimal renderer surface that Tile/Sprite/Tilemap depend on. Both
+// Canvas2DRenderer and WebGLRenderer satisfy it. The handle returned by
+// createImage is renderer-specific (a raw image for 2D, a GPU texture for
+// WebGL) and only ever passed back into the same renderer's drawImage, so it is
+// treated as opaque here.
+export interface Renderer {
+  createImage(image: HTMLImageElement | HTMLCanvasElement | ImageBitmap): any;
+  drawImage(
+    image: any,
+    sx?: number, sy?: number, sWidth?: number, sHeight?: number,
+    dx?: number, dy?: number, dWidth?: number, dHeight?: number
+  ): void;
+}
+
 export default class Tile {
-  canvas2DRenderer: Canvas2DRenderer;
+  canvas2DRenderer: Renderer;
   sImage: HTMLImageElement | HTMLCanvasElement | ImageBitmap;
   sWidth: number;
   sHeight: number;
@@ -14,7 +29,7 @@ export default class Tile {
   strokeStyle: string;
   lineWidth: number;
   constructor(
-    canvas2DRenderer: Canvas2DRenderer,
+    canvas2DRenderer: Renderer,
     sImage: HTMLImageElement | HTMLCanvasElement | ImageBitmap,
     sWidth: number,
     sHeight: number,
@@ -29,8 +44,8 @@ export default class Tile {
     width: number = sImage.width,
     height: number = sImage.height,
     repeat: string = "no-repeat",
-    fillStyle: string = "rgba(25.5, 114.75, 114.75, 0)",
-    strokeStyle: string = "rgba(229.5, 25.5, 25.5, 0)",
+    fillStyle: string = "transparent",
+    strokeStyle: string = "transparent",
     lineWidth: number = 0
   ) {
     this.canvas2DRenderer = canvas2DRenderer;
@@ -47,7 +62,31 @@ export default class Tile {
     this.strokeStyle = strokeStyle;
     this.lineWidth = lineWidth;
 
-    {
+    // Fast path: a plain non-repeating tile with the default full-image rectangle
+    // and no fill/stroke decoration draws the source image directly. Building the
+    // offscreen clip/pattern canvas below is pure overhead in that case — which is
+    // every spritesheet and font atlas tile. Only do the work when it changes the
+    // output: a repeat mode, a stroke, a custom fill/stroke, or a non-default clip.
+    const isFullRect =
+      positions.length === 4 &&
+      positions[0][0] === 0 && positions[0][1] === 0 &&
+      positions[1][0] === sImage.width && positions[1][1] === 0 &&
+      positions[2][0] === sImage.width && positions[2][1] === sImage.height &&
+      positions[3][0] === 0 && positions[3][1] === sImage.height;
+    const needsProcessing =
+      repeat !== "no-repeat" ||
+      lineWidth > 0 ||
+      fillStyle !== "transparent" ||
+      strokeStyle !== "transparent" ||
+      !isFullRect;
+
+    if (!needsProcessing) {
+      // Still hand the image to the renderer's createImage — identity for
+      // Canvas2DRenderer (cheap), but a texture upload for WebGLRenderer, which
+      // needs a texture handle (not a raw image) in drawImage. The work the fast
+      // path actually avoids is the offscreen clip/pattern canvas below.
+      this.sImage = this.canvas2DRenderer.createImage(sImage);
+    } else {
       const canvas2DRenderer: Canvas2DRenderer = new Canvas2DRenderer(sImage.width, sImage.height, null, 1);
       const context = canvas2DRenderer.context;
       if (!context) throw new Error("Failed to get context");

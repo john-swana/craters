@@ -58,6 +58,23 @@ describe('QuadTree', () => {
         expect(retrieved).to.include(obj1);
     });
 
+    it('retrieveUnique should not return duplicates for boundary-straddling objects', () => {
+        const bounds = new Box(new Vector(0, 0), 100, 100);
+        const qt = new QuadTree(bounds, 1);
+        // Straddles the center (50,50), so it lands in all four child nodes.
+        const straddler = new MockObject(45, 45, 10, 10);
+        qt.insert(straddler);
+        qt.insert(new MockObject(10, 10, 5, 5)); // force a split
+
+        // Plain retrieve returns it once per overlapping node...
+        const raw = qt.retrieve([], new MockObject(0, 0, 100, 100));
+        expect(raw.filter(o => o === straddler).length).to.be.greaterThan(1);
+
+        // ...retrieveUnique collapses those to a single occurrence.
+        const unique = qt.retrieveUnique(new MockObject(0, 0, 100, 100));
+        expect(unique.filter(o => o === straddler).length).to.equal(1);
+    });
+
     it('should clear', () => {
         const bounds = new Box(new Vector(0, 0), 100, 100);
         const qt = new QuadTree(bounds);

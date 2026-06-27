@@ -36,7 +36,9 @@ export default class WebGLRenderer {
     this.width = width;
     this.height = height;
     this.canvasElement = document.createElement("canvas");
-    var gl: WebGLRenderingContext | null = this.canvasElement.getContext("webgl");
+    // const (not var) so the non-null narrowing below survives into the
+    // compileShader closure — a reassignable binding would widen back to null there.
+    const gl: WebGLRenderingContext | null = this.canvasElement.getContext("webgl");
     if (!gl) {
       throw new Error("WebGL is not supported or unavailable in this environment.");
     }
@@ -48,19 +50,36 @@ export default class WebGLRenderer {
     this.canvasElement.height = Math.round(height * devicePixelRatio);
     gl.viewport(0, 0, Math.round(width * devicePixelRatio), Math.round(height * devicePixelRatio))
 
-    var vs: WebGLShader = gl.createShader(gl.VERTEX_SHADER)!;
-    gl.shaderSource(vs, vertexShader)
-    gl.compileShader(vs)
+    // Compile with status checks so a shader failure throws a readable error
+    // instead of silently producing a blank canvas.
+    const compileShader = (type: number, source: string): WebGLShader => {
+      const shader: WebGLShader = gl.createShader(type)!;
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        const log = gl.getShaderInfoLog(shader);
+        gl.deleteShader(shader);
+        throw new Error(`WebGL shader compilation failed: ${log}`);
+      }
+      return shader;
+    };
 
-    var fs: WebGLShader = gl.createShader(gl.FRAGMENT_SHADER)!;
-    gl.shaderSource(fs, fragmentShader)
-    gl.compileShader(fs)
+    var vs: WebGLShader = compileShader(gl.VERTEX_SHADER, vertexShader);
+    var fs: WebGLShader = compileShader(gl.FRAGMENT_SHADER, fragmentShader);
 
     var program: WebGLProgram = gl.createProgram()!;
     gl.attachShader(program, vs)
     gl.attachShader(program, fs)
     gl.linkProgram(program)
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      const log = gl.getProgramInfoLog(program);
+      throw new Error(`WebGL program linking failed: ${log}`);
+    }
     gl.useProgram(program)
+
+    // Shaders are linked into the program; the standalone objects can go now.
+    gl.deleteShader(vs)
+    gl.deleteShader(fs)
 
     this.positionLocation = gl.getAttribLocation(program, "a_position")
     this.matrixLocation = gl.getUniformLocation(program, "u_matrix")!;
@@ -102,7 +121,6 @@ export default class WebGLRenderer {
     var width: number = image.width
     var height: number = image.height
     gl.bindTexture(gl.TEXTURE_2D, texture)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 255]))
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
     // NEAREST filtering: prevents bilinear sampling from bleeding adjacent
@@ -110,13 +128,18 @@ export default class WebGLRenderer {
     // high-DPR (mobile) displays where UV coords land on texel edges.
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
-    gl.bindTexture(gl.TEXTURE_2D, texture)
+    // The image is already loaded by the time createImage is called, so upload
+    // it directly — no need for the throwaway 1x1 placeholder texture.
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
     return {
       width,
       height,
       texture
     }
+  }
+  /** Release a texture created by createImage. */
+  public deleteImage(image: { texture: WebGLTexture }): void {
+    this.gl.deleteTexture(image.texture);
   }
   private workingMatrix: mat4 = mat4.create();
   private translationVector: vec3 = vec3.create();

@@ -114,53 +114,60 @@ export default class Input {
     this.pressed.set(action, 0);
   }
   public bindKeys(): void {
-    document.addEventListener("keyup", this.keyup.bind(this), false);
-    document.addEventListener("keydown", this.keydown.bind(this), false);
+    document.addEventListener("keyup", this.keyup, false);
+    document.addEventListener("keydown", this.keydown, false);
   }
+  // Removes every listener attached by bindKeys/bindMouse/bindTouch. Relies on
+  // the handlers being stable arrow-function fields (see below): passing a fresh
+  // `.bind(this)` here would create a new reference and silently remove nothing.
+  public unbind(): void {
+    document.removeEventListener("keyup", this.keyup, false);
+    document.removeEventListener("keydown", this.keydown, false);
+    document.removeEventListener("mousemove", this.mousemove, false);
+    document.removeEventListener("mousedown", this.mousedown, false);
+    document.removeEventListener("mouseup", this.mouseup, false);
+    document.removeEventListener("touchstart", this.touchstart);
+    document.removeEventListener("touchmove", this.touchmove);
+    document.removeEventListener("touchend", this.touchend);
+  }
+  // Deprecated alias kept for backward compatibility; use unbind().
   public unbindKeys(): void {
-    document.removeEventListener("keyup", this.keyup.bind(this), false);
-    document.removeEventListener("keydown", this.keydown.bind(this), false);
-    document.removeEventListener("mousemove", this.mousemove.bind(this), false);
-    document.removeEventListener("mousedown", this.mousedown.bind(this), false);
-    document.removeEventListener("mouseup", this.mouseup.bind(this), false);
-    document.removeEventListener("touchstart", this.touchstart.bind(this), false);
-    document.removeEventListener("touchmove", this.touchmove.bind(this), false);
-    document.removeEventListener("touchend", this.touchend.bind(this), false);
+    this.unbind();
   }
   private bindMouse(): void {
-    document.addEventListener("mousemove", this.mousemove.bind(this), false);
-    document.addEventListener("mousedown", this.mousedown.bind(this), false);
-    document.addEventListener("mouseup", this.mouseup.bind(this), false);
+    document.addEventListener("mousemove", this.mousemove, false);
+    document.addEventListener("mousedown", this.mousedown, false);
+    document.addEventListener("mouseup", this.mouseup, false);
   }
   private bindTouch(): void {
-    document.addEventListener("touchstart", this.touchstart.bind(this), { passive: false });
-    document.addEventListener("touchmove", this.touchmove.bind(this), { passive: false });
-    document.addEventListener("touchend", this.touchend.bind(this), { passive: false });
+    document.addEventListener("touchstart", this.touchstart, { passive: false });
+    document.addEventListener("touchmove", this.touchmove, { passive: false });
+    document.addEventListener("touchend", this.touchend, { passive: false });
   }
-  private mousemove(event: MouseEvent): void {
+  private mousemove = (event: MouseEvent): void => {
     this.pointerPosition.x = event.clientX;
     this.pointerPosition.y = event.clientY;
   }
-  private mousedown(event: MouseEvent): void {
+  private mousedown = (event: MouseEvent): void => {
     this.handleMouse(event, 2);
   }
-  private mouseup(event: MouseEvent): void {
+  private mouseup = (event: MouseEvent): void => {
     this.handleMouse(event, 0);
   }
-  private touchstart(event: TouchEvent): void {
+  private touchstart = (event: TouchEvent): void => {
     event.preventDefault(); // Prevent default mouse emulation
     if (event.touches.length > 0) {
       this.updateTouchPosition(event.touches[0]);
       this.handleTouch(2);
     }
   }
-  private touchmove(event: TouchEvent): void {
+  private touchmove = (event: TouchEvent): void => {
     event.preventDefault();
     if (event.touches.length > 0) {
       this.updateTouchPosition(event.touches[0]);
     }
   }
-  private touchend(event: TouchEvent): void {
+  private touchend = (event: TouchEvent): void => {
     event.preventDefault();
     this.handleTouch(0);
   }
@@ -182,29 +189,32 @@ export default class Input {
       this.pressed.set(action, state);
     }
   }
-  private keyup(event: KeyboardEvent): void {
+  private keyup = (event: KeyboardEvent): void => {
     var key = event.code;
     if (this.bindings.has(key)) {
       var action = this.bindings.get(key)!;
       this.pressed.set(action, 0);
     }
   }
-  private keydown(event: KeyboardEvent): void {
+  private keydown = (event: KeyboardEvent): void => {
     var key = event.code;
     if (this.bindings.has(key)) {
       var action = this.bindings.get(key)!;
       this.pressed.set(action, 2);
     }
   }
+  // Returns the current state without mutating it, so multiple systems can query
+  // the same action in one frame and all observe the "just pressed" value (2).
+  // 2 = pressed this frame, 1 = held, 0 = released.
   public isPressed(action: string): number {
-    if (this.pressed.has(action)) {
-      var pressed = this.pressed.get(action);
-      if (pressed) {
-        if (pressed === 2)
-          this.pressed.set(action, 1);
-        return pressed;
-      }
-    }
-    return 0;
+    return this.pressed.get(action) ?? 0;
+  }
+  // Advances edge state: collapses "just pressed" (2) into "held" (1). Call once
+  // per frame, after all input has been read, so the 2 → 1 transition happens at
+  // a defined point rather than as a side effect of the first read.
+  public update(): void {
+    this.pressed.forEach((state, action) => {
+      if (state === 2) this.pressed.set(action, 1);
+    });
   }
 }

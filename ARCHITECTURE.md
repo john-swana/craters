@@ -19,7 +19,13 @@ Most modules are modular and can be used independently or together.
 
 *   **ECS:** The game logic is driven by an Entity Component System. `Entities` are containers for data (`Components`). `Systems` iterate over entities that match specific criteria (`Queries`) to perform logic (movement, rendering, collision) every frame.
 
+    *   **Query lifecycle:** `World.createQuery` registers a *persistent* query that is re-evaluated on every entity add/remove — create these once (e.g. in `System.initialize`) and reuse them. For a one-off count or filter, use `World.queryOnce(components)`, which returns the matching entity set without registering anything. Dispose a persistent query with `World.removeQuery(query)`. Creating a query per frame leaks it permanently and degrades all entity add/remove over time.
+
 *   **Physics:** `RigidBody` provides impulse-based 2D physics — forces, damping, friction, and restitution — integrated with the `SAT` collision system. `Vector` is the shared 2D math primitive used across physics, collision, and rendering.
+
+    *   **Time unit:** `integrate(dt)` takes `dt` in **seconds** (so velocities are px/s, accelerations px/s²). With `RenderLoop`, pass `loop.deltaSeconds`, *not* `loop.delta`/`loop.frameRatio`, which are milliseconds. Damping coefficients are per-second retention factors applied as `pow(d, dt)`, so they are frame-rate independent.
+
+    *   **Solver scope:** Collision response is **single-pass, impulse-based** (arcade-grade), with rotational dynamics intentionally disabled — bodies translate but do not spin from impacts. It is not a sequential-impulse solver: there is no contact persistence or solver iteration. The penetration-correction percentage, deep-overlap energy bleed, per-frame velocity cap, and resting-contact restitution suppression in `resolveCollision` are deliberate stabilizers that keep dense stacks from exploding under these constraints — they are tuned constants, not bugs. A future optional N-iteration solver could retire them (see CHANGELOG follow-ups).
 
 *   **Collision Detection:** The `SAT` library provides accurate narrow-phase collision detection using the Separating Axis Theorem for circles and convex polygons. The `QuadTree` data structure enables efficient broad-phase collision detection by spatially partitioning objects, reducing the number of collision checks needed.
 

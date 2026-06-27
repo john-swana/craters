@@ -80,8 +80,8 @@ describe('SAT Library', () => {
 
         it('should clear response', () => {
             const response = new Response();
-            response.a = {};
-            response.b = {};
+            response.a = new Circle(new Vector(0, 0), 1);
+            response.b = new Circle(new Vector(0, 0), 1);
             response.overlap = 10;
             response.clear();
             expect(response.a).to.be.null;

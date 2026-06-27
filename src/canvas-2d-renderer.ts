@@ -4,11 +4,15 @@ export default class Canvas2DRenderer {
   public context: CanvasRenderingContext2D;
   public width: number;
   public height: number;
-  constructor(width: number, height: number, options?: any, devicePixelRatio = window.devicePixelRatio) {
+  constructor(width: number, height: number, options?: CanvasRenderingContext2DSettings | null, devicePixelRatio = window.devicePixelRatio) {
     this.width = width;
     this.height = height;
-    this.canvasElement = document.createElement("canvas", options);
-    this.context = this.canvasElement.getContext("2d")!;
+    this.canvasElement = document.createElement("canvas");
+    // `options` are 2D context attributes (e.g. { alpha, willReadFrequently }).
+    // They belong on getContext — createElement's 2nd arg is ElementCreationOptions
+    // ({ is }), which silently ignored these. `?? undefined` keeps overload
+    // resolution on the "2d" signature (passing `any`/`null` widens the return).
+    this.context = this.canvasElement.getContext("2d", options ?? undefined)!;
     this.devicePixelRatio = devicePixelRatio;
     this.canvasElement.style.width = width + "px";
     this.canvasElement.style.height = height + "px";

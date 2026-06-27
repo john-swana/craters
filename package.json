@@ -5,7 +5,7 @@
   },
   "sideEffects": false,
   "description": "Craters is a modular JavaScript framework reimplemented in TypeScript for HTML5 game development in a spartan-programmer's way",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "homepage": "https://github.com/john-swana/craters",
   "author": {
     "name": "John Swana",
@@ -54,7 +54,8 @@
     "terser-webpack-plugin": "^5.3.14",
     "ts-loader": "^9.2.6",
     "typedoc": "^0.23.28",
-    "typescript": "^4.6.4"
+    "typescript": "^4.6.4",
+    "webpack": "^5.107.2"
   },
   "dependencies": {
     "caniuse-lite": "^1.0.30001757"

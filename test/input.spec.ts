@@ -32,14 +32,26 @@ describe("Input", function () {
       expect(input.isPressed("JUMP")).to.equal(2); // Just pressed
     });
 
-    it("should transition from pressed (2) to held (1)", async () => {
+    it("should report the same state on repeated reads within a frame", async () => {
       input.bind(Input.KEY.SPACEBAR, "JUMP");
 
       var event: any = new KeyboardEvent("keydown", { code: "Space" });
       document.dispatchEvent(event);
 
-      expect(input.isPressed("JUMP")).to.equal(2); // First check
-      expect(input.isPressed("JUMP")).to.equal(1); // Second check (held)
+      // Reads are idempotent: multiple systems can observe "just pressed" (2).
+      expect(input.isPressed("JUMP")).to.equal(2);
+      expect(input.isPressed("JUMP")).to.equal(2);
+    });
+
+    it("should transition from pressed (2) to held (1) after update()", async () => {
+      input.bind(Input.KEY.SPACEBAR, "JUMP");
+
+      var event: any = new KeyboardEvent("keydown", { code: "Space" });
+      document.dispatchEvent(event);
+
+      expect(input.isPressed("JUMP")).to.equal(2); // Pressed this frame
+      input.update();                              // Advance edge state
+      expect(input.isPressed("JUMP")).to.equal(1); // Now held
     });
 
     it("should detect a key release", async () => {
@@ -61,6 +73,17 @@ describe("Input", function () {
       var event: any = new KeyboardEvent("keydown", { code: "KeyZ" }); // Z is not bound
       document.dispatchEvent(event);
       // Should not throw or cause issues
+    });
+
+    it("should stop responding after unbind()", async () => {
+      input.bind(Input.KEY.SPACEBAR, "JUMP");
+      input.unbind();
+
+      var event: any = new KeyboardEvent("keydown", { code: "Space" });
+      document.dispatchEvent(event);
+
+      // Listener was actually removed, so the keydown has no effect.
+      expect(input.isPressed("JUMP")).to.equal(0);
     });
   });
 

@@ -21,9 +21,17 @@ export default class AssetsManager {
       image.src = resource;
     })
   }
+  /**
+   * Load and register a font face.
+   * @param resource a CSS `src` descriptor, e.g. `url("font.woff2") format("woff2")`.
+   *   It is passed straight to FontFace, so a bare path will NOT work.
+   * The loaded face is added to `document.fonts` so it is immediately usable for
+   * canvas and DOM text without the caller having to register it.
+   */
   public async loadFont(fontName: string, resource: string): Promise < FontFace > {
-    return new FontFace(fontName, resource)
-      .load();
+    const fontFace: FontFace = await new FontFace(fontName, resource).load();
+    document.fonts.add(fontFace);
+    return fontFace;
   }
   public async loadBinary(resource: string): Promise < Blob > {
     return fetch(resource)

@@ -39,7 +39,11 @@ export class RigidBody {
     sleepTimer: number;
     sleepTimerMax: number;
 
-    // Damping to simulate air resistance
+    // Damping to simulate air resistance. These are the fraction of velocity
+    // RETAINED PER SECOND (e.g. 0.99 = lose 1%/s), applied via Math.pow(d, dt)
+    // so the result is identical regardless of step size. NOTE: this differs
+    // from the pre-0.3.0 behavior, where the value was applied once per step
+    // (frame-rate dependent — heavier damping at higher FPS).
     linearDamping: number;
     angularDamping: number;
 
@@ -111,7 +115,13 @@ export class RigidBody {
     }
 
     /**
-     * Integrate physics using semi-implicit Euler method
+     * Integrate physics using semi-implicit Euler method.
+     *
+     * @param dt elapsed time in SECONDS. Velocities are therefore in px/s and
+     *   accelerations in px/s² — which is what the internal tuning constants
+     *   (maxSpeed = 4000 px/s, the resting-contact threshold) assume. With a
+     *   fixed-step RenderLoop, pass `loop.deltaSeconds` (NOT `loop.delta`, which
+     *   is milliseconds — that would scale every velocity by 1000×).
      */
     integrate(dt: number): void {
         if (this.isStatic) return;
@@ -124,18 +134,23 @@ export class RigidBody {
             return;
         }
 
-        // Update velocity from acceleration
+        // Update velocity from acceleration (inlined to avoid a per-step clone)
         this.acceleration.copy(this.force).scale(this.inverseMass);
-        this.velocity.add(this.acceleration.clone().scale(dt));
+        this.velocity.x += this.acceleration.x * dt;
+        this.velocity.y += this.acceleration.y * dt;
 
         // Angular integration kept for manual control, but no torque from collisions
         // this.angularAcceleration = this.torque * this.inverseInertia; 
         // this.angularVelocity += this.angularAcceleration * dt;
 
-        this.velocity.scale(this.linearDamping);
-        this.angularVelocity *= this.angularDamping;
+        // Frame-rate-independent damping: raising the per-second retention
+        // factor to the dt power yields the same total damping for one big step
+        // or many small steps (mirrors the particle system's drag handling).
+        this.velocity.scale(Math.pow(this.linearDamping, dt));
+        this.angularVelocity *= Math.pow(this.angularDamping, dt);
 
-        this.position.add(this.velocity.clone().scale(dt));
+        this.position.x += this.velocity.x * dt;
+        this.position.y += this.velocity.y * dt;
         this.angle += this.angularVelocity * dt;
 
         this.force.x = 0;
