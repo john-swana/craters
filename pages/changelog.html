@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>AssetsManager | Craters - v0.3.0</title><meta name="description" content="Documentation for Craters - v0.3.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Changelog | Craters - v0.3.0</title><meta name="description" content="Documentation for Craters - v0.3.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -13,111 +13,77 @@
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
 <li><a href="../modules.html">Craters - v0.3.0</a></li>
-<li><span>Guides</span></li>
-<li><a href="assets-manager.html">AssetsManager</a></li></ul>
-<h1> AssetsManager</h1></div>
-<div class="tsd-panel tsd-typography">
-<a href="#assetsmanager-usage-guide" id="assetsmanager-usage-guide" style="color: inherit; text-decoration: none;">
-  <h1>AssetsManager Usage Guide</h1>
-</a>
-<p><code>AssetsManager</code> provides async loaders for every resource type a game typically needs. Each
-method returns a native browser object — no custom wrappers — so resources can be passed
-directly to other Craters APIs.</p>
-
-<a href="#setup" id="setup" style="color: inherit; text-decoration: none;">
-  <h2>Setup</h2>
-</a>
-<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">AssetsManager</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;craters&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">assets</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">AssetsManager</span><span class="hl-1">();</span>
-</code></pre>
-
-<a href="#loading-images" id="loading-images" style="color: inherit; text-decoration: none;">
-  <h2>Loading Images</h2>
-</a>
-<p>Returns a fully loaded <code>HTMLImageElement</code>. Rejects if the image fails to load.</p>
-<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">img</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadImage</span><span class="hl-1">(</span><span class="hl-2">&quot;sprites/player.png&quot;</span><span class="hl-1">);</span><br/><br/><span class="hl-5">// Use with Canvas2DRenderer</span><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">drawImage</span><span class="hl-1">(</span><span class="hl-4">img</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-4">playerX</span><span class="hl-1">, </span><span class="hl-4">playerY</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">);</span><br/><br/><span class="hl-5">// Use with WebGLRenderer</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">texture</span><span class="hl-1"> = </span><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">createImage</span><span class="hl-1">(</span><span class="hl-4">img</span><span class="hl-1">);</span>
-</code></pre>
-
-<a href="#loading-json" id="loading-json" style="color: inherit; text-decoration: none;">
-  <h2>Loading JSON</h2>
-</a>
-<p>Useful for tilemaps, level data, and config files.</p>
-<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">level</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadJson</span><span class="hl-1">(</span><span class="hl-2">&quot;levels/world1.json&quot;</span><span class="hl-1">);</span><br/><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-4">level</span><span class="hl-1">.</span><span class="hl-4">width</span><span class="hl-1">, </span><span class="hl-4">level</span><span class="hl-1">.</span><span class="hl-4">height</span><span class="hl-1">);</span>
-</code></pre>
-
-<a href="#loading-text" id="loading-text" style="color: inherit; text-decoration: none;">
-  <h2>Loading Text</h2>
-</a>
-<p>Returns the raw response body as a string.</p>
-<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">source</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadText</span><span class="hl-1">(</span><span class="hl-2">&quot;shaders/vert.glsl&quot;</span><span class="hl-1">);</span>
-</code></pre>
-
-<a href="#loading-binary-data" id="loading-binary-data" style="color: inherit; text-decoration: none;">
-  <h2>Loading Binary Data</h2>
-</a>
-<p>Returns a <code>Blob</code>. Useful for audio or custom binary formats.</p>
-<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">blob</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadBinary</span><span class="hl-1">(</span><span class="hl-2">&quot;data/heightmap.bin&quot;</span><span class="hl-1">);</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">buffer</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">blob</span><span class="hl-1">.</span><span class="hl-0">arrayBuffer</span><span class="hl-1">();</span>
-</code></pre>
-
-<a href="#loading-fonts" id="loading-fonts" style="color: inherit; text-decoration: none;">
-  <h2>Loading Fonts</h2>
-</a>
-<p>Loads a <code>FontFace</code> from a URL and registers it with the document. The returned <code>FontFace</code>
-is already loaded and can be passed to <code>FontManager</code>.</p>
-<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">face</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadFont</span><span class="hl-1">(</span><span class="hl-2">&quot;PixelFont&quot;</span><span class="hl-1">, </span><span class="hl-2">&quot;url(fonts/pixel.woff2)&quot;</span><span class="hl-1">);</span><br/><span class="hl-4">document</span><span class="hl-1">.</span><span class="hl-4">fonts</span><span class="hl-1">.</span><span class="hl-0">add</span><span class="hl-1">(</span><span class="hl-4">face</span><span class="hl-1">);</span>
-</code></pre>
-
-<a href="#loading-multiple-assets-in-parallel" id="loading-multiple-assets-in-parallel" style="color: inherit; text-decoration: none;">
-  <h2>Loading Multiple Assets in Parallel</h2>
-</a>
-<p>Use <code>Promise.all</code> to load several resources without blocking on each one sequentially.</p>
-<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> [</span><span class="hl-8">playerImg</span><span class="hl-1">, </span><span class="hl-8">enemyImg</span><span class="hl-1">, </span><span class="hl-8">level</span><span class="hl-1">, </span><span class="hl-8">music</span><span class="hl-1">] = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-7">Promise</span><span class="hl-1">.</span><span class="hl-0">all</span><span class="hl-1">([</span><br/><span class="hl-1">  </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadImage</span><span class="hl-1">(</span><span class="hl-2">&quot;player.png&quot;</span><span class="hl-1">),</span><br/><span class="hl-1">  </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadImage</span><span class="hl-1">(</span><span class="hl-2">&quot;enemy.png&quot;</span><span class="hl-1">),</span><br/><span class="hl-1">  </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadJson</span><span class="hl-1">(</span><span class="hl-2">&quot;level1.json&quot;</span><span class="hl-1">),</span><br/><span class="hl-1">  </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadBinary</span><span class="hl-1">(</span><span class="hl-2">&quot;theme.ogg&quot;</span><span class="hl-1">),</span><br/><span class="hl-1">]);</span>
-</code></pre>
-
-<a href="#error-handling" id="error-handling" style="color: inherit; text-decoration: none;">
-  <h2>Error Handling</h2>
-</a>
-<p>All methods reject on network or decode errors. Wrap with <code>try/catch</code> or <code>.catch()</code> to
-handle missing files gracefully.</p>
-<pre><code class="language-typescript"><span class="hl-3">try</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">img</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadImage</span><span class="hl-1">(</span><span class="hl-2">&quot;optional-overlay.png&quot;</span><span class="hl-1">);</span><br/><span class="hl-1">  </span><span class="hl-0">showOverlay</span><span class="hl-1">(</span><span class="hl-4">img</span><span class="hl-1">);</span><br/><span class="hl-1">} </span><span class="hl-3">catch</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">// overlay not found, continue without it</span><br/><span class="hl-1">}</span>
-</code></pre>
-
-<a href="#api-reference" id="api-reference" style="color: inherit; text-decoration: none;">
-  <h2>API Reference</h2>
-</a>
-<table>
-<thead>
-<tr>
-<th>Method</th>
-<th>Returns</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>loadImage(url)</code></td>
-<td><code>Promise&lt;HTMLImageElement&gt;</code></td>
-<td>Fetches and decodes an image</td>
-</tr>
-<tr>
-<td><code>loadJson(url)</code></td>
-<td><code>Promise&lt;any&gt;</code></td>
-<td>Fetches and parses JSON</td>
-</tr>
-<tr>
-<td><code>loadText(url)</code></td>
-<td><code>Promise&lt;string&gt;</code></td>
-<td>Fetches raw text</td>
-</tr>
-<tr>
-<td><code>loadBinary(url)</code></td>
-<td><code>Promise&lt;Blob&gt;</code></td>
-<td>Fetches a binary blob</td>
-</tr>
-<tr>
-<td><code>loadFont(name, url)</code></td>
-<td><code>Promise&lt;FontFace&gt;</code></td>
-<td>Loads a font face by name and URL</td>
-</tr>
-</tbody></table>
+<li><a href="changelog.html">Changelog</a></li></ul>
+<h1> Changelog</h1></div>
+<div class="tsd-panel tsd-typography"><ul>
+<li><p>v0.3.0 (2026) - Engine review fixes
+  Phase 1 (correctness):</p>
+<ul>
+<li>BREAKING (Input): <code>isPressed()</code> no longer mutates state on read — repeated reads in a frame all return the &quot;just pressed&quot; value (2). Call the new <code>Input.update()</code> once per frame to advance the 2 → 1 (held) transition.</li>
+<li>Fixed Input listeners never being removed: handlers are now stable references, so unbinding works. Added <code>Input.unbind()</code>; <code>unbindKeys()</code> retained as a deprecated alias.</li>
+<li>Fixed Canvas2DRenderer ignoring context options: they are now passed to <code>getContext(&quot;2d&quot;, options)</code> instead of <code>createElement</code> (where they were silently dropped).</li>
+<li>ECS: <code>Entity.getComponent()</code> now returns <code>T | undefined</code> (was an unsound <code>T</code>). Removed the empty deprecated <code>ComponentManager</code>/<code>EntityManager</code>/<code>SystemManager</code>/<code>QueryManager</code> exports.
+  Phase 2 (resource &amp; async safety):</li>
+<li>Sound loading now rejects instead of hanging: added the <code>decodeAudioData</code> error callback and a <code>response.ok</code> check, so corrupt files and HTTP errors surface as rejected promises.</li>
+<li>Added <code>Sound.playOneShot()</code> for overlapping effects (footsteps, hits) that no longer cut each other off, plus <code>Sound.stopAll()</code>. <code>Sound.pause()</code>/<code>resume()</code> are deprecated (they suspend the whole context); use the new <code>SoundManager.suspendAll()</code>/<code>resumeAll()</code>.</li>
+<li>WebGLRenderer now checks shader compile/link status and throws readable errors instead of rendering a blank canvas; deletes shader objects after linking; dropped the throwaway 1×1 placeholder texture upload; added <code>deleteImage()</code> to release textures.
+  Phase 3 (physics units &amp; determinism):</li>
+<li>BEHAVIOR (RigidBody): <code>integrate(dt)</code> is now documented to take <code>dt</code> in <strong>seconds</strong>; the internal tuning constants assume px/s. Added <code>RenderLoop.deltaSeconds</code> as the correct value to pass (<code>delta</code>/<code>frameRatio</code> are milliseconds).</li>
+<li>BEHAVIOR (RigidBody): damping is now frame-rate independent — <code>linearDamping</code>/<code>angularDamping</code> are per-second retention factors applied as <code>pow(d, dt)</code>. Previously they were applied once per step (heavier at higher FPS). At 60fps bodies now experience lighter damping than before; raise the values to restore the old feel.</li>
+<li>Documented the physics solver scope (single-pass impulse, no rotation/iteration) and the rationale for its stability constants in ARCHITECTURE.md.
+  Phase 4 (performance):</li>
+<li>Tile now skips building the offscreen clip/pattern canvas for plain non-repeating tiles (the common spritesheet/font-atlas case). It still routes the image through the renderer&#39;s <code>createImage</code> (identity for Canvas2D, texture upload for WebGL) so both backends work. Replaced the invalid fractional <code>rgba(25.5, …)</code> default fill/stroke colors with <code>&quot;transparent&quot;</code>.</li>
+<li>Added <code>QuadTree.retrieveUnique()</code> to dedupe boundary-straddling objects that appear in multiple child nodes; documented the world-bounds assumption on <code>retrieve()</code>.</li>
+<li>SAT contact-point computation is now opt-in via a <code>computeContactPoint</code> flag (default false) on <code>testPolygonPolygon</code>/<code>testCirclePolygon</code>/<code>testCircleCircle</code> — it was wasted work since rotational response is disabled.</li>
+<li>Reduced narrow-phase/integration allocations: <code>isSeparatingAxis</code> reuses scratch range arrays and inlines the offset projection; <code>RigidBody.integrate</code> updates velocity/position in place instead of cloning vectors each step.
+  Phase 5 (typing &amp; polish):</li>
+<li>Replaced <code>any</code> on public surfaces: <code>RenderLoop.execute</code> is <code>(loop: RenderLoop) =&gt; void</code>; <code>Response.a</code>/<code>b</code> are <code>Polygon | Circle | null</code>; <code>TilemapManager</code>/<code>Tilemap</code> are fully typed (<code>TilemapData</code>/<code>TilemapLayer</code>/<code>Tileset</code>/<code>TileEntry</code>). <code>Sprite.draw</code>&#39;s <code>renderLoop</code> argument is now optional (it is unused when an explicit frame index is given).</li>
+<li>Added and exported a <code>Renderer</code> interface (<code>createImage</code>/<code>drawImage</code>); <code>Tile</code>/<code>Sprite</code>/<code>TilemapManager</code> now accept it instead of a concrete <code>Canvas2DRenderer</code>, so they work with either <code>Canvas2DRenderer</code> or <code>WebGLRenderer</code> in a type-safe way.</li>
+<li>FontManager parses the px size from the font shorthand with a regex (handles <code>&quot;bold 16px …&quot;</code>) and the glyph-width reduce now seeds an initial 0 (empty letter sets no longer throw).</li>
+<li><code>AssetsManager.loadFont</code> now registers the loaded face in <code>document.fonts</code> and documents that <code>resource</code> must be a CSS <code>src</code> descriptor (e.g. <code>url(...)</code>).</li>
+<li>Removed the unused per-cell <code>positions</code> array from <code>Sprite</code>&#39;s internal grid.
+  ECS query lifecycle:</li>
+<li>Added <code>World.removeQuery(query)</code> to dispose a persistent query (the missing inverse of <code>createQuery</code>), and <code>World.queryOnce(components)</code> for one-off counts/filters that must NOT register a permanent query. Previously every <code>createQuery</code> lived forever and was re-evaluated on each entity add/remove, so a query accidentally created per frame leaked and degraded add/remove without bound (measured: unplayable within minutes in a real game loop). These give consumers a non-leaking path for the count/filter use case.</li>
+</ul>
+</li>
+<li><p>v0.1.4 (unreleased)</p>
+<ul>
+<li>Added SAT (Separating Axis Theorem) collision detection library with support for Circle-Circle, Circle-Polygon, and Polygon-Polygon collisions</li>
+<li>Implemented QuadTree spatial partitioning for efficient broad-phase collision detection</li>
+<li>Added primitive drawing methods to Canvas2DRenderer (drawRect, drawCircle, drawPolygon, drawLine)</li>
+<li>Enhanced Input class with mouse and touch event support (pointerPosition, Touch0 binding)</li>
+<li>Improved test coverage for ECS query registration</li>
+<li>Converted Response interface to class in SAT library for proper instantiation</li>
+</ul>
+</li>
+<li><p>v0.1.2 (2024) - Package Naming &amp; Testing</p>
+<ul>
+<li>Fixed package scope in release workflow to match actual package name</li>
+<li>Added comprehensive tests for Sound and ECS modules</li>
+<li>Updated package name to scoped @swashvirus/craters</li>
+</ul>
+</li>
+<li><p>v0.1.1 (2024) - Renderer &amp; Input Improvements</p>
+<ul>
+<li>Optimized renderer performance</li>
+<li>Improved sound and input handling</li>
+<li>Updated documentation</li>
+<li>Security: Bumped multiple dependencies (qs, body-parser, engine.io, socket.io, terser, karma, follow-redirects, minimist, grunt)</li>
+</ul>
+</li>
+<li><p>v0.1.0-rebase.12 (2023)</p>
+<ul>
+<li>Fixed workflow to prevent overwriting modules with latest versions</li>
+<li>Renamed TilemapManager and exported Tilemap class</li>
+<li>Updated pathname in tilemap test</li>
+</ul>
+</li>
+<li><p>v0.1.0 (2023) - Initial Rebase</p>
+<ul>
+<li>Craters development resumed and version rebased to semantic version v0.1.0</li>
+</ul>
+</li>
+</ul>
 </div></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
@@ -139,9 +105,9 @@ handle missing files gracefully.</p>
 <ul>
 <li class="current"><a href="../modules.html">Craters -<wbr/> v0.3.0</a>
 <ul>
-<li class="current pages-entry pages-entry-menu pages-entry-depth-1"><a>Guides</a>
+<li class="pages-entry pages-entry-menu pages-entry-depth-1"><a>Guides</a>
 <ul>
-<li class="current selected pages-entry pages-entry-page pages-entry-depth-2"><a href="assets-manager.html">Assets<wbr/>Manager</a></li>
+<li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="assets-manager.html">Assets<wbr/>Manager</a></li>
 <li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="canvas-2d-renderer.html">Canvas2DRenderer</a></li>
 <li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="ecs.html">ECS</a></li>
 <li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="font-manager.html">Font<wbr/>Manager</a></li>
@@ -157,7 +123,7 @@ handle missing files gracefully.</p>
 <li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="tilemap-manager.html">Tilemap<wbr/>Manager</a></li>
 <li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="vector.html">Vector</a></li>
 <li class="pages-entry pages-entry-page pages-entry-depth-2"><a href="webgl-renderer.html">WebGLRenderer</a></li></ul></li>
-<li class="pages-entry pages-entry-page pages-entry-depth-1"><a href="changelog.html">Changelog</a></li>
+<li class="current selected pages-entry pages-entry-page pages-entry-depth-1"><a href="changelog.html">Changelog</a></li>
 <li class="tsd-kind-namespace"><a href="../modules/EntityComponentSystem.html">Entity<wbr/>Component<wbr/>System</a></li>
 <li class="tsd-kind-namespace"><a href="../modules/QuadTree.html">Quad<wbr/>Tree</a></li>
 <li class="tsd-kind-namespace"><a href="../modules/SAT.html">SAT</a></li></ul></li></ul></div></details></nav>
