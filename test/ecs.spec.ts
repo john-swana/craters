@@ -208,4 +208,41 @@ describe("ECS", function () {
     // The key property: no persistent query was registered (no leak).
     expect(world.queries.size).to.equal(before);
   });
+
+  it("updateEntity should not put a removed entity back into queries", function () {
+    const query = world.createQuery([Position]);
+    const entity = new Entity();
+    entity.addComponent(new Position(0, 0));
+    world.addEntity(entity);
+    expect(query.entities.has(entity)).to.be.true;
+
+    world.removeEntity(entity);
+    world.updateEntity(entity);
+
+    expect(world.entities.has(entity)).to.be.false;
+    expect(query.entities.has(entity)).to.be.false;
+  });
+
+  it("updateEntity should ignore entities that were never added to the world", function () {
+    const query = world.createQuery([Position]);
+    const entity = new Entity();
+    entity.addComponent(new Position(0, 0));
+
+    world.updateEntity(entity);
+
+    expect(query.entities.has(entity)).to.be.false;
+    expect(world.entities.has(entity)).to.be.false;
+  });
+
+  it("an entity removed and added again is matched by addEntity", function () {
+    const query = world.createQuery([Position]);
+    const entity = new Entity();
+    entity.addComponent(new Position(0, 0));
+    world.addEntity(entity);
+    world.removeEntity(entity);
+
+    world.addEntity(entity);
+
+    expect(query.entities.has(entity)).to.be.true;
+  });
 });

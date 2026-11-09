@@ -9,11 +9,12 @@ import Tile from "./tile";
 export type { Renderer } from "./tile";
 import Input from "./input"
 import RenderLoop from "./render-loop";
-import SoundManager from "./sound"
+import SoundManager, { Sound } from "./sound"
 import Sprite from "./sprite";
 import TilemapManager, {
   Tilemap
 } from "./tilemap-manager";
+export type { TilemapData, TilemapLayer, Tileset, TileEntry } from "./tilemap-manager";
 import * as EntityComponentSystem from "./ecs";
 import * as SAT from "./sat";
 import * as QuadTree from "./quadtree";
@@ -26,6 +27,7 @@ export {
   Input,
   RenderLoop,
   SoundManager,
+  Sound,
   Sprite,
   TilemapManager,
   Tilemap,

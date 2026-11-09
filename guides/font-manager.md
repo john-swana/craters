@@ -1,8 +1,8 @@
 # FontManager Usage Guide
 
 `FontManager` rasterises a string of characters from any loaded web font into a texture
-atlas and renders text through `Tile`. It is CPU-rasterised at load time, so `draw()` is
-as cheap as a sprite draw.
+atlas and renders text through `Tile`. It is CPU-rasterised at load time, so `draw()` costs
+one image draw per character. It requires a `Canvas2DRenderer`.
 
 ## How It Works
 
@@ -11,12 +11,13 @@ as cheap as a sprite draw.
 2. It draws every character side-by-side into that canvas, recording each character's position
    and dimensions in a `FontMap`.
 3. The resulting canvas becomes a `Tile` (the **font atlas**).
-4. When text is drawn, `Font.draw()` looks up each character's position in the atlas and
+4. When text is drawn, `FontInstance.draw()` looks up each character's position in the atlas and
    calls `Tile.draw()` for each one.
 
 ## Setup
 
-Load a `FontFace` via `AssetsManager`, register it, then create a `FontManager`:
+Load a `FontFace` via `AssetsManager` (`loadFont()` also registers it in `document.fonts`),
+then create a `FontManager`:
 
 ```typescript
 import { FontManager, AssetsManager, Canvas2DRenderer } from "craters";
@@ -25,19 +26,40 @@ const renderer = new Canvas2DRenderer(800, 600);
 const assets   = new AssetsManager();
 
 // Load and register the font face
-const face = await assets.loadFont("PixelFont", "url(fonts/pixel.woff2)");
-document.fonts.add(face);
+await assets.loadFont("PixelFont", "url(fonts/pixel.woff2)");
 
 // Create a FontManager for this typeface and style
 const fontManager = new FontManager(
   renderer,
   "16px PixelFont",   // CSS font string — size and family
-  "#ffffff",          // fillStyle
-  "#ffffff",          // strokeStyle (unused when stroke: false)
-  true,               // fill
-  false               // stroke
+  "#ffffff"           // fillStyle used to rasterise the glyphs
 );
 ```
+
+## Outlined Text
+
+The optional `strokeStyle`, `fill`, `stroke` and `lineWidth` arguments control how glyphs are
+baked into the atlas. When `fill` is true (the default), glyphs are filled with `fillStyle`.
+When `stroke` is true, they are also stroked with `strokeStyle`, drawn over the fill:
+
+```typescript
+const outlined = new FontManager(
+  renderer,
+  "bold 24px monospace",
+  "#ffcc00",  // fillStyle
+  "#000000",  // strokeStyle
+  true,       // fill
+  true,       // stroke
+  3           // lineWidth in pixels
+);
+const title = outlined.load("GAME OVER");
+title.draw("GAME OVER", 100, 80);
+```
+
+Stroked glyphs are not clipped: each atlas cell gets a transparent margin of
+`ceil(lineWidth / 2) + 1` px. Text is laid out exactly as it would be without a stroke, and the
+stroke extends up to `lineWidth / 2` beyond the glyph boxes. These options are applied when
+`load()` runs; to change them, set them and call `load()` again.
 
 ## Building the Font Atlas
 
@@ -50,7 +72,11 @@ const font = fontManager.load(
 );
 ```
 
-`load()` is synchronous and returns a `Font` object. Call it once at startup.
+`load()` is synchronous and returns a `FontInstance`. Call it once at startup.
+
+- It rasterises with whatever font is available at that moment, so await the font load first.
+- Glyph height is the font's px size × 1.2.
+- An invalid font string falls back to the canvas default, `10px sans-serif`.
 
 ## Drawing Text
 
@@ -59,8 +85,9 @@ font.draw("Hello, World!", destX, destY);
 font.draw("Score: 1000", 10, 10);
 ```
 
-Characters are drawn left-to-right starting at `(destX, destY)`. There is no automatic
-line wrapping — insert newlines manually by adjusting `destY`.
+Characters are drawn left-to-right starting at `(destX, destY)`, the top-left corner. There is
+no automatic line wrapping and `"\n"` is not treated as a line break. For multiple lines, call
+`draw()` once per line with an adjusted `destY`.
 
 ## Complete Example
 
@@ -70,9 +97,8 @@ import { FontManager, AssetsManager, Canvas2DRenderer, RenderLoop } from "crater
 const renderer = new Canvas2DRenderer(800, 600);
 document.body.appendChild(renderer.canvasElement);
 
-const assets  = new AssetsManager();
-const face    = await assets.loadFont("PixelFont", "url(pixel.woff2)");
-document.fonts.add(face);
+const assets = new AssetsManager();
+await assets.loadFont("PixelFont", "url(pixel.woff2)");
 
 const mgr  = new FontManager(renderer, "16px PixelFont", "#00ff88");
 const font = mgr.load("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,!?:-");
@@ -98,22 +124,24 @@ font.draw("9999", 10, 10);
 
 ## API Reference
 
-### `new FontManager(renderer, fontName, fillStyle?, strokeStyle?, fill?, stroke?)`
+### `new FontManager(renderer, fontName, fillStyle?, strokeStyle?, fill?, stroke?, lineWidth?)`
 
 | Parameter | Default | Description |
 |---|---|---|
-| `renderer` | — | `Canvas2DRenderer` to draw text onto |
+| `renderer` | — | `Canvas2DRenderer` to draw text onto (`WebGLRenderer` is not accepted) |
 | `fontName` | — | CSS font string, e.g. `"16px Arial"` |
 | `fillStyle` | `"#fafafa"` | Fill colour for glyph rasterisation |
 | `strokeStyle` | `"#fafafa"` | Stroke colour (if `stroke` is `true`) |
 | `fill` | `true` | Whether to fill glyphs |
-| `stroke` | `false` | Whether to stroke glyphs |
+| `stroke` | `false` | Whether to stroke glyphs (drawn over the fill) |
+| `lineWidth` | `1` | Stroke width in pixels |
 
-### `fontManager.load(characters): Font`
+### `fontManager.load(characters): FontInstance`
 
-Rasterises all unique characters in the string into an atlas. Returns a `Font` object.
+Rasterises all unique characters in the string into an atlas. Returns a `FontInstance`
+(exported as a type from `"craters"`).
 
 ### `font.draw(text, destX, destY)`
 
 Draws `text` at `(destX, destY)`. Only characters present in the atlas string are rendered;
-unrecognised characters are silently skipped.
+unrecognised characters are silently skipped and take no space.

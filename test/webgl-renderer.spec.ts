@@ -85,4 +85,54 @@ describe("WebGLRenderer", function() {
       })
     })
   })
+  describe("alpha blending", function() {
+    const SIZE = 64;
+    function solid(color: string): HTMLCanvasElement {
+      const canvas = document.createElement("canvas");
+      canvas.width = 8;
+      canvas.height = 8;
+      const context = canvas.getContext("2d")!;
+      context.fillStyle = color;
+      context.fillRect(0, 0, 8, 8);
+      return canvas;
+    }
+    // RGBA at CSS pixel (x, y); WebGL rows start at the bottom.
+    function pixel(renderer: WebGLRenderer, x: number, y: number): number[] {
+      const gl = renderer.canvasElement.getContext("webgl")!;
+      const out = new Uint8Array(4);
+      gl.readPixels(x, SIZE - 1 - y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, out);
+      return Array.from(out);
+    }
+    const halfRed = solid("rgba(255, 0, 0, 0.5)");
+
+    it("should composite a semi-transparent texture the same whether it is created before or after the first clear()", function() {
+      const renderer = new WebGLRenderer(SIZE, SIZE, undefined, 1);
+      const before = renderer.createImage(halfRed);
+      renderer.clear([0, 0, 0, 1]);
+      const after = renderer.createImage(halfRed);
+      renderer.drawImage(before, 0, 0, 8, 8, 0, 0, 8, 8);
+      renderer.drawImage(after, 0, 0, 8, 8, 16, 0, 8, 8);
+      const a = pixel(renderer, 4, 4), b = pixel(renderer, 20, 4);
+      a[0].should.be.within(126, 130); // 50% red over black
+      a.should.deep.equal(b);
+    });
+
+    it("should blend even if clear() has never been called", function() {
+      const renderer = new WebGLRenderer(SIZE, SIZE, undefined, 1);
+      renderer.drawImage(renderer.createImage(solid("#0000ff")), 0, 0, 8, 8, 0, 0, 8, 8);
+      renderer.drawImage(renderer.createImage(halfRed), 0, 0, 8, 8, 0, 0, 8, 8);
+      const [r, g, b, a] = pixel(renderer, 4, 4);
+      r.should.be.within(126, 130);
+      g.should.equal(0);
+      b.should.be.within(126, 130);
+      a.should.equal(255);
+    });
+
+    it("should leave opaque textures unchanged", function() {
+      const renderer = new WebGLRenderer(SIZE, SIZE, undefined, 1);
+      renderer.clear([0, 0, 0, 1]);
+      renderer.drawImage(renderer.createImage(solid("#0000ff")), 0, 0, 8, 8, 0, 0, 8, 8);
+      pixel(renderer, 4, 4).should.deep.equal([0, 0, 255, 255]);
+    });
+  })
 });

@@ -1,3 +1,8 @@
+/**
+ * A decoded audio clip, created by {@link SoundManager.load}. Has one primary
+ * voice ({@link play}) plus any number of overlapping one-shots
+ * ({@link playOneShot}).
+ */
 export class Sound {
   private audioContext: AudioContext;
   private buffer: AudioBuffer;
@@ -39,6 +44,13 @@ export class Sound {
     source.start();
   }
 
+  /**
+   * Play the primary voice, stopping any previous primary voice first.
+   * @param loop repeat until stopped (default false).
+   * @param onEnded called when the voice stops: at the natural end, and also
+   *   when it is stopped by {@link stop} or replaced by another play() call.
+   *   Never fires naturally while looping.
+   */
   public play(loop: boolean = false, onEnded?: () => void): void {
     this.stop(); // Stop any previous instance before playing
 
@@ -77,10 +89,15 @@ export class Sound {
     }
   }
 
+  /** Volume used by the primary voice and as the default for new one-shots. */
   public getVolume(): number {
     return this.volume;
   }
 
+  /**
+   * Set the volume (gain; 1 = unchanged, not clamped). Applies immediately to
+   * the playing primary voice; one-shots already playing keep their volume.
+   */
   public setVolume(value: number) {
     this.volume = value;
     if (this.gainNode) {
@@ -88,6 +105,7 @@ export class Sound {
     }
   }
 
+  /** Stop the primary voice and release its nodes. One-shots keep playing. */
   public stop(): void {
     if (this.source) {
       try {
@@ -118,23 +136,46 @@ export class Sound {
     this.activeSources = [];
   }
 }
+/**
+ * Owns the AudioContext and loads sounds. If the context starts suspended
+ * (browser autoplay policy), the constructor calls {@link unlockAudioContext}
+ * so that the first accepted user gesture resumes it.
+ */
 export default class SoundManager {
   audioContext: AudioContext;
   constructor() {
     this.audioContext = new AudioContext();
     this.unlockAudioContext()
   }
-  unlockAudioContext() {
+  /**
+   * Resume the AudioContext on a user gesture: `touchend`, `click`,
+   * `mousedown`, `pointerup` or `keydown` anywhere in the document. The
+   * listeners stay attached until the context is actually running, so a
+   * gesture the browser does not accept for autoplay is followed by another
+   * attempt on the next one. Does nothing if the context is not suspended.
+   */
+  unlockAudioContext(): void {
     if (this.audioContext.state !== "suspended") return;
-    const unlockAudioContext = () => {
-      document.removeEventListener("touchstart", unlockAudioContext, false);
-      document.removeEventListener("mousedown", unlockAudioContext, false);
-      document.removeEventListener("keydown", unlockAudioContext, false);
-      this.audioContext.resume();
-    }
-    document.addEventListener("touchstart", unlockAudioContext, false);
-    document.addEventListener("mousedown", unlockAudioContext, false);
-    document.addEventListener("keydown", unlockAudioContext, false);
+    // Events that count as user activation for autoplay. `touchstart` does
+    // not, which is why a tap is handled through `touchend`/`pointerup`.
+    const events = ["touchend", "click", "mousedown", "pointerup", "keydown"];
+    const removeListeners = () => {
+      events.forEach((type) => document.removeEventListener(type, unlock, true));
+    };
+    const unlock = () => {
+      const state = this.audioContext.state;
+      if (state === "running" || state === "closed") {
+        removeListeners();
+        return;
+      }
+      this.audioContext.resume().then(() => {
+        if (this.audioContext.state === "running") removeListeners();
+      }, () => {
+        // Not allowed or failed: keep listening and retry on the next gesture.
+      });
+    };
+    // Capture phase, so the unlock still runs if a game handler stops propagation.
+    events.forEach((type) => document.addEventListener(type, unlock, true));
   }
   /** Suspend playback of every sound (the whole AudioContext). */
   suspendAll(): Promise<void> {
@@ -146,13 +187,17 @@ export default class SoundManager {
     return this.audioContext.resume();
   }
 
+  /**
+   * Fetch and decode an audio file.
+   * Rejects on an HTTP error status or if the data cannot be decoded.
+   */
   load(resource: string): Promise<Sound> {
     const request: Request = new Request(resource)
     return fetch(request).then((response: Response) => {
       // Without this, a 404/500 flows into arrayBuffer()/decodeAudioData and
       // fails opaquely instead of surfacing the real problem.
       if (!response.ok) {
-        throw new Error(`Failed to load sound "${resource}": ${response.status} ${response.statusText}`);
+        throw new Error(`Failed to load sound "${resource}": ${response.status}${response.statusText ? ` ${response.statusText}` : ""}`);
       }
       return response.arrayBuffer();
     }).then((buffer: ArrayBuffer) => {

@@ -167,6 +167,25 @@ describe("Input", function () {
       }
     });
 
+    it("should keep Touch0 held until the last finger lifts", function () {
+      if (typeof TouchEvent === "undefined" || typeof Touch === "undefined") this.skip();
+      input.bind("Touch0", "TAP");
+      const first = new Touch({ identifier: 0, target: document.body, clientX: 10, clientY: 10 });
+      const second = new Touch({ identifier: 1, target: document.body, clientX: 90, clientY: 90 });
+
+      document.dispatchEvent(new TouchEvent("touchstart", { touches: [first, second] }));
+      input.update();
+      expect(input.isPressed("TAP")).to.equal(1);
+
+      // One finger lifts while the other stays down.
+      document.dispatchEvent(new TouchEvent("touchend", { touches: [first] }));
+      expect(input.isPressed("TAP")).to.equal(1);
+
+      // Last finger lifts.
+      document.dispatchEvent(new TouchEvent("touchend", { touches: [] }));
+      expect(input.isPressed("TAP")).to.equal(0);
+    });
+
     it("should update pointer position on touch move", async () => {
       try {
         const touchEvent = new TouchEvent("touchmove", {
@@ -178,6 +197,71 @@ describe("Input", function () {
       } catch (e) {
         console.warn("TouchEvent constructor not supported, skipping touch test");
       }
+    });
+  });
+  describe("Pointer target", function () {
+    var canvas: HTMLCanvasElement;
+    var scoped: Input;
+
+    beforeEach(function () {
+      // Detach the document-level instance so only `scoped` reacts to events.
+      input.unbind();
+      canvas = document.createElement("canvas");
+      document.body.appendChild(canvas);
+      scoped = new Input(canvas);
+    });
+
+    afterEach(function () {
+      scoped.unbind();
+      canvas.remove();
+    });
+
+    it("should only react to mouse presses on the target", function () {
+      scoped.bind("Mouse0", "FIRE");
+
+      document.body.dispatchEvent(new MouseEvent("mousedown", { button: 0, bubbles: true }));
+      expect(scoped.isPressed("FIRE")).to.equal(0);
+
+      canvas.dispatchEvent(new MouseEvent("mousedown", { button: 0, bubbles: true }));
+      expect(scoped.isPressed("FIRE")).to.equal(2);
+    });
+
+    it("should release a mouse button released outside the target", function () {
+      scoped.bind("Mouse0", "FIRE");
+      canvas.dispatchEvent(new MouseEvent("mousedown", { button: 0, bubbles: true }));
+      expect(scoped.isPressed("FIRE")).to.equal(2);
+
+      document.body.dispatchEvent(new MouseEvent("mouseup", { button: 0, bubbles: true }));
+      expect(scoped.isPressed("FIRE")).to.equal(0);
+    });
+
+    it("should only prevent the default action of touches on the target", function () {
+      if (typeof TouchEvent === "undefined" || typeof Touch === "undefined") this.skip();
+      scoped.bind("Touch0", "TAP");
+      const touch = new Touch({ identifier: 0, target: document.body, clientX: 5, clientY: 5 });
+
+      const outside = new TouchEvent("touchstart", { touches: [touch], bubbles: true, cancelable: true });
+      document.body.dispatchEvent(outside);
+      expect(outside.defaultPrevented).to.equal(false);
+      expect(scoped.isPressed("TAP")).to.equal(0);
+
+      const inside = new TouchEvent("touchstart", { touches: [touch], bubbles: true, cancelable: true });
+      canvas.dispatchEvent(inside);
+      expect(inside.defaultPrevented).to.equal(true);
+      expect(scoped.isPressed("TAP")).to.equal(2);
+    });
+
+    it("should keep keyboard listeners on document", function () {
+      scoped.bind(Input.KEY.SPACEBAR, "JUMP");
+      document.dispatchEvent(new KeyboardEvent("keydown", { code: "Space" }));
+      expect(scoped.isPressed("JUMP")).to.equal(2);
+    });
+
+    it("should remove the target's listeners on unbind()", function () {
+      scoped.bind("Mouse0", "FIRE");
+      scoped.unbind();
+      canvas.dispatchEvent(new MouseEvent("mousedown", { button: 0, bubbles: true }));
+      expect(scoped.isPressed("FIRE")).to.equal(0);
     });
   });
 });

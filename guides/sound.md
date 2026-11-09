@@ -3,15 +3,17 @@
 The audio module has two classes:
 
 - **`SoundManager`** — loads audio files and owns the `AudioContext`. One instance per game.
-- **`Sound`** — a single loaded audio clip. Supports play, pause, resume, stop, and volume.
+- **`Sound`** — a single loaded audio clip. Supports play, overlapping one-shots, stop, and volume.
 
-The `AudioContext` is unlocked automatically on the first user interaction (click, tap, or keypress),
-complying with browser autoplay policies.
+Both are exported: `import { Sound, SoundManager } from "craters"`.
+
+The `AudioContext` is unlocked automatically on the first user gesture (a tap, click, or key
+press), complying with browser autoplay policies.
 
 ## Setup
 
 ```typescript
-import { SoundManager } from "craters";
+import { Sound, SoundManager } from "craters";
 
 const audio = new SoundManager();
 ```
@@ -19,10 +21,11 @@ const audio = new SoundManager();
 ## Loading Sounds
 
 `load()` fetches the file, decodes it via the Web Audio API, and resolves with a `Sound` instance.
+It rejects if the server returns an HTTP error status or the data cannot be decoded.
 
 ```typescript
-const jump  = await audio.load("sounds/jump.mp3") as Sound;
-const music = await audio.load("sounds/theme.ogg") as Sound;
+const jump: Sound  = await audio.load("sounds/jump.mp3");
+const music: Sound = await audio.load("sounds/theme.ogg");
 ```
 
 Load all sounds upfront (e.g. in a loading screen) so they are ready when needed.
@@ -36,61 +39,83 @@ jump.play();
 // Loop (e.g. background music)
 music.play(true);
 
-// Play once, then run a callback on completion
-jump.play(false, () => console.log("jump sound finished"));
+// Play once, then run a callback when it stops
+jump.play(false, () => console.log("jump sound stopped"));
 ```
 
-Calling `play()` while the sound is already playing stops the previous instance first, so
-rapid repeated calls (e.g. footsteps) work correctly without overlapping.
+Each `Sound` has one primary voice: calling `play()` while it is already playing stops the
+previous instance first. For rapid effects that should overlap instead of cutting each other
+off (footsteps, hits), use `playOneShot()`:
+
+```typescript
+jump.playOneShot();     // layered; uses the current volume
+jump.playOneShot(0.3);  // layered, at 30% volume
+```
+
+> **Note:** the `onEnded` callback also fires when the voice is stopped with `stop()` or
+> replaced by another `play()` call, not only at the natural end. It never fires on its
+> own while looping.
 
 ## Stopping, Pausing, and Resuming
 
 ```typescript
-music.stop();    // stop and release the audio nodes
-music.pause();   // suspend the AudioContext (affects all sounds)
-music.resume();  // resume the AudioContext
+music.stop();      // stop the primary voice and release its audio nodes
+music.stopAll();   // stop the primary voice and every playOneShot() voice
+
+await audio.suspendAll();  // global pause: suspends the whole AudioContext
+await audio.resumeAll();   // resume every sound
 ```
 
-> **Note:** `pause()` and `resume()` suspend the entire `AudioContext`, not just this
-> individual sound. Prefer `stop()` for one-shot sounds and use pause/resume for a
-> global game pause.
+`Sound.pause()` and `Sound.resume()` still exist but are **deprecated**: although called on
+one sound, they suspend and resume the entire `AudioContext`. Use
+`SoundManager.suspendAll()` / `resumeAll()` for a global game pause.
 
 ## Volume Control
 
 ```typescript
-music.setVolume(0.5);  // 50% volume (range 0.0 – 1.0)
+music.setVolume(0.5);  // 50% volume (1.0 = unchanged)
 const vol = music.getVolume(); // 0.5
 ```
 
-Volume changes are applied immediately, even while the sound is playing.
+The value is a gain and is not clamped: keep it in 0.0 – 1.0 unless you want amplification.
+Changes apply immediately to the playing primary voice; `playOneShot()` voices that are
+already playing keep the volume they started with.
 
 ## Complete Example
 
 ```typescript
-import { SoundManager, RenderLoop, Input } from "craters";
+import { SoundManager, Sound, RenderLoop, Input } from "craters";
 
 const audio = new SoundManager();
 const input = new Input();
 input.bind(Input.KEY.SPACEBAR, "JUMP");
 
-const jumpSfx = await audio.load("jump.mp3") as Sound;
-const music   = await audio.load("music.ogg") as Sound;
+const jumpSfx: Sound = await audio.load("jump.mp3");
+const music: Sound   = await audio.load("music.ogg");
 
 music.setVolume(0.4);
-music.play(true); // start looping music
+music.play(true); // start looping music (audible once the context is unlocked)
 
 new RenderLoop((loop) => {
   if (input.isPressed("JUMP") === 2) {
-    jumpSfx.play();
+    jumpSfx.playOneShot();
   }
+  input.update(); // end of step: advance "just pressed" to "held"
 });
 ```
 
 ## Browser Autoplay Policy
 
-Browsers block audio from playing before the first user gesture. `SoundManager` handles
-this by listening for `touchstart`, `mousedown`, and `keydown` and calling
-`audioContext.resume()` on the first event. No extra setup is required.
+Browsers block audio from playing before the first user gesture. If the context starts
+suspended, `SoundManager` listens on `document` for `touchend`, `click`, `mousedown`,
+`pointerup` and `keydown` (the events browsers accept as a user gesture) and calls
+`audioContext.resume()` on each of them. The listeners are removed once the context is
+actually `"running"`, so a gesture the browser does not accept is simply followed by
+another attempt on the next one. A single tap is enough on touch devices, including when an
+`Input` is active. No extra setup is required.
+
+After the context has been unlocked, later gestures no longer resume it, so a game paused
+with `suspendAll()` stays paused until you call `resumeAll()`.
 
 If you need to check readiness manually:
 
@@ -102,15 +127,24 @@ audio.audioContext.state; // "suspended" | "running" | "closed"
 
 ### `SoundManager`
 
-- `new SoundManager()` — creates `AudioContext` and registers unlock listeners
-- `load(resource: string): Promise<Sound>` — fetches and decodes an audio file
+- `new SoundManager()` — creates the `AudioContext`; if it starts suspended, registers the
+  unlock listeners
+- `load(resource: string): Promise<Sound>` — fetches and decodes an audio file; rejects on
+  an HTTP error status or decode failure
+- `suspendAll(): Promise<void>` — suspend the whole `AudioContext` (global pause)
+- `resumeAll(): Promise<void>` — resume the whole `AudioContext`
+- `unlockAudioContext(): void` — if the context is suspended, resumes it on the next accepted
+  user gesture, retrying until it is running (called by the constructor)
 - `audioContext: AudioContext` — the underlying Web Audio context
 
 ### `Sound`
 
-- `play(loop?, onEnded?)` — play; `loop` defaults to `false`
-- `stop()` — stop playback and release audio nodes
-- `pause()` — suspend the `AudioContext` (global pause)
-- `resume()` — resume the `AudioContext`
-- `setVolume(value: number)` — set volume 0.0 – 1.0
+- `play(loop = false, onEnded?: () => void): void` — play the primary voice, stopping the
+  previous one; `onEnded` also fires on `stop()` / replay
+- `playOneShot(volume = getVolume()): void` — play an overlapping voice
+- `stop(): void` — stop the primary voice and release its audio nodes
+- `stopAll(): void` — stop the primary voice and all one-shot voices
+- `setVolume(value: number): void` — set the gain (not clamped; 1.0 = unchanged)
 - `getVolume(): number` — current volume
+- `pause()` / `resume()` — **deprecated**; suspend/resume the whole `AudioContext`. Use
+  `suspendAll()` / `resumeAll()`.

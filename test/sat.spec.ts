@@ -333,3 +333,54 @@ describe('Circle Extended', () => {
     });
 });
 
+
+describe('Circle-Polygon containment', () => {
+    it('should report a circle fully inside a polygon (aInB)', () => {
+        const box = new Box(new Vector(0, 0), 100, 100).toPolygon();
+        const circle = new Circle(new Vector(50, 50), 10);
+        const response = new Response();
+        expect(testCirclePolygon(circle, box, response)).to.be.true;
+        expect(response.aInB).to.be.true;
+        expect(response.bInA).to.be.false;
+    });
+
+    it('should report a polygon fully inside a circle (bInA)', () => {
+        const box = new Box(new Vector(0, 0), 10, 10).toPolygon();
+        const circle = new Circle(new Vector(5, 5), 20);
+        const response = new Response();
+        expect(testCirclePolygon(circle, box, response)).to.be.true;
+        expect(response.aInB).to.be.false;
+        expect(response.bInA).to.be.true;
+    });
+
+    it('should report neither for a partial overlap', () => {
+        const box = new Box(new Vector(0, 100), 200, 20).toPolygon();
+        const circle = new Circle(new Vector(50, 95), 10);
+        const response = new Response();
+        expect(testCirclePolygon(circle, box, response)).to.be.true;
+        expect(response.aInB).to.be.false;
+        expect(response.bInA).to.be.false;
+    });
+
+    it('should not keep containment flags from a previous test', () => {
+        const box = new Box(new Vector(0, 0), 100, 100).toPolygon();
+        const response = new Response();
+        response.aInB = false;
+        response.bInA = true;
+        testCirclePolygon(new Circle(new Vector(50, 50), 10), box, response);
+        expect(response.aInB).to.be.true;
+        expect(response.bInA).to.be.false;
+    });
+
+    it('should not depend on the polygon winding order', () => {
+        const points = [new Vector(0, -20), new Vector(20, 20), new Vector(-20, 20)];
+        const reversed = points.map(p => p.clone()).reverse();
+        const circle = new Circle(new Vector(0, 8), 4);
+        for (const triangle of [new Polygon(new Vector(0, 0), points), new Polygon(new Vector(0, 0), reversed)]) {
+            const response = new Response();
+            expect(testCirclePolygon(circle, triangle, response)).to.be.true;
+            expect(response.aInB).to.be.true;
+            expect(response.bInA).to.be.false;
+        }
+    });
+});

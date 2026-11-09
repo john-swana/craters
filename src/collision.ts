@@ -1,15 +1,28 @@
 import { Vector } from './vector';
 import { Polygon, Circle } from './shapes';
 
-// Collision Response Class
+/**
+ * Result of a SAT test. Reuse one instance, but call {@link Response.clear}
+ * before EVERY test: `testPolygonPolygon` only overwrites the stored overlap
+ * when it finds a smaller one, so an uncleared response keeps the previous
+ * pair's overlap and normal.
+ */
 export class Response {
+    /** First shape tested (shape A). */
     a: Polygon | Circle | null;
+    /** Second shape tested (shape B). */
     b: Polygon | Circle | null;
+    /** Penetration depth in px (`Number.MAX_VALUE` after {@link Response.clear}). */
     overlap: number;
+    /** Unit collision normal pointing FROM A TOWARD B. */
     overlapN: Vector;
+    /** `overlapN × overlap`: subtract it from A's position (or add it to B's) to separate the shapes. */
     overlapV: Vector;
+    /** Whether shape A is fully inside shape B. */
     aInB: boolean;
+    /** Whether shape B is fully inside shape A. */
     bInA: boolean;
+    /** Approximate world-space contact point; written only when a test is called with `computeContactPoint = true`. */
     contactPoint: Vector;
 
     constructor() {
@@ -23,6 +36,7 @@ export class Response {
         this.contactPoint = new Vector();
     }
 
+    /** Reset every field for reuse. Call before each test. */
     clear() {
         this.a = null;
         this.b = null;
@@ -116,9 +130,19 @@ function isSeparatingAxis(aPos: Vector, bPos: Vector, aPoints: Vector[], bPoints
     return false;
 }
 
-// computeContactPoint defaults to false: RigidBody disables rotational response,
-// so the contact point is unused and its support-point search is wasted work in
-// the narrow phase. Opt in only if you consume response.contactPoint directly.
+/**
+ * Test two convex polygons for overlap.
+ *
+ * @param a shape A
+ * @param b shape B
+ * @param response filled on overlap (`overlapN` points from A toward B); clear() it first. Pass `null` for a boolean-only test.
+ * @param computeContactPoint also fill `response.contactPoint` (the average of A's
+ *   deepest vertices along the normal). Defaults to false: RigidBody disables
+ *   rotational response, so the contact point is unused and its support-point
+ *   search is wasted work in the narrow phase. Opt in only if you consume
+ *   `response.contactPoint` directly.
+ * @returns true if the polygons overlap
+ */
 export function testPolygonPolygon(a: Polygon, b: Polygon, response: Response | null = null, computeContactPoint: boolean = false): boolean {
     const aPoints = a.calcPoints;
     const aLen = aPoints.length;
@@ -181,6 +205,20 @@ export function testPolygonPolygon(a: Polygon, b: Polygon, response: Response | 
     return true;
 }
 
+/**
+ * Test a circle against a convex polygon. The circle is always shape A; there is
+ * no polygon-vs-circle variant.
+ *
+ * Sets `response.aInB` (circle inside polygon) and `response.bInA` (polygon
+ * inside circle). Replaces `response.overlapN`/`response.overlapV` with new
+ * Vector objects.
+ *
+ * @param circle shape A
+ * @param polygon shape B
+ * @param response filled on overlap (`overlapN` points from the circle toward the polygon). Pass `null` for a boolean-only test.
+ * @param computeContactPoint also fill `response.contactPoint` with the polygon vertex closest to the circle centre (default false)
+ * @returns true if the shapes overlap
+ */
 export function testCirclePolygon(circle: Circle, polygon: Polygon, response: Response | null = null, computeContactPoint: boolean = false): boolean {
     const points = polygon.calcPoints;
     const len = points.length;
@@ -308,6 +346,34 @@ export function testCirclePolygon(circle: Circle, polygon: Polygon, response: Re
         response.overlapN.reverse();
         response.overlapV.copy(response.overlapN).scale(response.overlap);
 
+        // Containment, with the same meaning as the other tests (a = circle,
+        // b = polygon), following SAT.js's polygon–circle test:
+        // aInB: the circle is inside the polygon, i.e. on every edge normal its
+        //   projection lies within the polygon's (exact for convex polygons and
+        //   independent of winding order);
+        // bInA: the polygon is inside the circle, i.e. every vertex is within r
+        //   of the centre.
+        let aInB = true;
+        for (let i = 0; i < len && aInB; i++) {
+            const axis = polygon.normals[i];
+            const rangeA = [0, 0];
+            flattenPointsOn(points, axis, rangeA);
+            const projectedCircleCenter = circlePos.dot(axis);
+            if (projectedCircleCenter - circle.r < rangeA[0] || projectedCircleCenter + circle.r > rangeA[1]) {
+                aInB = false;
+            }
+        }
+        let bInA = true;
+        for (let i = 0; i < len && bInA; i++) {
+            const dx = points[i].x - circlePos.x;
+            const dy = points[i].y - circlePos.y;
+            if (dx * dx + dy * dy > radius2) {
+                bInA = false;
+            }
+        }
+        response.aInB = aInB;
+        response.bInA = bInA;
+
         if (computeContactPoint) {
             // Contact point is the closest vertex on the polygon
             response.contactPoint.copy(points[closestVertexIndex]).add(polygon.pos);
@@ -317,6 +383,15 @@ export function testCirclePolygon(circle: Circle, polygon: Polygon, response: Re
     return true;
 }
 
+/**
+ * Test two circles for overlap.
+ *
+ * @param a shape A
+ * @param b shape B
+ * @param response filled on overlap (`overlapN` points from A toward B). Pass `null` for a boolean-only test.
+ * @param computeContactPoint also fill `response.contactPoint` with the point on B's edge facing A (default false)
+ * @returns true if the circles overlap
+ */
 export function testCircleCircle(a: Circle, b: Circle, response: Response | null = null, computeContactPoint: boolean = false): boolean {
     const aPos = a.pos.clone().add(a.offset);
     const bPos = b.pos.clone().add(b.offset);

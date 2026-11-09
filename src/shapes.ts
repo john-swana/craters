@@ -1,5 +1,9 @@
 import { Vector } from './vector';
 
+/**
+ * Axis-aligned box: `pos` is the top-left corner, `w`/`h` the size in px.
+ * Convert it with {@link Box.toPolygon} before running SAT tests.
+ */
 export class Box {
     pos: Vector;
     w: number;
@@ -11,6 +15,11 @@ export class Box {
         this.h = h;
     }
 
+    /**
+     * Polygon with `pos` = this box's top-left corner (copied) and points
+     * `(0,0) (w,0) (w,h) (0,h)`. It rotates about that corner; to use the
+     * centre instead, call `setOffset(new Vector(-w / 2, -h / 2))` on the result.
+     */
     toPolygon(): Polygon {
         const pos = this.pos;
         const w = this.w;
@@ -24,6 +33,14 @@ export class Box {
     }
 }
 
+/**
+ * Convex polygon: `pos` in world space plus `points` in local space.
+ *
+ * The collision data (`calcPoints`, `edges`, `normals`) is rebuilt by the
+ * constructor and by {@link Polygon.setPoints}, {@link Polygon.setAngle},
+ * {@link Polygon.setOffset}, {@link Polygon.rotate} and {@link Polygon.translate}.
+ * After editing `points` directly, call `setPoints(points)`.
+ */
 export class Polygon {
     pos: Vector;
     angle: number;
@@ -44,24 +61,31 @@ export class Polygon {
         this.recalc();
     }
 
+    /** Replace the local-space points and rebuild the collision data. Returns `this`. */
     setPoints(points: Vector[]): Polygon {
         this.points = points;
         this.recalc();
         return this;
     }
 
+    /**
+     * Set the rotation in radians about the local origin (`pos`). The offset is
+     * applied before rotating, so it rotates too. Rebuilds the collision data. Returns `this`.
+     */
     setAngle(angle: number): Polygon {
         this.angle = angle;
         this.recalc();
         return this;
     }
 
+    /** Set a local offset from `pos`, applied before rotation. Rebuilds the collision data. Returns `this`. */
     setOffset(offset: Vector): Polygon {
         this.offset = offset;
         this.recalc();
         return this;
     }
 
+    /** Rotate the local points themselves by `angle` radians (mutates the point Vectors). Returns `this`. */
     rotate(angle: number): Polygon {
         const points = this.points;
         const len = points.length;
@@ -72,6 +96,7 @@ export class Polygon {
         return this;
     }
 
+    /** Translate the local points themselves (mutates the point Vectors). Returns `this`. */
     translate(x: number, y: number): Polygon {
         const points = this.points;
         const len = points.length;
@@ -108,6 +133,7 @@ export class Polygon {
         }
     }
 
+    /** World-space axis-aligned bounding box, as a Polygon. */
     getAABB(): Polygon {
         const points = this.calcPoints;
         const len = points.length;
@@ -131,6 +157,7 @@ export class Polygon {
         return new Box(this.pos.clone().add(new Vector(xMin, yMin)), xMax - xMin, yMax - yMin).toPolygon();
     }
 
+    /** World-space axis-aligned bounding box, as a Box (cheap; used by QuadTree). */
     getAABBAsBox(): Box {
         const points = this.calcPoints;
         const len = points.length;
@@ -154,6 +181,7 @@ export class Polygon {
         return new Box(this.pos.clone().add(new Vector(xMin, yMin)), xMax - xMin, yMax - yMin);
     }
 
+    /** World-space area centroid (centre of mass for uniform density). */
     getCentroid(): Vector {
         const points = this.calcPoints;
         const len = points.length;
@@ -175,6 +203,10 @@ export class Polygon {
     }
 }
 
+/**
+ * Circle: `pos` is the centre in world space, `r` the radius in px, and `offset`
+ * an optional local offset of the centre.
+ */
 export class Circle {
     pos: Vector;
     r: number;
@@ -186,17 +218,20 @@ export class Circle {
         this.offset = new Vector();
     }
 
+    /** Set a local offset of the centre from `pos`. Returns `this`. */
     setOffset(offset: Vector): Circle {
         this.offset = offset;
         return this;
     }
 
+    /** World-space axis-aligned bounding box (including the offset), as a Polygon. */
     getAABB(): Polygon {
         const r = this.r;
         const corner = this.pos.clone().add(this.offset).sub(new Vector(r, r));
         return new Box(corner, r * 2, r * 2).toPolygon();
     }
 
+    /** World-space axis-aligned bounding box (including the offset), as a Box. */
     getAABBAsBox(): Box {
         const r = this.r;
         const pos = this.pos.clone().add(this.offset);

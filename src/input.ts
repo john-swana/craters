@@ -1,3 +1,11 @@
+/**
+ * Keyboard, mouse and touch input mapped to named actions. Keyboard listeners
+ * are attached to `document`; mouse and touch listeners to the pointer target
+ * passed to the constructor (default `document`). The touch listeners call
+ * `preventDefault()`, which suppresses clicks, emulated mouse events,
+ * scrolling and zoom for touches that start on the target. Pass the game
+ * canvas as the target to leave the rest of the page usable.
+ */
 export default class Input {
   public static KEY: {
     [key: string]: string
@@ -102,47 +110,79 @@ export default class Input {
     }
   private bindings: Map<string, string> = new Map();
   private pressed: Map<string, number> = new Map();
+  /**
+   * Last known pointer position in viewport CSS pixels (`clientX`/`clientY`),
+   * updated by `mousemove`, `touchstart` and `touchmove` on the pointer
+   * target. Not canvas-relative.
+   */
   public pointerPosition: { x: number, y: number } = { x: 0, y: 0 };
+  private pointerTarget: HTMLElement | Document;
 
-  public constructor() {
+  /**
+   * @param pointerTarget element that receives the mouse and touch listeners
+   *   (e.g. the game canvas). Defaults to `document`. Keyboard listeners are
+   *   always attached to `document`, and `mouseup` is also listened for on
+   *   `document` so a button released outside the target is still released.
+   */
+  public constructor(pointerTarget: HTMLElement | Document = document) {
+    this.pointerTarget = pointerTarget;
     this.bindKeys();
     this.bindMouse();
     this.bindTouch();
   }
+  /**
+   * Map a key (a `KeyboardEvent.code` such as `Input.KEY.SPACEBAR`, or
+   * `"Mouse0"`-`"Mouse2"`, or `"Touch0"`) to an action name. Rebinding a key
+   * replaces its action; several keys may share one action. Resets the
+   * action's state to 0.
+   */
   public bind(key: string, action: string): void {
     this.bindings.set(key, action);
     this.pressed.set(action, 0);
   }
+  /** Attach the keyboard listeners (called by the constructor). */
   public bindKeys(): void {
     document.addEventListener("keyup", this.keyup, false);
     document.addEventListener("keydown", this.keydown, false);
   }
-  // Removes every listener attached by bindKeys/bindMouse/bindTouch. Relies on
-  // the handlers being stable arrow-function fields (see below): passing a fresh
-  // `.bind(this)` here would create a new reference and silently remove nothing.
+  /**
+   * Remove every keyboard, mouse and touch listener (from `document` and the
+   * pointer target). Bindings and press states are kept. Only the keyboard
+   * listeners can be re-attached afterwards (via {@link bindKeys}); to restore
+   * mouse and touch, create a new Input.
+   */
+  // Relies on the handlers being stable arrow-function fields (see below):
+  // passing a fresh `.bind(this)` here would create a new reference and
+  // silently remove nothing.
   public unbind(): void {
     document.removeEventListener("keyup", this.keyup, false);
     document.removeEventListener("keydown", this.keydown, false);
-    document.removeEventListener("mousemove", this.mousemove, false);
-    document.removeEventListener("mousedown", this.mousedown, false);
+    this.pointerTarget.removeEventListener("mousemove", this.mousemove as EventListener, false);
+    this.pointerTarget.removeEventListener("mousedown", this.mousedown as EventListener, false);
     document.removeEventListener("mouseup", this.mouseup, false);
-    document.removeEventListener("touchstart", this.touchstart);
-    document.removeEventListener("touchmove", this.touchmove);
-    document.removeEventListener("touchend", this.touchend);
+    this.pointerTarget.removeEventListener("touchstart", this.touchstart as EventListener);
+    this.pointerTarget.removeEventListener("touchmove", this.touchmove as EventListener);
+    this.pointerTarget.removeEventListener("touchend", this.touchend as EventListener);
   }
-  // Deprecated alias kept for backward compatibility; use unbind().
+  /**
+   * Alias of {@link unbind}, kept for backward compatibility.
+   * @deprecated Use {@link unbind}.
+   */
   public unbindKeys(): void {
     this.unbind();
   }
+  // The `as EventListener` casts are needed because the `HTMLElement | Document`
+  // union only exposes the untyped addEventListener overload.
   private bindMouse(): void {
-    document.addEventListener("mousemove", this.mousemove, false);
-    document.addEventListener("mousedown", this.mousedown, false);
+    this.pointerTarget.addEventListener("mousemove", this.mousemove as EventListener, false);
+    this.pointerTarget.addEventListener("mousedown", this.mousedown as EventListener, false);
+    // On document, so releasing the button outside the target still releases it.
     document.addEventListener("mouseup", this.mouseup, false);
   }
   private bindTouch(): void {
-    document.addEventListener("touchstart", this.touchstart, { passive: false });
-    document.addEventListener("touchmove", this.touchmove, { passive: false });
-    document.addEventListener("touchend", this.touchend, { passive: false });
+    this.pointerTarget.addEventListener("touchstart", this.touchstart as EventListener, { passive: false });
+    this.pointerTarget.addEventListener("touchmove", this.touchmove as EventListener, { passive: false });
+    this.pointerTarget.addEventListener("touchend", this.touchend as EventListener, { passive: false });
   }
   private mousemove = (event: MouseEvent): void => {
     this.pointerPosition.x = event.clientX;
@@ -169,7 +209,10 @@ export default class Input {
   }
   private touchend = (event: TouchEvent): void => {
     event.preventDefault();
-    this.handleTouch(0);
+    // Release only when the last finger lifts; other fingers keep Touch0 held.
+    if (event.touches.length === 0) {
+      this.handleTouch(0);
+    }
   }
   private updateTouchPosition(touch: Touch): void {
     this.pointerPosition.x = touch.clientX;
@@ -203,15 +246,19 @@ export default class Input {
       this.pressed.set(action, 2);
     }
   }
-  // Returns the current state without mutating it, so multiple systems can query
-  // the same action in one frame and all observe the "just pressed" value (2).
-  // 2 = pressed this frame, 1 = held, 0 = released.
+  /**
+   * Current state of an action: 2 = pressed since the last {@link update},
+   * 1 = held, 0 = released (or unknown action). Reading does not change the
+   * state, so several systems can observe the same "just pressed" value.
+   * Note: key auto-repeat `keydown` events set the state back to 2.
+   */
   public isPressed(action: string): number {
     return this.pressed.get(action) ?? 0;
   }
-  // Advances edge state: collapses "just pressed" (2) into "held" (1). Call once
-  // per frame, after all input has been read, so the 2 → 1 transition happens at
-  // a defined point rather than as a side effect of the first read.
+  /**
+   * Advance edge state: every action at 2 ("just pressed") becomes 1 ("held").
+   * Call once at the end of each fixed step, after all input has been read.
+   */
   public update(): void {
     this.pressed.forEach((state, action) => {
       if (state === 2) this.pressed.set(action, 1);

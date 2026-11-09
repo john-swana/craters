@@ -20,6 +20,14 @@ const fragmentShader = `
 		gl_FragColor = texture2D(u_texture, v_texcoord);
 	}
 `
+/**
+ * WebGL 1 image renderer: orthographic projection in CSS pixels, NEAREST
+ * texture filtering, and destination snapping to physical pixels. Implements
+ * the `Renderer` interface (`createImage` / `drawImage`), so `Tile`, `Sprite`
+ * and `TilemapManager` work with it. It has no primitive drawing API and no
+ * exposed context; `FontManager` and `ParticleSystem.draw` are typed for
+ * `Canvas2DRenderer` only.
+ */
 export default class WebGLRenderer {
   private gl: WebGLRenderingContext;
   private devicePixelRatio: number;
@@ -29,9 +37,20 @@ export default class WebGLRenderer {
   private textureLocation: WebGLUniformLocation;
   private matrix: mat4;
   private n: number;
+  /** CSS width in pixels. */
   public width: number;
+  /** CSS height in pixels. */
   public height: number;
+  /** The canvas element, created internally. Append it to the DOM yourself. */
   public canvasElement: HTMLCanvasElement;
+  /**
+   * Compiles and links the internal shaders.
+   * @param width CSS width in pixels.
+   * @param height CSS height in pixels.
+   * @param options Unused (kept for signature parity with `Canvas2DRenderer`).
+   * @param devicePixelRatio Physical pixel multiplier. Defaults to `window.devicePixelRatio`.
+   * @throws Error if WebGL is unavailable or a shader fails to compile or link.
+   */
   constructor(width: number, height: number, options?: any, devicePixelRatio: number = window.devicePixelRatio) {
     this.width = width;
     this.height = height;
@@ -110,7 +129,29 @@ export default class WebGLRenderer {
     gl.enableVertexAttribArray(this.positionLocation)
     gl.vertexAttribPointer(this.positionLocation, 2, gl.FLOAT, false, 0, 0)
     this.matrix = mat4.ortho(new Float32Array(16), 0, width, height, 0, -1, 1)
+
+    // Configure blending up front so drawing composites correctly even before
+    // the first clear(), and texture alpha is handled the same no matter when
+    // a texture is created.
+    this.applyBlendState()
   }
+  // Textures are uploaded premultiplied (see createImage), so blend with
+  // ONE / ONE_MINUS_SRC_ALPHA: the source colour already carries its alpha.
+  // This also keeps the drawing buffer premultiplied, which is what the
+  // default (premultipliedAlpha: true) WebGL canvas expects when compositing.
+  private applyBlendState(): void {
+    var gl = this.gl;
+    gl.disable(gl.DEPTH_TEST);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+  }
+  /**
+   * Upload `image` to a new GPU texture and return its handle, which is what
+   * `drawImage` takes. Every call creates a new texture; release it with `deleteImage`.
+   * The image is uploaded with premultiplied alpha, matching the renderer's
+   * blend function, so textures can be created at any time.
+   */
   public createImage(image: HTMLImageElement | HTMLCanvasElement | ImageBitmap): {
     texture: WebGLTexture,
     width: number,
@@ -128,6 +169,9 @@ export default class WebGLRenderer {
     // high-DPR (mobile) displays where UV coords land on texel edges.
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+    // Set the unpack flag per upload, in case other code changed it on the
+    // shared context; the blend function assumes premultiplied texels.
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
     // The image is already loaded by the time createImage is called, so upload
     // it directly — no need for the throwaway 1x1 placeholder texture.
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
@@ -137,7 +181,7 @@ export default class WebGLRenderer {
       texture
     }
   }
-  /** Release a texture created by createImage. */
+  /** Release a texture created by createImage. Do not draw the handle afterwards. */
   public deleteImage(image: { texture: WebGLTexture }): void {
     this.gl.deleteTexture(image.texture);
   }
@@ -148,6 +192,13 @@ export default class WebGLRenderer {
   private textureScaleVector: vec3 = vec3.create();
   private textureTranslationVector: vec3 = vec3.create();
 
+  /**
+   * Draw a region of a texture handle from `createImage`, in CSS pixels. Same
+   * argument order and defaults as `Canvas2DRenderer.drawImage`; omitted
+   * `destinationWidth`/`destinationHeight` default to the full texture size.
+   * Each call is one `gl.drawElements` (no batching). A negative destination
+   * width or height mirrors the image (`Canvas2DRenderer` does not).
+   */
   public drawImage(texture: {
     width: number,
     height: number,
@@ -211,6 +262,10 @@ export default class WebGLRenderer {
     gl.uniform1i(textureLocation, 0);
     gl.drawElements(gl.TRIANGLES, this.n, gl.UNSIGNED_BYTE, 0);
   }
+  /**
+   * Resize the canvas, reset the viewport and recompute the projection matrix.
+   * Omitted arguments keep their current values.
+   */
   public resize(width: number = this.width, height: number = this.height, devicePixelRatio: number = this.devicePixelRatio): void {
     this.width = width;
     this.height = height;
@@ -223,12 +278,19 @@ export default class WebGLRenderer {
     gl.viewport(0, 0, Math.round(width * devicePixelRatio), Math.round(height * devicePixelRatio));
     this.matrix = mat4.ortho(new Float32Array(16), 0, width, height, 0, -1, 1);
   }
+  /**
+   * Clear the whole canvas to `v`. Also re-applies the renderer's blend state
+   * (premultiplied alpha, `ONE, ONE_MINUS_SRC_ALPHA`), which is first set up by
+   * the constructor, in case other code changed it on the shared context.
+   * @param v RGBA colour, components in the 0–1 range. Default `[0.1, 0.1, 0.1, 1]`.
+   * @param w Ignored: the whole canvas is always cleared.
+   * @param x Ignored.
+   * @param y Ignored.
+   * @param z Ignored.
+   */
   public clear(v: [number, number, number, number] = [0.1, 0.1, 0.1, 1], w: number = 0, x: number = 0, y: number = this.width, z: number = this.height): void {
     var gl = this.gl;
-    gl.disable(gl.DEPTH_TEST);
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    this.applyBlendState();
     gl.clearColor(...v);
     gl.clear(gl.COLOR_BUFFER_BIT);
   }

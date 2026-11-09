@@ -86,6 +86,60 @@ describe('QuadTree', () => {
         expect(retrieved.length).to.equal(0);
     });
 
+    it('should keep a zero-width box lying on the vertical split line', () => {
+        const bounds = new Box(new Vector(0, 0), 100, 100);
+        const qt = new QuadTree(bounds, 1);
+        qt.insert(new MockObject(10, 10, 5, 5));
+        qt.insert(new MockObject(70, 70, 5, 5)); // forces a split at x = 50, y = 50
+        const line = new MockObject(50, 10, 0, 20); // zero width, on x = 50, top half
+        qt.insert(line);
+
+        expect(qt.retrieveUnique(new MockObject(0, 0, 100, 100))).to.include(line);
+        expect(qt.retrieve([], line)).to.include(line);
+        // It touches both sides, so a query on either side of the line finds it.
+        expect(qt.retrieveUnique(new MockObject(40, 10, 5, 5))).to.include(line);
+        expect(qt.retrieveUnique(new MockObject(55, 10, 5, 5))).to.include(line);
+        // It is in the top half only.
+        expect(qt.retrieveUnique(new MockObject(40, 80, 5, 5))).to.not.include(line);
+    });
+
+    it('should keep a zero-height box lying on the horizontal split line', () => {
+        const bounds = new Box(new Vector(0, 0), 100, 100);
+        const qt = new QuadTree(bounds, 1);
+        qt.insert(new MockObject(10, 10, 5, 5));
+        qt.insert(new MockObject(70, 70, 5, 5));
+        const line = new MockObject(10, 50, 20, 0); // zero height, on y = 50, left half
+        qt.insert(line);
+
+        expect(qt.retrieve([], line)).to.include(line);
+        expect(qt.retrieveUnique(new MockObject(10, 40, 5, 5))).to.include(line);
+        expect(qt.retrieveUnique(new MockObject(10, 55, 5, 5))).to.include(line);
+        expect(qt.retrieveUnique(new MockObject(80, 40, 5, 5))).to.not.include(line);
+    });
+
+    it('should keep a zero-size box at the centre point and when it triggers the split', () => {
+        const bounds = new Box(new Vector(0, 0), 100, 100);
+        const qt = new QuadTree(bounds, 1);
+        const point = new MockObject(50, 50, 0, 0);
+        qt.insert(point);
+        qt.insert(new MockObject(10, 10, 5, 5)); // split redistributes the point
+
+        const unique = qt.retrieveUnique(new MockObject(0, 0, 100, 100));
+        expect(unique).to.include(point);
+        expect(qt.retrieve([], point)).to.include(point);
+    });
+
+    it('should still keep a box that only touches a split line on one side', () => {
+        const bounds = new Box(new Vector(0, 0), 100, 100);
+        const qt = new QuadTree(bounds, 1);
+        qt.insert(new MockObject(70, 70, 5, 5));
+        const leftTouching = new MockObject(40, 10, 10, 10); // right edge exactly on x = 50
+        qt.insert(leftTouching);
+
+        expect(qt.retrieveUnique(new MockObject(20, 10, 5, 5))).to.include(leftTouching);
+        expect(qt.retrieveUnique(new MockObject(60, 10, 5, 5))).to.not.include(leftTouching);
+    });
+
     it('should get all bounds', () => {
         const bounds = new Box(new Vector(0, 0), 100, 100);
         const qt = new QuadTree(bounds, 1);

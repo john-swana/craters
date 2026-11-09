@@ -1,12 +1,16 @@
 import Canvas2DRenderer from "./canvas-2d-renderer";
 
-// Minimal renderer surface that Tile/Sprite/Tilemap depend on. Both
-// Canvas2DRenderer and WebGLRenderer satisfy it. The handle returned by
-// createImage is renderer-specific (a raw image for 2D, a GPU texture for
-// WebGL) and only ever passed back into the same renderer's drawImage, so it is
-// treated as opaque here.
+/**
+ * Minimal renderer surface that `Tile`, `Sprite` and `TilemapManager` depend on.
+ * Both `Canvas2DRenderer` and `WebGLRenderer` satisfy it. The handle returned by
+ * `createImage` is renderer-specific (the image itself for 2D, a GPU texture
+ * handle for WebGL) and is only ever passed back into the same renderer's
+ * `drawImage`, so it is treated as opaque.
+ */
 export interface Renderer {
+  /** Prepare an image for drawing and return a renderer-specific handle. */
   createImage(image: HTMLImageElement | HTMLCanvasElement | ImageBitmap): any;
+  /** Draw a source region of a `createImage` handle to a destination rectangle (CSS pixels). */
   drawImage(
     image: any,
     sx?: number, sy?: number, sWidth?: number, sHeight?: number,
@@ -14,8 +18,26 @@ export interface Renderer {
   ): void;
 }
 
+/**
+ * Draws regions of an image through a `Renderer`.
+ *
+ * Fast path: with the default clip rectangle, `"no-repeat"`, `"transparent"`
+ * fill/stroke and `lineWidth` 0, the image is just passed to
+ * `renderer.createImage` (identity for `Canvas2DRenderer`, a texture upload for
+ * `WebGLRenderer`).
+ *
+ * Otherwise the constructor builds an offscreen canvas the size of the image,
+ * clips it to `positions`, paints `fillStyle`/`strokeStyle`, draws the image on
+ * top, then fills a `width × height` canvas with a `CanvasPattern` of the
+ * result (using `repeat`). That canvas becomes the source for `draw()`.
+ */
 export default class Tile {
+  /** The renderer passed to the constructor (any `Renderer`, despite the name). */
   canvas2DRenderer: Renderer;
+  /**
+   * The handle returned by `renderer.createImage`: an image or canvas for
+   * `Canvas2DRenderer`, a `{ texture, width, height }` handle for `WebGLRenderer`.
+   */
   sImage: HTMLImageElement | HTMLCanvasElement | ImageBitmap;
   sWidth: number;
   sHeight: number;
@@ -28,6 +50,24 @@ export default class Tile {
   fillStyle: string;
   strokeStyle: string;
   lineWidth: number;
+  /**
+   * @param canvas2DRenderer Renderer to draw with (`Canvas2DRenderer` or `WebGLRenderer`).
+   * @param sImage Source image, canvas or bitmap (not a `createImage` handle; the Tile creates its own).
+   * @param sWidth Default source region width used by `draw()`.
+   * @param sHeight Default source region height used by `draw()`.
+   * @param dWidth Default destination width used by `draw()`.
+   * @param dHeight Default destination height used by `draw()`.
+   * @param positions Clip polygon vertices `[x, y][]` in image pixels (convex or
+   *   concave). Default: the image's four corners.
+   * @param width Width of the processed (pattern) canvas. Default: image width. Unused on the fast path.
+   * @param height Height of the processed (pattern) canvas. Default: image height. Unused on the fast path.
+   * @param repeat `CanvasPattern` repetition: `"repeat"`, `"repeat-x"`, `"repeat-y"` or `"no-repeat"` (default).
+   *   The whole clipped image is repeated, not a `sWidth × sHeight` region.
+   * @param fillStyle Painted inside the clip polygon, under the image. Default `"transparent"`.
+   * @param strokeStyle Stroked along the clip polygon, under the image and clipped
+   *   to it, so only the inner half of `lineWidth` can show. Default `"transparent"`.
+   * @param lineWidth Stroke width in pixels. Default `0`.
+   */
   constructor(
     canvas2DRenderer: Renderer,
     sImage: HTMLImageElement | HTMLCanvasElement | ImageBitmap,
@@ -113,6 +153,17 @@ export default class Tile {
       }
     }
   }
+  /**
+   * Draw a region of the (possibly processed) source image.
+   * @param sx Source x in pixels.
+   * @param sy Source y in pixels.
+   * @param dx Destination x in CSS pixels.
+   * @param dy Destination y in CSS pixels.
+   * @param sw Source width. Default `sWidth`.
+   * @param sh Source height. Default `sHeight`.
+   * @param dw Destination width. Default `dWidth`.
+   * @param dh Destination height. Default `dHeight`.
+   */
   draw(sx: number, sy: number, dx: number, dy: number, sw: number = this.sWidth, sh: number = this.sHeight, dw: number = this.dWidth, dh: number = this.dHeight): void {
     this.canvas2DRenderer.drawImage(this.sImage, sx, sy, sw, sh, dx, dy, dw, dh);
   }

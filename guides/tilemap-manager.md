@@ -1,20 +1,20 @@
 # TilemapManager Usage Guide
 
-`TilemapManager` loads **Tiled**-format JSON maps, resolves their tilesets into `Sprite`
-instances, and renders them layer by layer. It is built on top of `Sprite` and works with
-`Canvas2DRenderer`.
+`TilemapManager` loads JSON maps in Craters' own **map2d** format, resolves their tilesets into
+`Sprite` instances, and renders them layer by layer. It is built on top of `Sprite` and accepts
+any `Renderer` (`Canvas2DRenderer` or `WebGLRenderer`).
 
-## Tiled Map Format
+## Map Format
 
-Export your map from [Tiled](https://www.mapeditor.org/) as **JSON** with embedded or
-relative tileset paths. `TilemapManager` expects:
+The map is a JSON file with this shape (TypeScript types `TilemapData`, `TilemapLayer`,
+`Tileset` and `TileEntry` are exported from `"craters"`):
 
 ```
 map.json
 {
   "layers": [
     {
-      "data": [[srcY, srcX, dstX, dstY, tilesetIndex], ...]
+      "data": [[srcCol, srcRow, dstCol, dstRow, tilesetIndex], ...]
     }
   ],
   "tilesets": [
@@ -24,7 +24,25 @@ map.json
 ```
 
 Each tile entry in `layer.data` is a 5-element array:
-`[sourceRow, sourceCol, destinationCol, destinationRow, tilesetIndex]`
+`[sourceCol, sourceRow, destinationCol, destinationRow, tilesetIndex]`.
+
+All positions are in tiles, not pixels:
+
+- The source cell is at pixel `(sourceCol × tilewidth, sourceRow × tileheight)` in the tileset image.
+- The tile is drawn at `(destinationCol × tilewidth + offsetX, destinationRow × tileheight + offsetY)`,
+  using that tileset's tile size.
+- Only the fields shown above are read; any others are ignored.
+
+### Format Limitations
+
+- **Not Tiled's JSON export.** Tiled layers hold flat GID arrays (`"data": [1, 2, 0, …]`) with
+  a `firstgid` per tileset, and `draw()` throws `TypeError: tile is not iterable` on them.
+  Layers without `data` (e.g. Tiled object layers) also throw, and external tilesets
+  (`"source": "…"`) fail to load. Convert Tiled maps to the format above first.
+- **Tileset `image` paths resolve against the page URL**, not the map file, because they are
+  assigned to `Image.src`. Use absolute paths, or paths relative to the page.
+- Tileset `margin` / `spacing` are not supported. The image is cut into a gapless
+  `tilewidth × tileheight` grid.
 
 ## Setup
 
@@ -44,6 +62,18 @@ All image loading is done in parallel via `Promise.all`.
 
 ```typescript
 const tilemap = await tilemapManager.load("maps/world1.json");
+```
+
+The promise rejects with an `Error` if the map request returns a non-OK HTTP status (the
+message includes the status, e.g. `HTTP 404 Not Found`), or if a tileset image fails to load
+(the message includes the image URL):
+
+```typescript
+try {
+  await tilemapManager.load("maps/missing.json");
+} catch (error) {
+  console.error((error as Error).message);
+}
 ```
 
 ## Drawing the Map
@@ -78,19 +108,25 @@ new RenderLoop((loop) => {
 
 ## Layered Maps
 
-All layers defined in the Tiled JSON are drawn automatically. Layer ordering from Tiled is
-preserved, so background layers render before foreground layers.
+All layers in the JSON are drawn by a single `draw()` call, in array order, so background
+layers render before foreground layers.
 
-For games that need to draw game objects between layers (e.g. player behind a roof layer),
-split the draw call manually:
+To draw game objects between layers (e.g. player behind a roof layer), build extra `Tilemap`
+instances over subsets of the loaded layers. They reuse the already-loaded tilesets:
 
 ```typescript
-// Draw only background layers, then entities, then foreground
-// This requires splitting the tilemap or using Tiled's layer naming as a convention.
-// Currently TilemapManager draws all layers in a single draw() call.
-tilemap.draw(-camera.x, -camera.y);
-// Draw player here
-drawPlayer();
+import { Tilemap, RenderLoop } from "craters";
+
+const { layers, tilesets } = tilemap.tilemap;
+const background = new Tilemap({ layers: layers.slice(0, 2), tilesets });
+const foreground = new Tilemap({ layers: layers.slice(2), tilesets });
+
+new RenderLoop((loop) => {
+  renderer.clear();
+  background.draw(-camera.x, -camera.y);
+  drawPlayer();
+  foreground.draw(-camera.x, -camera.y);
+});
 ```
 
 ## Source Inset
@@ -131,12 +167,22 @@ new RenderLoop((loop) => {
 
 | Parameter | Description |
 |---|---|
-| `renderer` | `Canvas2DRenderer` used to create tile sprites |
+| `renderer` | Any `Renderer` (`Canvas2DRenderer` or `WebGLRenderer`) used to create tile sprites |
 
 ### `tilemapManager.load(url): Promise<Tilemap>`
 
-Fetches the Tiled JSON at `url`, loads all tileset images in parallel, and resolves with
-a `Tilemap` ready to draw.
+Fetches the map JSON at `url`, loads all tileset images in parallel, and resolves with
+a `Tilemap` ready to draw. Rejects with an `Error` on a non-OK HTTP response or a tileset
+image that fails to load.
+
+### `new Tilemap(data: TilemapData)`
+
+Wraps map data whose tilesets already have their `sprite` set (as returned by `load()`).
+Use it to draw a subset of layers.
+
+### `tilemap.tilemap: TilemapData`
+
+The loaded map data, with every `tilesets[i].sprite` populated.
 
 ### `tilemap.draw(offsetX?, offsetY?)`
 

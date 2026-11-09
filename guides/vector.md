@@ -1,8 +1,12 @@
 # Vector Usage Guide
 
 `Vector` is the shared 2D math primitive used throughout Craters — physics, collision, rendering
-offsets, and input positions all use it. Every method mutates the vector in place and returns
-`this`, enabling method chaining.
+offsets, and input positions all use it. Every mutating method changes the vector in place and
+returns `this`, enabling method chaining. `clone()` returns a new vector, and `dot()`, `len()`
+and `len2()` return numbers.
+
+Craters draws in canvas coordinates (x grows right, **y grows down**). The rotation notes below
+assume that convention.
 
 ## Creating Vectors
 
@@ -10,9 +14,14 @@ offsets, and input positions all use it. Every method mutates the vector in plac
 import { SAT } from "craters";
 const { Vector } = SAT;
 
-const zero = new Vector();          // (0, 0)
+const zero = new Vector();          // (0, 0): x and y default to 0
 const pos  = new Vector(100, 200);  // (100, 200)
 const copy = pos.clone();           // independent copy
+
+// In type annotations, use the namespace: SAT.Vector
+function midpoint(a: SAT.Vector, b: SAT.Vector): SAT.Vector {
+  return a.clone().add(b).scale(0.5);
+}
 ```
 
 ## Arithmetic
@@ -45,13 +54,23 @@ v.normalize();  // v → (0.6, 0.8) — unit vector in place
 ```typescript
 const v = new Vector(1, 0);
 
-v.rotate(Math.PI / 2);  // v → (0, 1)  — rotates by angle in radians
+v.rotate(Math.PI / 2);  // v → (0, 1)  — radians; positive turns clockwise on a y-down screen
 
 const axis = new Vector(1, 0);
-v.reflect(axis);   // reflects against axis using projection
-v.reflectN(axis);  // reflects against normalised axis (skips len division)
+v.reflect(axis);   // mirrors v across the line through axis: (0, 1) → (0, -1)
+v.reflectN(axis);  // same, for a unit-length axis (skips the division by axis.len2())
 
-v.perp();          // rotates 90° CCW in place
+v.perp();          // (x, y) → (y, -x): same as rotate(-Math.PI / 2), counter-clockwise on screen
+```
+
+`reflect`/`reflectN` keep the component along `axis` and negate the perpendicular one. To
+bounce a velocity off a surface, pass the surface direction (tangent), not its normal. With a
+unit normal `n`, use `v.reflectN(n).reverse()`:
+
+```typescript
+const vel = new Vector(10, 10);         // moving right and down
+const floorNormal = new Vector(0, -1);  // unit normal of a floor
+vel.reflectN(floorNormal).reverse();    // vel → (10, -10), bounced up
 ```
 
 ## Projection
@@ -60,8 +79,8 @@ v.perp();          // rotates 90° CCW in place
 const v    = new Vector(3, 4);
 const axis = new Vector(1, 0);
 
-v.project(axis);   // projects onto axis (axis need not be normalised)
-v.projectN(axis);  // projects onto normalised axis
+v.project(axis);   // projects onto axis (any non-zero length; a zero axis gives NaN)
+v.projectN(axis);  // projects onto axis, which must be unit length
 ```
 
 ## Copy and Clone
@@ -70,7 +89,7 @@ v.projectN(axis);  // projects onto normalised axis
 const a = new Vector(1, 2);
 const b = new Vector();
 
-b.copy(a);   // b → (1, 2), same object as b
+b.copy(a);   // b → (1, 2); returns b itself
 const c = a.clone();  // new Vector(1, 2), independent
 ```
 
@@ -90,8 +109,8 @@ const velocity = new Vector(5, 0)
 ### Applying gravity in a physics step
 
 ```typescript
-const gravity = new Vector(0, 9.8);
-velocity.add(gravity.clone().scale(dt));
+const gravity = new Vector(0, 980);           // px/s²
+velocity.add(gravity.clone().scale(dt));      // dt in seconds
 position.add(velocity.clone().scale(dt));
 ```
 
@@ -109,8 +128,10 @@ const dist = b.clone().sub(a).len();
 
 ## API Reference
 
-| Method | Returns | Description |
+| Member | Returns | Description |
 |---|---|---|
+| `new Vector(x = 0, y = 0)` | `Vector` | Creates a vector |
+| `x`, `y` | `number` | Components (public, writable) |
 | `clone()` | `Vector` | Returns a new independent copy |
 | `copy(other)` | `this` | Copies `other` into this vector |
 | `add(other)` | `this` | Adds `other` component-wise |
@@ -121,9 +142,9 @@ const dist = b.clone().sub(a).len();
 | `dot(other)` | `number` | Dot product |
 | `len()` | `number` | Euclidean length |
 | `len2()` | `number` | Squared length |
-| `perp()` | `this` | Rotates 90° CCW |
-| `rotate(angle)` | `this` | Rotates by `angle` radians |
-| `project(axis)` | `this` | Projects onto `axis` |
-| `projectN(axis)` | `this` | Projects onto normalised `axis` |
-| `reflect(axis)` | `this` | Reflects about `axis` |
-| `reflectN(axis)` | `this` | Reflects about normalised `axis` |
+| `perp()` | `this` | `(x, y) → (y, -x)`, i.e. `rotate(-π/2)` |
+| `rotate(angle)` | `this` | Rotates by `angle` radians (standard rotation matrix; clockwise on a y-down screen) |
+| `project(axis)` | `this` | Projects onto `axis` (any non-zero length) |
+| `projectN(axis)` | `this` | Projects onto unit-length `axis` |
+| `reflect(axis)` | `this` | Mirrors across the line through `axis` |
+| `reflectN(axis)` | `this` | Mirrors across the line through unit-length `axis` |

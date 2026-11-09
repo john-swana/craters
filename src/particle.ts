@@ -1,5 +1,7 @@
 import Canvas2DRenderer from "./canvas-2d-renderer";
 
+// Module-global tint cache shared by every ParticleSystem. Keyed by image
+// src, color and rounded size; entries are never evicted.
 const tintCache = new Map<string, HTMLCanvasElement>();
 
 function getTinted(img: HTMLImageElement, color: string, size: number): HTMLCanvasElement {
@@ -21,23 +23,49 @@ function getTinted(img: HTMLImageElement, color: string, size: number): HTMLCanv
   return c;
 }
 
-// Configuration passed to ParticleSystem.emit().
-// Consumers define their own named presets using this type.
+/**
+ * Configuration passed to {@link ParticleSystem.emit}.
+ * Consumers define their own named presets using this type.
+ */
 export interface ParticleEmitConfig {
-  images: HTMLImageElement[];       // pre-loaded sprites, one chosen at random
-  count: number;                    // number of particles to spawn
-  colors: string[];                 // CSS color strings, one picked at random per particle
+  /** Pre-loaded sprites; one is chosen at random per particle. */
+  images: HTMLImageElement[];
+  /** Number of particles to spawn per emit() call. */
+  count: number;
+  /** CSS color strings; one is picked at random per particle as a tint. */
+  colors: string[];
+  /** Minimum particle width/height in CSS pixels (rounded to an integer). */
   minSize: number;
+  /** Maximum particle width/height in CSS pixels (rounded to an integer). */
   maxSize: number;
-  minLife: number;                  // lifetime in fixed-step ticks
+  /** Minimum lifetime in fixed-step ticks. */
+  minLife: number;
+  /** Maximum lifetime in fixed-step ticks. */
   maxLife: number;
-  speed: number;                    // base speed scalar (pixels / tick)
-  gravity: number;                  // per-tick downward acceleration
-  drag: number;                     // velocity multiplier per tick (e.g. 0.88 = 12% drag)
-  biasX?: number;                   // optional horizontal direction bias (normalised)
-  biasY?: number;                   // optional vertical direction bias (normalised)
-  biasStrength?: number;            // 0 = pure random direction, 1 = pure bias direction
+  /** Base speed in pixels per tick; each particle gets speed × random 0.55–1.45. */
+  speed: number;
+  /** Downward acceleration in pixels per tick² (negative = upward). */
+  gravity: number;
+  /** Velocity multiplier per tick (e.g. 0.88 = 12% drag); 1 = no drag. */
+  drag: number;
+  /**
+   * Horizontal bias direction. Bias is applied only if biasX or biasY is set;
+   * then biasX defaults to 0. Not normalised by the engine.
+   */
+  biasX?: number;
+  /**
+   * Vertical bias direction (positive = down). Bias is applied only if biasX
+   * or biasY is set; then biasY defaults to 1 (down). Not normalised.
+   */
+  biasY?: number;
+  /**
+   * Linear blend between the random unit vector (0) and the bias vector (1).
+   * Defaults to 0.5; ignored unless biasX or biasY is set.
+   */
+  biasStrength?: number;
+  /** Minimum rotation speed in radians per tick. */
   minRotationSpeed: number;
+  /** Maximum rotation speed in radians per tick. */
   maxRotationSpeed: number;
 }
 
@@ -58,9 +86,15 @@ interface Particle {
   drag: number;
 }
 
+/**
+ * Short-lived, tinted sprite particles drawn onto a Canvas2DRenderer.
+ * Live particles are kept in an array: there is no object reuse and no
+ * maximum count.
+ */
 export default class ParticleSystem {
   private pool: Particle[] = [];
 
+  /** Spawn `config.count` particles at world position (x, y). */
   emit(config: ParticleEmitConfig, x: number, y: number): void {
     for (let i = 0; i < config.count; i++) {
       const angle = Math.random() * Math.PI * 2;
@@ -102,8 +136,11 @@ export default class ParticleSystem {
     }
   }
 
-  // Advance all particles by one fixed tick.
-  // delta: normalised delta (1.0 = one fixed step at target FPS).
+  /**
+   * Advance all particles by `delta` ticks and remove expired ones.
+   * @param delta elapsed time in fixed-step ticks (1 = one fixed step); this
+   *   is not `RenderLoop.delta` (milliseconds) or `deltaSeconds`.
+   */
   update(delta: number): void {
     for (let i = this.pool.length - 1; i >= 0; i--) {
       const p = this.pool[i];
@@ -118,8 +155,13 @@ export default class ParticleSystem {
     }
   }
 
-  // Draw all live particles onto the Canvas2DRenderer.
-  // Call after RenderSystem so particles appear on top.
+  /**
+   * Draw all live particles onto the Canvas2DRenderer. Call after your other
+   * draw calls so particles appear on top. Particles whose image has not
+   * loaded yet are skipped (and tinted on the first draw after it loads).
+   * @param cameraX added to each particle's x (pass `-camera.x`), default 0.
+   * @param cameraY added to each particle's y (pass `-camera.y`), default 0.
+   */
   draw(renderer: Canvas2DRenderer, cameraX = 0, cameraY = 0): void {
     if (this.pool.length === 0) return;
     const ctx = renderer.context;
@@ -143,5 +185,6 @@ export default class ParticleSystem {
     ctx.restore();
   }
 
+  /** Number of live particles. */
   get count(): number { return this.pool.length; }
 }
