@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Vector | Craters - v0.3.0</title><meta name="description" content="Documentation for Craters - v0.3.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Vector | Craters - v0.4.0</title><meta name="description" content="Documentation for Craters - v0.4.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -6,13 +6,13 @@
 <div id="tsd-toolbar-links"></div></div>
 <ul class="results">
 <li class="state loading">Preparing search index...</li>
-<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.3.0</a></div>
+<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.4.0</a></div>
 <div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="7" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="11" width="14" height="2" fill="var(--color-text)"></rect></svg></a></div></div></header>
 <div class="container container-main">
 <div class="col-8 col-content">
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
-<li><a href="../modules.html">Craters - v0.3.0</a></li>
+<li><a href="../modules.html">Craters - v0.4.0</a></li>
 <li><span>Guides</span></li>
 <li><a href="vector.html">Vector</a></li></ul>
 <h1> Vector</h1></div>
@@ -21,13 +21,16 @@
   <h1>Vector Usage Guide</h1>
 </a>
 <p><code>Vector</code> is the shared 2D math primitive used throughout Craters — physics, collision, rendering
-offsets, and input positions all use it. Every method mutates the vector in place and returns
-<code>this</code>, enabling method chaining.</p>
+offsets, and input positions all use it. Every mutating method changes the vector in place and
+returns <code>this</code>, enabling method chaining. <code>clone()</code> returns a new vector, and <code>dot()</code>, <code>len()</code>
+and <code>len2()</code> return numbers.</p>
+<p>Craters draws in canvas coordinates (x grows right, <strong>y grows down</strong>). The rotation notes below
+assume that convention.</p>
 
 <a href="#creating-vectors" id="creating-vectors" style="color: inherit; text-decoration: none;">
   <h2>Creating Vectors</h2>
 </a>
-<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">SAT</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;craters&quot;</span><span class="hl-1">;</span><br/><span class="hl-6">const</span><span class="hl-1"> { </span><span class="hl-8">Vector</span><span class="hl-1"> } = </span><span class="hl-8">SAT</span><span class="hl-1">;</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">zero</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">();          </span><span class="hl-5">// (0, 0)</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">pos</span><span class="hl-1">  = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">(</span><span class="hl-9">100</span><span class="hl-1">, </span><span class="hl-9">200</span><span class="hl-1">);  </span><span class="hl-5">// (100, 200)</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">copy</span><span class="hl-1"> = </span><span class="hl-4">pos</span><span class="hl-1">.</span><span class="hl-0">clone</span><span class="hl-1">();           </span><span class="hl-5">// independent copy</span>
+<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">SAT</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;craters&quot;</span><span class="hl-1">;</span><br/><span class="hl-6">const</span><span class="hl-1"> { </span><span class="hl-8">Vector</span><span class="hl-1"> } = </span><span class="hl-8">SAT</span><span class="hl-1">;</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">zero</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">();          </span><span class="hl-5">// (0, 0): x and y default to 0</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">pos</span><span class="hl-1">  = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">(</span><span class="hl-9">100</span><span class="hl-1">, </span><span class="hl-9">200</span><span class="hl-1">);  </span><span class="hl-5">// (100, 200)</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">copy</span><span class="hl-1"> = </span><span class="hl-4">pos</span><span class="hl-1">.</span><span class="hl-0">clone</span><span class="hl-1">();           </span><span class="hl-5">// independent copy</span><br/><br/><span class="hl-5">// In type annotations, use the namespace: SAT.Vector</span><br/><span class="hl-6">function</span><span class="hl-1"> </span><span class="hl-0">midpoint</span><span class="hl-1">(</span><span class="hl-4">a</span><span class="hl-1">: </span><span class="hl-7">SAT</span><span class="hl-1">.</span><span class="hl-7">Vector</span><span class="hl-1">, </span><span class="hl-4">b</span><span class="hl-1">: </span><span class="hl-7">SAT</span><span class="hl-1">.</span><span class="hl-7">Vector</span><span class="hl-1">): </span><span class="hl-7">SAT</span><span class="hl-1">.</span><span class="hl-7">Vector</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-3">return</span><span class="hl-1"> </span><span class="hl-4">a</span><span class="hl-1">.</span><span class="hl-0">clone</span><span class="hl-1">().</span><span class="hl-0">add</span><span class="hl-1">(</span><span class="hl-4">b</span><span class="hl-1">).</span><span class="hl-0">scale</span><span class="hl-1">(</span><span class="hl-9">0.5</span><span class="hl-1">);</span><br/><span class="hl-1">}</span>
 </code></pre>
 
 <a href="#arithmetic" id="arithmetic" style="color: inherit; text-decoration: none;">
@@ -45,19 +48,24 @@ offsets, and input positions all use it. Every method mutates the vector in plac
 <a href="#rotation-and-reflection" id="rotation-and-reflection" style="color: inherit; text-decoration: none;">
   <h2>Rotation and Reflection</h2>
 </a>
-<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">v</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">(</span><span class="hl-9">1</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">);</span><br/><br/><span class="hl-4">v</span><span class="hl-1">.</span><span class="hl-0">rotate</span><span class="hl-1">(</span><span class="hl-4">Math</span><span class="hl-1">.</span><span class="hl-8">PI</span><span class="hl-1"> / </span><span class="hl-9">2</span><span class="hl-1">);  </span><span class="hl-5">// v → (0, 1)  — rotates by angle in radians</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">axis</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">(</span><span class="hl-9">1</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">);</span><br/><span class="hl-4">v</span><span class="hl-1">.</span><span class="hl-0">reflect</span><span class="hl-1">(</span><span class="hl-4">axis</span><span class="hl-1">);   </span><span class="hl-5">// reflects against axis using projection</span><br/><span class="hl-4">v</span><span class="hl-1">.</span><span class="hl-0">reflectN</span><span class="hl-1">(</span><span class="hl-4">axis</span><span class="hl-1">);  </span><span class="hl-5">// reflects against normalised axis (skips len division)</span><br/><br/><span class="hl-4">v</span><span class="hl-1">.</span><span class="hl-0">perp</span><span class="hl-1">();          </span><span class="hl-5">// rotates 90° CCW in place</span>
+<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">v</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">(</span><span class="hl-9">1</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">);</span><br/><br/><span class="hl-4">v</span><span class="hl-1">.</span><span class="hl-0">rotate</span><span class="hl-1">(</span><span class="hl-4">Math</span><span class="hl-1">.</span><span class="hl-8">PI</span><span class="hl-1"> / </span><span class="hl-9">2</span><span class="hl-1">);  </span><span class="hl-5">// v → (0, 1)  — radians; positive turns clockwise on a y-down screen</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">axis</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">(</span><span class="hl-9">1</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">);</span><br/><span class="hl-4">v</span><span class="hl-1">.</span><span class="hl-0">reflect</span><span class="hl-1">(</span><span class="hl-4">axis</span><span class="hl-1">);   </span><span class="hl-5">// mirrors v across the line through axis: (0, 1) → (0, -1)</span><br/><span class="hl-4">v</span><span class="hl-1">.</span><span class="hl-0">reflectN</span><span class="hl-1">(</span><span class="hl-4">axis</span><span class="hl-1">);  </span><span class="hl-5">// same, for a unit-length axis (skips the division by axis.len2())</span><br/><br/><span class="hl-4">v</span><span class="hl-1">.</span><span class="hl-0">perp</span><span class="hl-1">();          </span><span class="hl-5">// (x, y) → (y, -x): same as rotate(-Math.PI / 2), counter-clockwise on screen</span>
+</code></pre>
+<p><code>reflect</code>/<code>reflectN</code> keep the component along <code>axis</code> and negate the perpendicular one. To
+bounce a velocity off a surface, pass the surface direction (tangent), not its normal. With a
+unit normal <code>n</code>, use <code>v.reflectN(n).reverse()</code>:</p>
+<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">vel</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">(</span><span class="hl-9">10</span><span class="hl-1">, </span><span class="hl-9">10</span><span class="hl-1">);         </span><span class="hl-5">// moving right and down</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">floorNormal</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">(</span><span class="hl-9">0</span><span class="hl-1">, -</span><span class="hl-9">1</span><span class="hl-1">);  </span><span class="hl-5">// unit normal of a floor</span><br/><span class="hl-4">vel</span><span class="hl-1">.</span><span class="hl-0">reflectN</span><span class="hl-1">(</span><span class="hl-4">floorNormal</span><span class="hl-1">).</span><span class="hl-0">reverse</span><span class="hl-1">();    </span><span class="hl-5">// vel → (10, -10), bounced up</span>
 </code></pre>
 
 <a href="#projection" id="projection" style="color: inherit; text-decoration: none;">
   <h2>Projection</h2>
 </a>
-<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">v</span><span class="hl-1">    = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">(</span><span class="hl-9">3</span><span class="hl-1">, </span><span class="hl-9">4</span><span class="hl-1">);</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">axis</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">(</span><span class="hl-9">1</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">);</span><br/><br/><span class="hl-4">v</span><span class="hl-1">.</span><span class="hl-0">project</span><span class="hl-1">(</span><span class="hl-4">axis</span><span class="hl-1">);   </span><span class="hl-5">// projects onto axis (axis need not be normalised)</span><br/><span class="hl-4">v</span><span class="hl-1">.</span><span class="hl-0">projectN</span><span class="hl-1">(</span><span class="hl-4">axis</span><span class="hl-1">);  </span><span class="hl-5">// projects onto normalised axis</span>
+<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">v</span><span class="hl-1">    = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">(</span><span class="hl-9">3</span><span class="hl-1">, </span><span class="hl-9">4</span><span class="hl-1">);</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">axis</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">(</span><span class="hl-9">1</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">);</span><br/><br/><span class="hl-4">v</span><span class="hl-1">.</span><span class="hl-0">project</span><span class="hl-1">(</span><span class="hl-4">axis</span><span class="hl-1">);   </span><span class="hl-5">// projects onto axis (any non-zero length; a zero axis gives NaN)</span><br/><span class="hl-4">v</span><span class="hl-1">.</span><span class="hl-0">projectN</span><span class="hl-1">(</span><span class="hl-4">axis</span><span class="hl-1">);  </span><span class="hl-5">// projects onto axis, which must be unit length</span>
 </code></pre>
 
 <a href="#copy-and-clone" id="copy-and-clone" style="color: inherit; text-decoration: none;">
   <h2>Copy and Clone</h2>
 </a>
-<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">a</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">(</span><span class="hl-9">1</span><span class="hl-1">, </span><span class="hl-9">2</span><span class="hl-1">);</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">b</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">();</span><br/><br/><span class="hl-4">b</span><span class="hl-1">.</span><span class="hl-0">copy</span><span class="hl-1">(</span><span class="hl-4">a</span><span class="hl-1">);   </span><span class="hl-5">// b → (1, 2), same object as b</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">c</span><span class="hl-1"> = </span><span class="hl-4">a</span><span class="hl-1">.</span><span class="hl-0">clone</span><span class="hl-1">();  </span><span class="hl-5">// new Vector(1, 2), independent</span>
+<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">a</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">(</span><span class="hl-9">1</span><span class="hl-1">, </span><span class="hl-9">2</span><span class="hl-1">);</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">b</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">();</span><br/><br/><span class="hl-4">b</span><span class="hl-1">.</span><span class="hl-0">copy</span><span class="hl-1">(</span><span class="hl-4">a</span><span class="hl-1">);   </span><span class="hl-5">// b → (1, 2); returns b itself</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">c</span><span class="hl-1"> = </span><span class="hl-4">a</span><span class="hl-1">.</span><span class="hl-0">clone</span><span class="hl-1">();  </span><span class="hl-5">// new Vector(1, 2), independent</span>
 </code></pre>
 
 <a href="#chaining" id="chaining" style="color: inherit; text-decoration: none;">
@@ -74,7 +82,7 @@ offsets, and input positions all use it. Every method mutates the vector in plac
 <a href="#applying-gravity-in-a-physics-step" id="applying-gravity-in-a-physics-step" style="color: inherit; text-decoration: none;">
   <h3>Applying gravity in a physics step</h3>
 </a>
-<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">gravity</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">(</span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">9.8</span><span class="hl-1">);</span><br/><span class="hl-4">velocity</span><span class="hl-1">.</span><span class="hl-0">add</span><span class="hl-1">(</span><span class="hl-4">gravity</span><span class="hl-1">.</span><span class="hl-0">clone</span><span class="hl-1">().</span><span class="hl-0">scale</span><span class="hl-1">(</span><span class="hl-4">dt</span><span class="hl-1">));</span><br/><span class="hl-4">position</span><span class="hl-1">.</span><span class="hl-0">add</span><span class="hl-1">(</span><span class="hl-4">velocity</span><span class="hl-1">.</span><span class="hl-0">clone</span><span class="hl-1">().</span><span class="hl-0">scale</span><span class="hl-1">(</span><span class="hl-4">dt</span><span class="hl-1">));</span>
+<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">gravity</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Vector</span><span class="hl-1">(</span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">980</span><span class="hl-1">);           </span><span class="hl-5">// px/s²</span><br/><span class="hl-4">velocity</span><span class="hl-1">.</span><span class="hl-0">add</span><span class="hl-1">(</span><span class="hl-4">gravity</span><span class="hl-1">.</span><span class="hl-0">clone</span><span class="hl-1">().</span><span class="hl-0">scale</span><span class="hl-1">(</span><span class="hl-4">dt</span><span class="hl-1">));      </span><span class="hl-5">// dt in seconds</span><br/><span class="hl-4">position</span><span class="hl-1">.</span><span class="hl-0">add</span><span class="hl-1">(</span><span class="hl-4">velocity</span><span class="hl-1">.</span><span class="hl-0">clone</span><span class="hl-1">().</span><span class="hl-0">scale</span><span class="hl-1">(</span><span class="hl-4">dt</span><span class="hl-1">));</span>
 </code></pre>
 
 <a href="#direction-from-a-to-b-normalised" id="direction-from-a-to-b-normalised" style="color: inherit; text-decoration: none;">
@@ -95,12 +103,22 @@ offsets, and input positions all use it. Every method mutates the vector in plac
 <table>
 <thead>
 <tr>
-<th>Method</th>
+<th>Member</th>
 <th>Returns</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody><tr>
+<td><code>new Vector(x = 0, y = 0)</code></td>
+<td><code>Vector</code></td>
+<td>Creates a vector</td>
+</tr>
+<tr>
+<td><code>x</code>, <code>y</code></td>
+<td><code>number</code></td>
+<td>Components (public, writable)</td>
+</tr>
+<tr>
 <td><code>clone()</code></td>
 <td><code>Vector</code></td>
 <td>Returns a new independent copy</td>
@@ -153,32 +171,32 @@ offsets, and input positions all use it. Every method mutates the vector in plac
 <tr>
 <td><code>perp()</code></td>
 <td><code>this</code></td>
-<td>Rotates 90° CCW</td>
+<td><code>(x, y) → (y, -x)</code>, i.e. <code>rotate(-π/2)</code></td>
 </tr>
 <tr>
 <td><code>rotate(angle)</code></td>
 <td><code>this</code></td>
-<td>Rotates by <code>angle</code> radians</td>
+<td>Rotates by <code>angle</code> radians (standard rotation matrix; clockwise on a y-down screen)</td>
 </tr>
 <tr>
 <td><code>project(axis)</code></td>
 <td><code>this</code></td>
-<td>Projects onto <code>axis</code></td>
+<td>Projects onto <code>axis</code> (any non-zero length)</td>
 </tr>
 <tr>
 <td><code>projectN(axis)</code></td>
 <td><code>this</code></td>
-<td>Projects onto normalised <code>axis</code></td>
+<td>Projects onto unit-length <code>axis</code></td>
 </tr>
 <tr>
 <td><code>reflect(axis)</code></td>
 <td><code>this</code></td>
-<td>Reflects about <code>axis</code></td>
+<td>Mirrors across the line through <code>axis</code></td>
 </tr>
 <tr>
 <td><code>reflectN(axis)</code></td>
 <td><code>this</code></td>
-<td>Reflects about normalised <code>axis</code></td>
+<td>Mirrors across the line through unit-length <code>axis</code></td>
 </tr>
 </tbody></table>
 </div></div>
@@ -200,7 +218,7 @@ offsets, and input positions all use it. Every method mutates the vector in plac
 <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Modules</h3></summary>
 <div class="tsd-accordion-details">
 <ul>
-<li class="current"><a href="../modules.html">Craters -<wbr/> v0.3.0</a>
+<li class="current"><a href="../modules.html">Craters -<wbr/> v0.4.0</a>
 <ul>
 <li class="current pages-entry pages-entry-menu pages-entry-depth-1"><a>Guides</a>
 <ul>
@@ -232,6 +250,7 @@ offsets, and input positions all use it. Every method mutates the vector in plac
 <li class="tsd-kind-class"><a href="../classes/Input.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Input</a></li>
 <li class="tsd-kind-class"><a href="../classes/ParticleSystem.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Particle<wbr/>System</a></li>
 <li class="tsd-kind-class"><a href="../classes/RenderLoop.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Render<wbr/>Loop</a></li>
+<li class="tsd-kind-class"><a href="../classes/Sound.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sound</a></li>
 <li class="tsd-kind-class"><a href="../classes/SoundManager.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sound<wbr/>Manager</a></li>
 <li class="tsd-kind-class"><a href="../classes/Sprite.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sprite</a></li>
 <li class="tsd-kind-class"><a href="../classes/Tile.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Tile</a></li>
@@ -240,5 +259,9 @@ offsets, and input positions all use it. Every method mutates the vector in plac
 <li class="tsd-kind-class"><a href="../classes/WebGLRenderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>WebGLRenderer</a></li>
 <li class="tsd-kind-interface"><a href="../interfaces/FontInstance.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-interface)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-256-path"></rect><path d="M9.51 16V15.016H11.298V8.224H9.51V7.24H14.19V8.224H12.402V15.016H14.19V16H9.51Z" fill="var(--color-text)" id="icon-256-text"></path></svg>Font<wbr/>Instance</a></li>
 <li class="tsd-kind-interface"><a href="../interfaces/ParticleEmitConfig.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Particle<wbr/>Emit<wbr/>Config</a></li>
-<li class="tsd-kind-interface"><a href="../interfaces/Renderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Renderer</a></li></ul></nav></div></div>
+<li class="tsd-kind-interface"><a href="../interfaces/Renderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Renderer</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/TilemapData.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tilemap<wbr/>Data</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/TilemapLayer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tilemap<wbr/>Layer</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/Tileset.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tileset</a></li>
+<li class="tsd-kind-type-alias"><a href="../types/TileEntry.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-4194304-path"></rect><path d="M11.31 16V8.224H8.91V7.24H14.79V8.224H12.39V16H11.31Z" fill="var(--color-text)" id="icon-4194304-text"></path></svg>Tile<wbr/>Entry</a></li></ul></nav></div></div>
 <div class="overlay"></div><script src="../assets/main.js"></script></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>RenderLoop | Craters - v0.3.0</title><meta name="description" content="Documentation for Craters - v0.3.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>RenderLoop | Craters - v0.4.0</title><meta name="description" content="Documentation for Craters - v0.4.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -6,13 +6,13 @@
 <div id="tsd-toolbar-links"></div></div>
 <ul class="results">
 <li class="state loading">Preparing search index...</li>
-<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.3.0</a></div>
+<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.4.0</a></div>
 <div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="7" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="11" width="14" height="2" fill="var(--color-text)"></rect></svg></a></div></div></header>
 <div class="container container-main">
 <div class="col-8 col-content">
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
-<li><a href="../modules.html">Craters - v0.3.0</a></li>
+<li><a href="../modules.html">Craters - v0.4.0</a></li>
 <li><span>Guides</span></li>
 <li><a href="render-loop.html">RenderLoop</a></li></ul>
 <h1> RenderLoop</h1></div>
@@ -20,35 +20,42 @@
 <a href="#renderloop-usage-guide" id="renderloop-usage-guide" style="color: inherit; text-decoration: none;">
   <h1>RenderLoop Usage Guide</h1>
 </a>
-<p><code>RenderLoop</code> implements a <strong>fixed-timestep game loop</strong> driven by <code>requestAnimationFrame</code>. Physics
-and game logic run at a guaranteed step rate regardless of the display&#39;s refresh rate, while the
-<code>alpha</code> value exposes how far into the next step the renderer currently is — enabling smooth
-visual interpolation.</p>
+<p><code>RenderLoop</code> implements a <strong>fixed-timestep game loop</strong> driven by <code>requestAnimationFrame</code>. Game
+logic runs at a fixed step rate regardless of the display&#39;s refresh rate. An optional <code>render</code>
+callback runs once per display frame, with <code>alpha</code> exposing how far the frame is into the next
+step — enabling smooth visual interpolation.</p>
 
 <a href="#how-it-works" id="how-it-works" style="color: inherit; text-decoration: none;">
   <h2>How It Works</h2>
 </a>
-<p>Each frame:</p>
+<p>Each animation frame:</p>
 <ol>
-<li>The elapsed wall-clock time since the last frame is added to an <strong>accumulator</strong></li>
-<li>The accumulator is consumed in fixed chunks (<code>frameRatio = 1000 / frameRate</code>)</li>
-<li>Your callback is invoked once per consumed chunk, receiving the <code>RenderLoop</code> instance</li>
-<li>After draining the accumulator, <code>alpha</code> (<code>accumulator / frameRatio</code>) is ready for interpolation</li>
+<li>The time since the last frame, capped at 250 ms, is added to an <strong>accumulator</strong></li>
+<li>The accumulator is consumed in fixed chunks (<code>frameRatio = 1000 / frameRate</code> ms)</li>
+<li>Your <code>execute</code> callback is invoked once per consumed chunk, receiving the <code>RenderLoop</code>
+instance, so a frame can run it zero, one or several times</li>
+<li>After draining the accumulator, <code>alpha</code> is set to <code>accumulator / frameRatio</code></li>
+<li>The optional <code>render</code> callback is invoked once, with <code>alpha</code> and <code>current</code> already updated</li>
 </ol>
-<p>The accumulator is clamped to 250 ms to prevent the <strong>spiral of death</strong> when the tab regains
-focus after being hidden.</p>
+<p>The first animation frame after a start only records a timestamp; steps and rendering begin on the
+next frame.</p>
+<p>Capping each frame&#39;s time at 250 ms prevents the <strong>spiral of death</strong> when the tab regains focus
+after being hidden. Time beyond the cap is dropped, so after a long stall the simulation runs behind
+wall-clock time.</p>
 
 <a href="#basic-setup" id="basic-setup" style="color: inherit; text-decoration: none;">
   <h2>Basic Setup</h2>
 </a>
-<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">RenderLoop</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;craters&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">loop</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">RenderLoop</span><span class="hl-1">((</span><span class="hl-4">loop</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">// Called once per fixed tick (default 60 fps)</span><br/><span class="hl-1">  </span><span class="hl-0">update</span><span class="hl-1">(</span><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-4">delta</span><span class="hl-1">);</span><br/><span class="hl-1">  </span><span class="hl-0">render</span><span class="hl-1">(</span><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-4">alpha</span><span class="hl-1">);</span><br/><span class="hl-1">});</span>
+<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">RenderLoop</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;craters&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">loop</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">RenderLoop</span><span class="hl-1">(</span><br/><span class="hl-1">  (</span><span class="hl-4">loop</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-5">// Called once per fixed step (default 60 per second)</span><br/><span class="hl-1">    </span><span class="hl-0">update</span><span class="hl-1">(</span><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-4">deltaSeconds</span><span class="hl-1">); </span><span class="hl-5">// step length in seconds</span><br/><span class="hl-1">  },</span><br/><span class="hl-1">  </span><span class="hl-9">60</span><span class="hl-1">,</span><br/><span class="hl-1">  (</span><span class="hl-4">loop</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-5">// Optional: called once per display frame, after the steps</span><br/><span class="hl-1">    </span><span class="hl-0">render</span><span class="hl-1">();</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">);</span>
 </code></pre>
-<p><code>RenderLoop</code> starts automatically in the constructor. No extra <code>start()</code> call is needed.</p>
+<p><code>RenderLoop</code> starts automatically in the constructor. No extra <code>start()</code> call is needed. The
+<code>render</code> callback is optional; without it, draw inside <code>execute</code>, which then updates the screen at
+the step rate.</p>
 
 <a href="#custom-frame-rate" id="custom-frame-rate" style="color: inherit; text-decoration: none;">
   <h2>Custom Frame Rate</h2>
 </a>
-<pre><code class="language-typescript"><span class="hl-5">// 30 fps physics tick</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">loop</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">RenderLoop</span><span class="hl-1">((</span><span class="hl-4">loop</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-0">update</span><span class="hl-1">(</span><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-4">delta</span><span class="hl-1">);</span><br/><span class="hl-1">}, </span><span class="hl-9">30</span><span class="hl-1">);</span>
+<pre><code class="language-typescript"><span class="hl-5">// 30 steps per second: deltaSeconds = 1/30, delta = 33.3 ms</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">loop</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">RenderLoop</span><span class="hl-1">((</span><span class="hl-4">loop</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-0">update</span><span class="hl-1">(</span><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-4">deltaSeconds</span><span class="hl-1">);</span><br/><span class="hl-1">}, </span><span class="hl-9">30</span><span class="hl-1">);</span>
 </code></pre>
 
 <a href="#loop-instance-properties" id="loop-instance-properties" style="color: inherit; text-decoration: none;">
@@ -65,22 +72,27 @@ focus after being hidden.</p>
 <tbody><tr>
 <td><code>delta</code></td>
 <td><code>number</code></td>
-<td>Fixed step duration in ms (always <code>= frameRatio</code>)</td>
+<td>Fixed step duration in <strong>ms</strong> (always <code>= frameRatio</code>)</td>
+</tr>
+<tr>
+<td><code>deltaSeconds</code></td>
+<td><code>number</code> (getter)</td>
+<td>Fixed step in <strong>seconds</strong> (<code>frameRatio / 1000</code>). Pass this to <code>world.execute()</code> and <code>RigidBody.integrate()</code></td>
 </tr>
 <tr>
 <td><code>elapsed</code></td>
 <td><code>number</code></td>
-<td>Total physics time elapsed in ms</td>
+<td>Total simulated time in ms; advances by <code>frameRatio</code> before each <code>execute</code> call</td>
 </tr>
 <tr>
 <td><code>alpha</code></td>
 <td><code>number</code></td>
-<td>Interpolation factor ∈ [0, 1) — fraction through the next step</td>
+<td><code>accumulator / frameRatio</code> ∈ [0, 1), set after the frame&#39;s steps. Current inside <code>render</code>; inside <code>execute</code> it is the previous frame&#39;s value</td>
 </tr>
 <tr>
 <td><code>frameRate</code></td>
 <td><code>number</code></td>
-<td>Target fixed steps per second</td>
+<td>Fixed steps per second, set by the constructor (assigning it later has no effect)</td>
 </tr>
 <tr>
 <td><code>frameRatio</code></td>
@@ -90,75 +102,123 @@ focus after being hidden.</p>
 <tr>
 <td><code>current</code></td>
 <td><code>number</code></td>
-<td><code>requestAnimationFrame</code> timestamp of the last frame</td>
+<td><code>requestAnimationFrame</code> timestamp of the last fully processed frame. Inside <code>render</code> this is the current frame; inside <code>execute</code> it is the <strong>previous</strong> frame&#39;s timestamp; <code>0</code> until the first step</td>
+</tr>
+<tr>
+<td><code>previous</code></td>
+<td><code>number</code></td>
+<td>Timestamp of the most recent frame, set before its steps run. Inside <code>execute</code> this is the <strong>current</strong> frame&#39;s timestamp</td>
+</tr>
+<tr>
+<td><code>index</code></td>
+<td><code>number</code></td>
+<td>Id of the pending <code>requestAnimationFrame</code> request; <code>0</code> when stopped</td>
+</tr>
+<tr>
+<td><code>execute</code></td>
+<td><code>(loop: RenderLoop) =&gt; void</code></td>
+<td>The step callback passed to the constructor</td>
+</tr>
+<tr>
+<td><code>render</code></td>
+<td><code>(loop: RenderLoop) =&gt; void</code> (optional)</td>
+<td>The per-frame callback passed to the constructor, or <code>undefined</code></td>
 </tr>
 </tbody></table>
 
 <a href="#render-interpolation-with-alpha" id="render-interpolation-with-alpha" style="color: inherit; text-decoration: none;">
   <h2>Render Interpolation with <code>alpha</code></h2>
 </a>
-<p>When the display runs faster than the physics tick (e.g. 144 Hz display, 60 Hz physics),
-each rendered frame would otherwise see the same position. Use <code>alpha</code> to linearly interpolate
-between the previous and current position to eliminate jitter.</p>
-<pre><code class="language-typescript"><span class="hl-5">// Store previous position alongside current</span><br/><span class="hl-6">let</span><span class="hl-1"> </span><span class="hl-4">prevX</span><span class="hl-1"> = </span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-4">prevY</span><span class="hl-1"> = </span><span class="hl-9">0</span><span class="hl-1">;</span><br/><span class="hl-6">let</span><span class="hl-1"> </span><span class="hl-4">currX</span><span class="hl-1"> = </span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-4">currY</span><span class="hl-1"> = </span><span class="hl-9">0</span><span class="hl-1">;</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">loop</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">RenderLoop</span><span class="hl-1">((</span><span class="hl-4">loop</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">prevX</span><span class="hl-1"> = </span><span class="hl-4">currX</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-4">prevY</span><span class="hl-1"> = </span><span class="hl-4">currY</span><span class="hl-1">;</span><br/><br/><span class="hl-1">  </span><span class="hl-5">// Update physics</span><br/><span class="hl-1">  </span><span class="hl-4">currX</span><span class="hl-1"> += </span><span class="hl-4">velocityX</span><span class="hl-1"> * </span><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-4">delta</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-4">currY</span><span class="hl-1"> += </span><span class="hl-4">velocityY</span><span class="hl-1"> * </span><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-4">delta</span><span class="hl-1">;</span><br/><br/><span class="hl-1">  </span><span class="hl-5">// Render at interpolated position</span><br/><span class="hl-1">  </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">renderX</span><span class="hl-1"> = </span><span class="hl-4">prevX</span><span class="hl-1"> + (</span><span class="hl-4">currX</span><span class="hl-1"> - </span><span class="hl-4">prevX</span><span class="hl-1">) * </span><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-4">alpha</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">renderY</span><span class="hl-1"> = </span><span class="hl-4">prevY</span><span class="hl-1"> + (</span><span class="hl-4">currY</span><span class="hl-1"> - </span><span class="hl-4">prevY</span><span class="hl-1">) * </span><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-4">alpha</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-0">drawSprite</span><span class="hl-1">(</span><span class="hl-4">renderX</span><span class="hl-1">, </span><span class="hl-4">renderY</span><span class="hl-1">);</span><br/><span class="hl-1">});</span>
+<p>When the display runs faster than the fixed step (e.g. 144 Hz display, 60 steps per second), some
+frames run no step at all, so drawing the latest state would repeat the same position. Keep the
+state from the last two steps and, in <code>render</code>, interpolate between them with <code>alpha</code> to eliminate
+jitter. The drawn position trails the simulation by up to one step.</p>
+<pre><code class="language-typescript"><span class="hl-5">// Store previous position alongside current</span><br/><span class="hl-6">let</span><span class="hl-1"> </span><span class="hl-4">prevX</span><span class="hl-1"> = </span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-4">prevY</span><span class="hl-1"> = </span><span class="hl-9">0</span><span class="hl-1">;</span><br/><span class="hl-6">let</span><span class="hl-1"> </span><span class="hl-4">currX</span><span class="hl-1"> = </span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-4">currY</span><span class="hl-1"> = </span><span class="hl-9">0</span><span class="hl-1">;</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">loop</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">RenderLoop</span><span class="hl-1">(</span><br/><span class="hl-1">  (</span><span class="hl-4">loop</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-4">prevX</span><span class="hl-1"> = </span><span class="hl-4">currX</span><span class="hl-1">;</span><br/><span class="hl-1">    </span><span class="hl-4">prevY</span><span class="hl-1"> = </span><span class="hl-4">currY</span><span class="hl-1">;</span><br/><br/><span class="hl-1">    </span><span class="hl-5">// Update physics (velocities in px/s)</span><br/><span class="hl-1">    </span><span class="hl-4">currX</span><span class="hl-1"> += </span><span class="hl-4">velocityX</span><span class="hl-1"> * </span><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-4">deltaSeconds</span><span class="hl-1">;</span><br/><span class="hl-1">    </span><span class="hl-4">currY</span><span class="hl-1"> += </span><span class="hl-4">velocityY</span><span class="hl-1"> * </span><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-4">deltaSeconds</span><span class="hl-1">;</span><br/><span class="hl-1">  },</span><br/><span class="hl-1">  </span><span class="hl-9">60</span><span class="hl-1">,</span><br/><span class="hl-1">  (</span><span class="hl-4">loop</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-5">// Render at the interpolated position, once per display frame</span><br/><span class="hl-1">    </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">renderX</span><span class="hl-1"> = </span><span class="hl-4">prevX</span><span class="hl-1"> + (</span><span class="hl-4">currX</span><span class="hl-1"> - </span><span class="hl-4">prevX</span><span class="hl-1">) * </span><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-4">alpha</span><span class="hl-1">;</span><br/><span class="hl-1">    </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">renderY</span><span class="hl-1"> = </span><span class="hl-4">prevY</span><span class="hl-1"> + (</span><span class="hl-4">currY</span><span class="hl-1"> - </span><span class="hl-4">prevY</span><span class="hl-1">) * </span><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-4">alpha</span><span class="hl-1">;</span><br/><span class="hl-1">    </span><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">clear</span><span class="hl-1">();</span><br/><span class="hl-1">    </span><span class="hl-0">drawSprite</span><span class="hl-1">(</span><span class="hl-4">renderX</span><span class="hl-1">, </span><span class="hl-4">renderY</span><span class="hl-1">);</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">);</span>
 </code></pre>
+<p>Read <code>alpha</code> in <code>render</code>, not in <code>execute</code>: inside <code>execute</code> it still holds the previous frame&#39;s
+value.</p>
 
 <a href="#tracking-elapsed-time" id="tracking-elapsed-time" style="color: inherit; text-decoration: none;">
   <h2>Tracking Elapsed Time</h2>
 </a>
-<p><code>loop.elapsed</code> accumulates total physics time in ms — useful for animations that are keyed
-to physics ticks (e.g. sprite frame selection inside <code>Sprite</code>).</p>
+<p><code>loop.elapsed</code> accumulates total simulated time in ms — useful for animations that are keyed
+to physics steps. <code>Sprite.draw()</code> uses it to select animation frames.</p>
 <pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">loop</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">RenderLoop</span><span class="hl-1">((</span><span class="hl-4">loop</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">frameSec</span><span class="hl-1"> = </span><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-4">elapsed</span><span class="hl-1"> / </span><span class="hl-9">1000</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">spriteFrame</span><span class="hl-1"> = </span><span class="hl-4">Math</span><span class="hl-1">.</span><span class="hl-0">floor</span><span class="hl-1">(</span><span class="hl-4">frameSec</span><span class="hl-1"> / </span><span class="hl-9">0.1</span><span class="hl-1">) % </span><span class="hl-4">totalFrames</span><span class="hl-1">;</span><br/><span class="hl-1">});</span>
 </code></pre>
 
 <a href="#stopping-and-restarting" id="stopping-and-restarting" style="color: inherit; text-decoration: none;">
   <h2>Stopping and Restarting</h2>
 </a>
-<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">loop</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">RenderLoop</span><span class="hl-1">(</span><span class="hl-4">tick</span><span class="hl-1">);</span><br/><br/><span class="hl-5">// Pause (e.g. on game-over screen)</span><br/><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-0">stop</span><span class="hl-1">();</span><br/><br/><span class="hl-5">// Resume — guard inside start() prevents double RAF chains</span><br/><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-0">start</span><span class="hl-1">();</span>
+<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">loop</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">RenderLoop</span><span class="hl-1">(</span><span class="hl-4">tick</span><span class="hl-1">);</span><br/><br/><span class="hl-5">// Pause (e.g. on game-over screen)</span><br/><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-0">stop</span><span class="hl-1">();</span><br/><br/><span class="hl-5">// Resume — start() is a no-op if the loop is already running</span><br/><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-0">start</span><span class="hl-1">();</span>
 </code></pre>
+<p><code>start()</code> checks <code>index</code>: while a frame request is pending it returns without starting a second
+chain. The constructor records the id of its first request too, so <code>stop()</code> and <code>start()</code> behave
+correctly even before the first frame has fired.</p>
+<p>Resuming restarts timing: the accumulator and <code>alpha</code> are reset and the first frame only records a
+timestamp, so the time spent stopped is not replayed as catch-up steps. <code>elapsed</code> continues from
+where it was.</p>
+<p>Calling <code>stop()</code> from inside <code>execute</code> takes effect immediately: the steps still queued for that
+frame are skipped and <code>render</code> is not called.</p>
 
 <a href="#integration-with-ecs" id="integration-with-ecs" style="color: inherit; text-decoration: none;">
   <h2>Integration with ECS</h2>
 </a>
-<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">EntityComponentSystem</span><span class="hl-1"> </span><span class="hl-3">as</span><span class="hl-1"> </span><span class="hl-4">ECS</span><span class="hl-1">, </span><span class="hl-4">RenderLoop</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;craters&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">world</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-8">ECS</span><span class="hl-1">.</span><span class="hl-0">World</span><span class="hl-1">();</span><br/><span class="hl-4">world</span><span class="hl-1">.</span><span class="hl-0">registerSystem</span><span class="hl-1">(</span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">MovementSystem</span><span class="hl-1">());</span><br/><span class="hl-4">world</span><span class="hl-1">.</span><span class="hl-0">registerSystem</span><span class="hl-1">(</span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">RenderSystem</span><span class="hl-1">(</span><span class="hl-4">renderer</span><span class="hl-1">));</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">loop</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">RenderLoop</span><span class="hl-1">((</span><span class="hl-4">loop</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">world</span><span class="hl-1">.</span><span class="hl-0">execute</span><span class="hl-1">(</span><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-4">delta</span><span class="hl-1">);</span><br/><span class="hl-1">});</span>
+<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">EntityComponentSystem</span><span class="hl-1"> </span><span class="hl-3">as</span><span class="hl-1"> </span><span class="hl-4">ECS</span><span class="hl-1">, </span><span class="hl-4">RenderLoop</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;craters&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">world</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-8">ECS</span><span class="hl-1">.</span><span class="hl-0">World</span><span class="hl-1">();</span><br/><span class="hl-4">world</span><span class="hl-1">.</span><span class="hl-0">registerSystem</span><span class="hl-1">(</span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">MovementSystem</span><span class="hl-1">());</span><br/><span class="hl-4">world</span><span class="hl-1">.</span><span class="hl-0">registerSystem</span><span class="hl-1">(</span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">RenderSystem</span><span class="hl-1">(</span><span class="hl-4">renderer</span><span class="hl-1">));</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">loop</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">RenderLoop</span><span class="hl-1">((</span><span class="hl-4">loop</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">world</span><span class="hl-1">.</span><span class="hl-0">execute</span><span class="hl-1">(</span><span class="hl-4">loop</span><span class="hl-1">.</span><span class="hl-4">deltaSeconds</span><span class="hl-1">);</span><br/><span class="hl-1">});</span>
 </code></pre>
 
 <a href="#api-reference" id="api-reference" style="color: inherit; text-decoration: none;">
   <h2>API Reference</h2>
 </a>
 
-<a href="#new-renderloopcallback-framerate" id="new-renderloopcallback-framerate" style="color: inherit; text-decoration: none;">
-  <h3><code>new RenderLoop(callback, frameRate?)</code></h3>
+<a href="#new-renderloopexecute-framerate-render" id="new-renderloopexecute-framerate-render" style="color: inherit; text-decoration: none;">
+  <h3><code>new RenderLoop(execute, frameRate?, render?)</code></h3>
 </a>
 <table>
 <thead>
 <tr>
 <th>Parameter</th>
+<th>Type</th>
 <th>Default</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>callback</code></td>
+<td><code>execute</code></td>
+<td><code>(loop: RenderLoop) =&gt; void</code></td>
 <td>—</td>
-<td>Called once per fixed tick with the <code>RenderLoop</code> instance</td>
+<td>Called once per fixed step with the <code>RenderLoop</code> instance</td>
 </tr>
 <tr>
 <td><code>frameRate</code></td>
+<td><code>number</code></td>
 <td><code>60</code></td>
-<td>Target physics update rate in Hz</td>
+<td>Fixed steps per second</td>
+</tr>
+<tr>
+<td><code>render</code></td>
+<td><code>(loop: RenderLoop) =&gt; void</code></td>
+<td>—</td>
+<td>Optional. Called once per animation frame after the steps, with <code>alpha</code> and <code>current</code> updated; not called on the first frame after a start</td>
 </tr>
 </tbody></table>
+<p>The constructor starts the loop.</p>
 
-<a href="#start" id="start" style="color: inherit; text-decoration: none;">
-  <h3><code>start()</code></h3>
+<a href="#start-void" id="start-void" style="color: inherit; text-decoration: none;">
+  <h3><code>start(): void</code></h3>
 </a>
-<p>Starts or resumes the RAF loop. Safe to call when already running (no-op).</p>
+<p>Starts or resumes the RAF loop. No-op while a frame request is pending (<code>index !== 0</code>). Resets the
+accumulator and <code>alpha</code>; the first frame after starting only records a timestamp.</p>
 
-<a href="#stop" id="stop" style="color: inherit; text-decoration: none;">
-  <h3><code>stop()</code></h3>
+<a href="#stop-void" id="stop-void" style="color: inherit; text-decoration: none;">
+  <h3><code>stop(): void</code></h3>
 </a>
-<p>Cancels the RAF loop. Call to pause the game.</p>
+<p>Cancels the pending frame request and sets <code>index</code> to <code>0</code>. Call to pause the game. From inside
+<code>execute</code>, it also skips the rest of the current frame&#39;s steps and its <code>render</code> call.</p>
+
+<a href="#deltaseconds-number-getter" id="deltaseconds-number-getter" style="color: inherit; text-decoration: none;">
+  <h3><code>deltaSeconds: number</code> (getter)</h3>
+</a>
+<p>The fixed step in seconds, <code>frameRatio / 1000</code>.</p>
 </div></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
@@ -178,7 +238,7 @@ to physics ticks (e.g. sprite frame selection inside <code>Sprite</code>).</p>
 <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Modules</h3></summary>
 <div class="tsd-accordion-details">
 <ul>
-<li class="current"><a href="../modules.html">Craters -<wbr/> v0.3.0</a>
+<li class="current"><a href="../modules.html">Craters -<wbr/> v0.4.0</a>
 <ul>
 <li class="current pages-entry pages-entry-menu pages-entry-depth-1"><a>Guides</a>
 <ul>
@@ -210,6 +270,7 @@ to physics ticks (e.g. sprite frame selection inside <code>Sprite</code>).</p>
 <li class="tsd-kind-class"><a href="../classes/Input.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Input</a></li>
 <li class="tsd-kind-class"><a href="../classes/ParticleSystem.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Particle<wbr/>System</a></li>
 <li class="tsd-kind-class"><a href="../classes/RenderLoop.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Render<wbr/>Loop</a></li>
+<li class="tsd-kind-class"><a href="../classes/Sound.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sound</a></li>
 <li class="tsd-kind-class"><a href="../classes/SoundManager.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sound<wbr/>Manager</a></li>
 <li class="tsd-kind-class"><a href="../classes/Sprite.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sprite</a></li>
 <li class="tsd-kind-class"><a href="../classes/Tile.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Tile</a></li>
@@ -218,5 +279,9 @@ to physics ticks (e.g. sprite frame selection inside <code>Sprite</code>).</p>
 <li class="tsd-kind-class"><a href="../classes/WebGLRenderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>WebGLRenderer</a></li>
 <li class="tsd-kind-interface"><a href="../interfaces/FontInstance.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-interface)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-256-path"></rect><path d="M9.51 16V15.016H11.298V8.224H9.51V7.24H14.19V8.224H12.402V15.016H14.19V16H9.51Z" fill="var(--color-text)" id="icon-256-text"></path></svg>Font<wbr/>Instance</a></li>
 <li class="tsd-kind-interface"><a href="../interfaces/ParticleEmitConfig.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Particle<wbr/>Emit<wbr/>Config</a></li>
-<li class="tsd-kind-interface"><a href="../interfaces/Renderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Renderer</a></li></ul></nav></div></div>
+<li class="tsd-kind-interface"><a href="../interfaces/Renderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Renderer</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/TilemapData.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tilemap<wbr/>Data</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/TilemapLayer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tilemap<wbr/>Layer</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/Tileset.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tileset</a></li>
+<li class="tsd-kind-type-alias"><a href="../types/TileEntry.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-4194304-path"></rect><path d="M11.31 16V8.224H8.91V7.24H14.79V8.224H12.39V16H11.31Z" fill="var(--color-text)" id="icon-4194304-text"></path></svg>Tile<wbr/>Entry</a></li></ul></nav></div></div>
 <div class="overlay"></div><script src="../assets/main.js"></script></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>TilemapManager | Craters - v0.3.0</title><meta name="description" content="Documentation for Craters - v0.3.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>TilemapManager | Craters - v0.4.0</title><meta name="description" content="Documentation for Craters - v0.4.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -6,13 +6,13 @@
 <div id="tsd-toolbar-links"></div></div>
 <ul class="results">
 <li class="state loading">Preparing search index...</li>
-<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.3.0</a></div>
+<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.4.0</a></div>
 <div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="7" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="11" width="14" height="2" fill="var(--color-text)"></rect></svg></a></div></div></header>
 <div class="container container-main">
 <div class="col-8 col-content">
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
-<li><a href="../modules.html">Craters - v0.3.0</a></li>
+<li><a href="../modules.html">Craters - v0.4.0</a></li>
 <li><span>Guides</span></li>
 <li><a href="tilemap-manager.html">TilemapManager</a></li></ul>
 <h1> TilemapManager</h1></div>
@@ -20,19 +20,40 @@
 <a href="#tilemapmanager-usage-guide" id="tilemapmanager-usage-guide" style="color: inherit; text-decoration: none;">
   <h1>TilemapManager Usage Guide</h1>
 </a>
-<p><code>TilemapManager</code> loads <strong>Tiled</strong>-format JSON maps, resolves their tilesets into <code>Sprite</code>
-instances, and renders them layer by layer. It is built on top of <code>Sprite</code> and works with
-<code>Canvas2DRenderer</code>.</p>
+<p><code>TilemapManager</code> loads JSON maps in Craters&#39; own <strong>map2d</strong> format, resolves their tilesets into
+<code>Sprite</code> instances, and renders them layer by layer. It is built on top of <code>Sprite</code> and accepts
+any <code>Renderer</code> (<code>Canvas2DRenderer</code> or <code>WebGLRenderer</code>).</p>
 
-<a href="#tiled-map-format" id="tiled-map-format" style="color: inherit; text-decoration: none;">
-  <h2>Tiled Map Format</h2>
+<a href="#map-format" id="map-format" style="color: inherit; text-decoration: none;">
+  <h2>Map Format</h2>
 </a>
-<p>Export your map from <a href="https://www.mapeditor.org/">Tiled</a> as <strong>JSON</strong> with embedded or
-relative tileset paths. <code>TilemapManager</code> expects:</p>
-<pre><code><span class="hl-4">map</span><span class="hl-1">.</span><span class="hl-4">json</span><br/><span class="hl-1">{</span><br/><span class="hl-1">  </span><span class="hl-2">&quot;layers&quot;</span><span class="hl-1">: [</span><br/><span class="hl-1">    {</span><br/><span class="hl-1">      </span><span class="hl-2">&quot;data&quot;</span><span class="hl-4">:</span><span class="hl-1"> [[</span><span class="hl-4">srcY</span><span class="hl-1">, </span><span class="hl-4">srcX</span><span class="hl-1">, </span><span class="hl-4">dstX</span><span class="hl-1">, </span><span class="hl-4">dstY</span><span class="hl-1">, </span><span class="hl-4">tilesetIndex</span><span class="hl-1">], ...]</span><br/><span class="hl-1">    }</span><br/><span class="hl-1">  ],</span><br/><span class="hl-1">  </span><span class="hl-2">&quot;tilesets&quot;</span><span class="hl-1">: [</span><br/><span class="hl-1">    { </span><span class="hl-2">&quot;image&quot;</span><span class="hl-4">:</span><span class="hl-1"> </span><span class="hl-2">&quot;tileset.png&quot;</span><span class="hl-1">, </span><span class="hl-2">&quot;tilewidth&quot;</span><span class="hl-4">:</span><span class="hl-1"> </span><span class="hl-9">16</span><span class="hl-1">, </span><span class="hl-2">&quot;tileheight&quot;</span><span class="hl-4">:</span><span class="hl-1"> </span><span class="hl-9">16</span><span class="hl-1"> }</span><br/><span class="hl-1">  ]</span><br/><span class="hl-1">}</span>
+<p>The map is a JSON file with this shape (TypeScript types <code>TilemapData</code>, <code>TilemapLayer</code>,
+<code>Tileset</code> and <code>TileEntry</code> are exported from <code>&quot;craters&quot;</code>):</p>
+<pre><code><span class="hl-4">map</span><span class="hl-1">.</span><span class="hl-4">json</span><br/><span class="hl-1">{</span><br/><span class="hl-1">  </span><span class="hl-2">&quot;layers&quot;</span><span class="hl-1">: [</span><br/><span class="hl-1">    {</span><br/><span class="hl-1">      </span><span class="hl-2">&quot;data&quot;</span><span class="hl-4">:</span><span class="hl-1"> [[</span><span class="hl-4">srcCol</span><span class="hl-1">, </span><span class="hl-4">srcRow</span><span class="hl-1">, </span><span class="hl-4">dstCol</span><span class="hl-1">, </span><span class="hl-4">dstRow</span><span class="hl-1">, </span><span class="hl-4">tilesetIndex</span><span class="hl-1">], ...]</span><br/><span class="hl-1">    }</span><br/><span class="hl-1">  ],</span><br/><span class="hl-1">  </span><span class="hl-2">&quot;tilesets&quot;</span><span class="hl-1">: [</span><br/><span class="hl-1">    { </span><span class="hl-2">&quot;image&quot;</span><span class="hl-4">:</span><span class="hl-1"> </span><span class="hl-2">&quot;tileset.png&quot;</span><span class="hl-1">, </span><span class="hl-2">&quot;tilewidth&quot;</span><span class="hl-4">:</span><span class="hl-1"> </span><span class="hl-9">16</span><span class="hl-1">, </span><span class="hl-2">&quot;tileheight&quot;</span><span class="hl-4">:</span><span class="hl-1"> </span><span class="hl-9">16</span><span class="hl-1"> }</span><br/><span class="hl-1">  ]</span><br/><span class="hl-1">}</span>
 </code></pre>
 <p>Each tile entry in <code>layer.data</code> is a 5-element array:
-<code>[sourceRow, sourceCol, destinationCol, destinationRow, tilesetIndex]</code></p>
+<code>[sourceCol, sourceRow, destinationCol, destinationRow, tilesetIndex]</code>.</p>
+<p>All positions are in tiles, not pixels:</p>
+<ul>
+<li>The source cell is at pixel <code>(sourceCol × tilewidth, sourceRow × tileheight)</code> in the tileset image.</li>
+<li>The tile is drawn at <code>(destinationCol × tilewidth + offsetX, destinationRow × tileheight + offsetY)</code>,
+using that tileset&#39;s tile size.</li>
+<li>Only the fields shown above are read; any others are ignored.</li>
+</ul>
+
+<a href="#format-limitations" id="format-limitations" style="color: inherit; text-decoration: none;">
+  <h3>Format Limitations</h3>
+</a>
+<ul>
+<li><strong>Not Tiled&#39;s JSON export.</strong> Tiled layers hold flat GID arrays (<code>&quot;data&quot;: [1, 2, 0, …]</code>) with
+a <code>firstgid</code> per tileset, and <code>draw()</code> throws <code>TypeError: tile is not iterable</code> on them.
+Layers without <code>data</code> (e.g. Tiled object layers) also throw, and external tilesets
+(<code>&quot;source&quot;: &quot;…&quot;</code>) fail to load. Convert Tiled maps to the format above first.</li>
+<li><strong>Tileset <code>image</code> paths resolve against the page URL</strong>, not the map file, because they are
+assigned to <code>Image.src</code>. Use absolute paths, or paths relative to the page.</li>
+<li>Tileset <code>margin</code> / <code>spacing</code> are not supported. The image is cut into a gapless
+<code>tilewidth × tileheight</code> grid.</li>
+</ul>
 
 <a href="#setup" id="setup" style="color: inherit; text-decoration: none;">
   <h2>Setup</h2>
@@ -46,6 +67,11 @@ relative tileset paths. <code>TilemapManager</code> expects:</p>
 <p><code>load()</code> fetches the JSON, loads every tileset image, and returns a <code>Tilemap</code> instance.
 All image loading is done in parallel via <code>Promise.all</code>.</p>
 <pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">tilemap</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">tilemapManager</span><span class="hl-1">.</span><span class="hl-0">load</span><span class="hl-1">(</span><span class="hl-2">&quot;maps/world1.json&quot;</span><span class="hl-1">);</span>
+</code></pre>
+<p>The promise rejects with an <code>Error</code> if the map request returns a non-OK HTTP status (the
+message includes the status, e.g. <code>HTTP 404 Not Found</code>), or if a tileset image fails to load
+(the message includes the image URL):</p>
+<pre><code class="language-typescript"><span class="hl-3">try</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">tilemapManager</span><span class="hl-1">.</span><span class="hl-0">load</span><span class="hl-1">(</span><span class="hl-2">&quot;maps/missing.json&quot;</span><span class="hl-1">);</span><br/><span class="hl-1">} </span><span class="hl-3">catch</span><span class="hl-1"> (</span><span class="hl-4">error</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">error</span><span class="hl-1">((</span><span class="hl-4">error</span><span class="hl-1"> </span><span class="hl-3">as</span><span class="hl-1"> </span><span class="hl-7">Error</span><span class="hl-1">).</span><span class="hl-4">message</span><span class="hl-1">);</span><br/><span class="hl-1">}</span>
 </code></pre>
 
 <a href="#drawing-the-map" id="drawing-the-map" style="color: inherit; text-decoration: none;">
@@ -66,11 +92,11 @@ to implement camera scrolling.</p>
 <a href="#layered-maps" id="layered-maps" style="color: inherit; text-decoration: none;">
   <h2>Layered Maps</h2>
 </a>
-<p>All layers defined in the Tiled JSON are drawn automatically. Layer ordering from Tiled is
-preserved, so background layers render before foreground layers.</p>
-<p>For games that need to draw game objects between layers (e.g. player behind a roof layer),
-split the draw call manually:</p>
-<pre><code class="language-typescript"><span class="hl-5">// Draw only background layers, then entities, then foreground</span><br/><span class="hl-5">// This requires splitting the tilemap or using Tiled&#39;s layer naming as a convention.</span><br/><span class="hl-5">// Currently TilemapManager draws all layers in a single draw() call.</span><br/><span class="hl-4">tilemap</span><span class="hl-1">.</span><span class="hl-0">draw</span><span class="hl-1">(-</span><span class="hl-4">camera</span><span class="hl-1">.</span><span class="hl-4">x</span><span class="hl-1">, -</span><span class="hl-4">camera</span><span class="hl-1">.</span><span class="hl-4">y</span><span class="hl-1">);</span><br/><span class="hl-5">// Draw player here</span><br/><span class="hl-0">drawPlayer</span><span class="hl-1">();</span>
+<p>All layers in the JSON are drawn by a single <code>draw()</code> call, in array order, so background
+layers render before foreground layers.</p>
+<p>To draw game objects between layers (e.g. player behind a roof layer), build extra <code>Tilemap</code>
+instances over subsets of the loaded layers. They reuse the already-loaded tilesets:</p>
+<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Tilemap</span><span class="hl-1">, </span><span class="hl-4">RenderLoop</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;craters&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> { </span><span class="hl-8">layers</span><span class="hl-1">, </span><span class="hl-8">tilesets</span><span class="hl-1"> } = </span><span class="hl-4">tilemap</span><span class="hl-1">.</span><span class="hl-4">tilemap</span><span class="hl-1">;</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">background</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Tilemap</span><span class="hl-1">({ </span><span class="hl-4">layers:</span><span class="hl-1"> </span><span class="hl-4">layers</span><span class="hl-1">.</span><span class="hl-0">slice</span><span class="hl-1">(</span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">2</span><span class="hl-1">), </span><span class="hl-4">tilesets</span><span class="hl-1"> });</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">foreground</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Tilemap</span><span class="hl-1">({ </span><span class="hl-4">layers:</span><span class="hl-1"> </span><span class="hl-4">layers</span><span class="hl-1">.</span><span class="hl-0">slice</span><span class="hl-1">(</span><span class="hl-9">2</span><span class="hl-1">), </span><span class="hl-4">tilesets</span><span class="hl-1"> });</span><br/><br/><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">RenderLoop</span><span class="hl-1">((</span><span class="hl-4">loop</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">clear</span><span class="hl-1">();</span><br/><span class="hl-1">  </span><span class="hl-4">background</span><span class="hl-1">.</span><span class="hl-0">draw</span><span class="hl-1">(-</span><span class="hl-4">camera</span><span class="hl-1">.</span><span class="hl-4">x</span><span class="hl-1">, -</span><span class="hl-4">camera</span><span class="hl-1">.</span><span class="hl-4">y</span><span class="hl-1">);</span><br/><span class="hl-1">  </span><span class="hl-0">drawPlayer</span><span class="hl-1">();</span><br/><span class="hl-1">  </span><span class="hl-4">foreground</span><span class="hl-1">.</span><span class="hl-0">draw</span><span class="hl-1">(-</span><span class="hl-4">camera</span><span class="hl-1">.</span><span class="hl-4">x</span><span class="hl-1">, -</span><span class="hl-4">camera</span><span class="hl-1">.</span><span class="hl-4">y</span><span class="hl-1">);</span><br/><span class="hl-1">});</span>
 </code></pre>
 
 <a href="#source-inset" id="source-inset" style="color: inherit; text-decoration: none;">
@@ -102,15 +128,27 @@ configuration needed.</p>
 </thead>
 <tbody><tr>
 <td><code>renderer</code></td>
-<td><code>Canvas2DRenderer</code> used to create tile sprites</td>
+<td>Any <code>Renderer</code> (<code>Canvas2DRenderer</code> or <code>WebGLRenderer</code>) used to create tile sprites</td>
 </tr>
 </tbody></table>
 
 <a href="#tilemapmanagerloadurl-promiselttilemapgt" id="tilemapmanagerloadurl-promiselttilemapgt" style="color: inherit; text-decoration: none;">
   <h3><code>tilemapManager.load(url): Promise&lt;Tilemap&gt;</code></h3>
 </a>
-<p>Fetches the Tiled JSON at <code>url</code>, loads all tileset images in parallel, and resolves with
-a <code>Tilemap</code> ready to draw.</p>
+<p>Fetches the map JSON at <code>url</code>, loads all tileset images in parallel, and resolves with
+a <code>Tilemap</code> ready to draw. Rejects with an <code>Error</code> on a non-OK HTTP response or a tileset
+image that fails to load.</p>
+
+<a href="#new-tilemapdata-tilemapdata" id="new-tilemapdata-tilemapdata" style="color: inherit; text-decoration: none;">
+  <h3><code>new Tilemap(data: TilemapData)</code></h3>
+</a>
+<p>Wraps map data whose tilesets already have their <code>sprite</code> set (as returned by <code>load()</code>).
+Use it to draw a subset of layers.</p>
+
+<a href="#tilemaptilemap-tilemapdata" id="tilemaptilemap-tilemapdata" style="color: inherit; text-decoration: none;">
+  <h3><code>tilemap.tilemap: TilemapData</code></h3>
+</a>
+<p>The loaded map data, with every <code>tilesets[i].sprite</code> populated.</p>
 
 <a href="#tilemapdrawoffsetx-offsety" id="tilemapdrawoffsetx-offsety" style="color: inherit; text-decoration: none;">
   <h3><code>tilemap.draw(offsetX?, offsetY?)</code></h3>
@@ -135,7 +173,7 @@ a <code>Tilemap</code> ready to draw.</p>
 <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Modules</h3></summary>
 <div class="tsd-accordion-details">
 <ul>
-<li class="current"><a href="../modules.html">Craters -<wbr/> v0.3.0</a>
+<li class="current"><a href="../modules.html">Craters -<wbr/> v0.4.0</a>
 <ul>
 <li class="current pages-entry pages-entry-menu pages-entry-depth-1"><a>Guides</a>
 <ul>
@@ -167,6 +205,7 @@ a <code>Tilemap</code> ready to draw.</p>
 <li class="tsd-kind-class"><a href="../classes/Input.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Input</a></li>
 <li class="tsd-kind-class"><a href="../classes/ParticleSystem.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Particle<wbr/>System</a></li>
 <li class="tsd-kind-class"><a href="../classes/RenderLoop.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Render<wbr/>Loop</a></li>
+<li class="tsd-kind-class"><a href="../classes/Sound.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sound</a></li>
 <li class="tsd-kind-class"><a href="../classes/SoundManager.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sound<wbr/>Manager</a></li>
 <li class="tsd-kind-class"><a href="../classes/Sprite.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sprite</a></li>
 <li class="tsd-kind-class"><a href="../classes/Tile.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Tile</a></li>
@@ -175,5 +214,9 @@ a <code>Tilemap</code> ready to draw.</p>
 <li class="tsd-kind-class"><a href="../classes/WebGLRenderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>WebGLRenderer</a></li>
 <li class="tsd-kind-interface"><a href="../interfaces/FontInstance.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-interface)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-256-path"></rect><path d="M9.51 16V15.016H11.298V8.224H9.51V7.24H14.19V8.224H12.402V15.016H14.19V16H9.51Z" fill="var(--color-text)" id="icon-256-text"></path></svg>Font<wbr/>Instance</a></li>
 <li class="tsd-kind-interface"><a href="../interfaces/ParticleEmitConfig.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Particle<wbr/>Emit<wbr/>Config</a></li>
-<li class="tsd-kind-interface"><a href="../interfaces/Renderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Renderer</a></li></ul></nav></div></div>
+<li class="tsd-kind-interface"><a href="../interfaces/Renderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Renderer</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/TilemapData.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tilemap<wbr/>Data</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/TilemapLayer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tilemap<wbr/>Layer</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/Tileset.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tileset</a></li>
+<li class="tsd-kind-type-alias"><a href="../types/TileEntry.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-4194304-path"></rect><path d="M11.31 16V8.224H8.91V7.24H14.79V8.224H12.39V16H11.31Z" fill="var(--color-text)" id="icon-4194304-text"></path></svg>Tile<wbr/>Entry</a></li></ul></nav></div></div>
 <div class="overlay"></div><script src="../assets/main.js"></script></body></html>

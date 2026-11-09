@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>AssetsManager | Craters - v0.3.0</title><meta name="description" content="Documentation for Craters - v0.3.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>AssetsManager | Craters - v0.4.0</title><meta name="description" content="Documentation for Craters - v0.4.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -6,13 +6,13 @@
 <div id="tsd-toolbar-links"></div></div>
 <ul class="results">
 <li class="state loading">Preparing search index...</li>
-<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.3.0</a></div>
+<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.4.0</a></div>
 <div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="7" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="11" width="14" height="2" fill="var(--color-text)"></rect></svg></a></div></div></header>
 <div class="container container-main">
 <div class="col-8 col-content">
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
-<li><a href="../modules.html">Craters - v0.3.0</a></li>
+<li><a href="../modules.html">Craters - v0.4.0</a></li>
 <li><span>Guides</span></li>
 <li><a href="assets-manager.html">AssetsManager</a></li></ul>
 <h1> AssetsManager</h1></div>
@@ -20,9 +20,9 @@
 <a href="#assetsmanager-usage-guide" id="assetsmanager-usage-guide" style="color: inherit; text-decoration: none;">
   <h1>AssetsManager Usage Guide</h1>
 </a>
-<p><code>AssetsManager</code> provides async loaders for every resource type a game typically needs. Each
-method returns a native browser object — no custom wrappers — so resources can be passed
-directly to other Craters APIs.</p>
+<p><code>AssetsManager</code> provides async loaders for common resource types. Each method resolves with
+a native browser object or value (no custom wrappers), e.g. an <code>HTMLImageElement</code> that can be
+passed straight to the renderers. Audio is loaded with <code>SoundManager.load()</code> instead.</p>
 
 <a href="#setup" id="setup" style="color: inherit; text-decoration: none;">
   <h2>Setup</h2>
@@ -33,9 +33,14 @@ directly to other Craters APIs.</p>
 <a href="#loading-images" id="loading-images" style="color: inherit; text-decoration: none;">
   <h2>Loading Images</h2>
 </a>
-<p>Returns a fully loaded <code>HTMLImageElement</code>. Rejects if the image fails to load.</p>
-<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">img</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadImage</span><span class="hl-1">(</span><span class="hl-2">&quot;sprites/player.png&quot;</span><span class="hl-1">);</span><br/><br/><span class="hl-5">// Use with Canvas2DRenderer</span><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">drawImage</span><span class="hl-1">(</span><span class="hl-4">img</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-4">playerX</span><span class="hl-1">, </span><span class="hl-4">playerY</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">);</span><br/><br/><span class="hl-5">// Use with WebGLRenderer</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">texture</span><span class="hl-1"> = </span><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">createImage</span><span class="hl-1">(</span><span class="hl-4">img</span><span class="hl-1">);</span>
+<p>Returns a fully loaded <code>HTMLImageElement</code>. Rejects with an <code>Error</code> naming the URL if the image
+fails to load (missing file, or data that is not a valid image).</p>
+<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">img</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadImage</span><span class="hl-1">(</span><span class="hl-2">&quot;sprites/player.png&quot;</span><span class="hl-1">);</span><br/><br/><span class="hl-5">// Use with a Canvas2DRenderer</span><br/><span class="hl-4">canvasRenderer</span><span class="hl-1">.</span><span class="hl-0">drawImage</span><span class="hl-1">(</span><span class="hl-4">img</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-4">playerX</span><span class="hl-1">, </span><span class="hl-4">playerY</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">);</span><br/><br/><span class="hl-5">// Use with a WebGLRenderer (uploads the image as a texture)</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">texture</span><span class="hl-1"> = </span><span class="hl-4">glRenderer</span><span class="hl-1">.</span><span class="hl-0">createImage</span><span class="hl-1">(</span><span class="hl-4">img</span><span class="hl-1">);</span>
 </code></pre>
+<p><code>loadImage()</code> does not set <code>crossOrigin</code>. Images from another origin still draw with
+<code>Canvas2DRenderer</code> (tainting the canvas), but <code>WebGLRenderer.createImage()</code> throws a
+<code>SecurityError</code> for them. Serve images from the same origin, or create the <code>Image</code> yourself
+with <code>crossOrigin = &quot;anonymous&quot;</code> from a CORS-enabled server.</p>
 
 <a href="#loading-json" id="loading-json" style="color: inherit; text-decoration: none;">
   <h2>Loading JSON</h2>
@@ -54,31 +59,42 @@ directly to other Craters APIs.</p>
 <a href="#loading-binary-data" id="loading-binary-data" style="color: inherit; text-decoration: none;">
   <h2>Loading Binary Data</h2>
 </a>
-<p>Returns a <code>Blob</code>. Useful for audio or custom binary formats.</p>
+<p>Returns a <code>Blob</code>. Useful for custom binary formats. (To play audio, use
+<code>SoundManager.load(url)</code>, which fetches and decodes the file itself.)</p>
 <pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">blob</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadBinary</span><span class="hl-1">(</span><span class="hl-2">&quot;data/heightmap.bin&quot;</span><span class="hl-1">);</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">buffer</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">blob</span><span class="hl-1">.</span><span class="hl-0">arrayBuffer</span><span class="hl-1">();</span>
 </code></pre>
 
 <a href="#loading-fonts" id="loading-fonts" style="color: inherit; text-decoration: none;">
   <h2>Loading Fonts</h2>
 </a>
-<p>Loads a <code>FontFace</code> from a URL and registers it with the document. The returned <code>FontFace</code>
-is already loaded and can be passed to <code>FontManager</code>.</p>
-<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">face</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadFont</span><span class="hl-1">(</span><span class="hl-2">&quot;PixelFont&quot;</span><span class="hl-1">, </span><span class="hl-2">&quot;url(fonts/pixel.woff2)&quot;</span><span class="hl-1">);</span><br/><span class="hl-4">document</span><span class="hl-1">.</span><span class="hl-4">fonts</span><span class="hl-1">.</span><span class="hl-0">add</span><span class="hl-1">(</span><span class="hl-4">face</span><span class="hl-1">);</span>
+<p>Loads a <code>FontFace</code> and registers it in <code>document.fonts</code>, so no extra <code>document.fonts.add()</code>
+call is needed. The second argument is a CSS <code>src</code> descriptor such as <code>url(fonts/pixel.woff2)</code>,
+not a bare path: <code>&quot;fonts/pixel.woff2&quot;</code> rejects with a <code>SyntaxError</code>.</p>
+<p><code>FontManager</code> takes a CSS font string, not the <code>FontFace</code>: once the face has loaded, refer to
+it by the family name you registered.</p>
+<pre><code class="language-typescript"><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadFont</span><span class="hl-1">(</span><span class="hl-2">&quot;PixelFont&quot;</span><span class="hl-1">, </span><span class="hl-2">&quot;url(fonts/pixel.woff2)&quot;</span><span class="hl-1">); </span><span class="hl-5">// resolves with the FontFace</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">fontManager</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">FontManager</span><span class="hl-1">(</span><span class="hl-4">renderer</span><span class="hl-1">, </span><span class="hl-2">&quot;16px PixelFont&quot;</span><span class="hl-1">);</span>
 </code></pre>
 
 <a href="#loading-multiple-assets-in-parallel" id="loading-multiple-assets-in-parallel" style="color: inherit; text-decoration: none;">
   <h2>Loading Multiple Assets in Parallel</h2>
 </a>
 <p>Use <code>Promise.all</code> to load several resources without blocking on each one sequentially.</p>
-<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> [</span><span class="hl-8">playerImg</span><span class="hl-1">, </span><span class="hl-8">enemyImg</span><span class="hl-1">, </span><span class="hl-8">level</span><span class="hl-1">, </span><span class="hl-8">music</span><span class="hl-1">] = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-7">Promise</span><span class="hl-1">.</span><span class="hl-0">all</span><span class="hl-1">([</span><br/><span class="hl-1">  </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadImage</span><span class="hl-1">(</span><span class="hl-2">&quot;player.png&quot;</span><span class="hl-1">),</span><br/><span class="hl-1">  </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadImage</span><span class="hl-1">(</span><span class="hl-2">&quot;enemy.png&quot;</span><span class="hl-1">),</span><br/><span class="hl-1">  </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadJson</span><span class="hl-1">(</span><span class="hl-2">&quot;level1.json&quot;</span><span class="hl-1">),</span><br/><span class="hl-1">  </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadBinary</span><span class="hl-1">(</span><span class="hl-2">&quot;theme.ogg&quot;</span><span class="hl-1">),</span><br/><span class="hl-1">]);</span>
+<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> [</span><span class="hl-8">playerImg</span><span class="hl-1">, </span><span class="hl-8">enemyImg</span><span class="hl-1">, </span><span class="hl-8">level</span><span class="hl-1">, </span><span class="hl-8">music</span><span class="hl-1">] = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-7">Promise</span><span class="hl-1">.</span><span class="hl-0">all</span><span class="hl-1">([</span><br/><span class="hl-1">  </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadImage</span><span class="hl-1">(</span><span class="hl-2">&quot;player.png&quot;</span><span class="hl-1">),</span><br/><span class="hl-1">  </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadImage</span><span class="hl-1">(</span><span class="hl-2">&quot;enemy.png&quot;</span><span class="hl-1">),</span><br/><span class="hl-1">  </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadJson</span><span class="hl-1">(</span><span class="hl-2">&quot;level1.json&quot;</span><span class="hl-1">),</span><br/><span class="hl-1">  </span><span class="hl-4">audio</span><span class="hl-1">.</span><span class="hl-0">load</span><span class="hl-1">(</span><span class="hl-2">&quot;theme.ogg&quot;</span><span class="hl-1">), </span><span class="hl-5">// audio is a SoundManager; resolves with a Sound</span><br/><span class="hl-1">]);</span>
 </code></pre>
 
 <a href="#error-handling" id="error-handling" style="color: inherit; text-decoration: none;">
   <h2>Error Handling</h2>
 </a>
-<p>All methods reject on network or decode errors. Wrap with <code>try/catch</code> or <code>.catch()</code> to
-handle missing files gracefully.</p>
-<pre><code class="language-typescript"><span class="hl-3">try</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">img</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadImage</span><span class="hl-1">(</span><span class="hl-2">&quot;optional-overlay.png&quot;</span><span class="hl-1">);</span><br/><span class="hl-1">  </span><span class="hl-0">showOverlay</span><span class="hl-1">(</span><span class="hl-4">img</span><span class="hl-1">);</span><br/><span class="hl-1">} </span><span class="hl-3">catch</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">// overlay not found, continue without it</span><br/><span class="hl-1">}</span>
+<p>All methods reject on network failures and missing files, so a <code>try/catch</code> (or <code>.catch()</code>)
+handles optional assets:</p>
+<ul>
+<li><code>loadText()</code>, <code>loadJson()</code> and <code>loadBinary()</code> reject with an <code>Error</code> whose message includes
+the HTTP status (e.g. <code>Failed to load &quot;levels/world2.json&quot;: 404 Not Found</code>) when the server
+responds with a non-OK status. <code>loadJson()</code> also rejects if the body is not valid JSON.</li>
+<li><code>loadImage()</code> rejects with an <code>Error</code> when the image cannot be loaded or decoded.</li>
+<li><code>loadFont()</code> rejects with the <code>FontFace</code> error (e.g. a <code>NetworkError</code> <code>DOMException</code>).</li>
+</ul>
+<pre><code class="language-typescript"><span class="hl-3">try</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">img</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadImage</span><span class="hl-1">(</span><span class="hl-2">&quot;optional-overlay.png&quot;</span><span class="hl-1">);</span><br/><span class="hl-1">  </span><span class="hl-0">showOverlay</span><span class="hl-1">(</span><span class="hl-4">img</span><span class="hl-1">);</span><br/><span class="hl-1">} </span><span class="hl-3">catch</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">// overlay not found, continue without it</span><br/><span class="hl-1">}</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">level2</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadJson</span><span class="hl-1">(</span><span class="hl-2">&quot;levels/world2.json&quot;</span><span class="hl-1">).</span><span class="hl-0">catch</span><span class="hl-1">((</span><span class="hl-4">error</span><span class="hl-1">: </span><span class="hl-7">Error</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">warn</span><span class="hl-1">(</span><span class="hl-4">error</span><span class="hl-1">.</span><span class="hl-4">message</span><span class="hl-1">); </span><span class="hl-5">// Failed to load &quot;levels/world2.json&quot;: 404 Not Found</span><br/><span class="hl-1">  </span><span class="hl-3">return</span><span class="hl-1"> </span><span class="hl-6">null</span><span class="hl-1">;</span><br/><span class="hl-1">});</span>
 </code></pre>
 
 <a href="#api-reference" id="api-reference" style="color: inherit; text-decoration: none;">
@@ -95,27 +111,27 @@ handle missing files gracefully.</p>
 <tbody><tr>
 <td><code>loadImage(url)</code></td>
 <td><code>Promise&lt;HTMLImageElement&gt;</code></td>
-<td>Fetches and decodes an image</td>
+<td>Loads an image; rejects with an <code>Error</code> on failure</td>
 </tr>
 <tr>
 <td><code>loadJson(url)</code></td>
 <td><code>Promise&lt;any&gt;</code></td>
-<td>Fetches and parses JSON</td>
+<td>Fetches and parses JSON; rejects with an <code>Error</code> on an HTTP error status</td>
 </tr>
 <tr>
 <td><code>loadText(url)</code></td>
 <td><code>Promise&lt;string&gt;</code></td>
-<td>Fetches raw text</td>
+<td>Fetches raw text; rejects with an <code>Error</code> on an HTTP error status</td>
 </tr>
 <tr>
 <td><code>loadBinary(url)</code></td>
 <td><code>Promise&lt;Blob&gt;</code></td>
-<td>Fetches a binary blob</td>
+<td>Fetches a binary blob; rejects with an <code>Error</code> on an HTTP error status</td>
 </tr>
 <tr>
-<td><code>loadFont(name, url)</code></td>
+<td><code>loadFont(fontName, src)</code></td>
 <td><code>Promise&lt;FontFace&gt;</code></td>
-<td>Loads a font face by name and URL</td>
+<td>Loads a font face from a CSS <code>src</code> descriptor (e.g. <code>url(font.woff2)</code>) and adds it to <code>document.fonts</code></td>
 </tr>
 </tbody></table>
 </div></div>
@@ -137,7 +153,7 @@ handle missing files gracefully.</p>
 <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Modules</h3></summary>
 <div class="tsd-accordion-details">
 <ul>
-<li class="current"><a href="../modules.html">Craters -<wbr/> v0.3.0</a>
+<li class="current"><a href="../modules.html">Craters -<wbr/> v0.4.0</a>
 <ul>
 <li class="current pages-entry pages-entry-menu pages-entry-depth-1"><a>Guides</a>
 <ul>
@@ -169,6 +185,7 @@ handle missing files gracefully.</p>
 <li class="tsd-kind-class"><a href="../classes/Input.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Input</a></li>
 <li class="tsd-kind-class"><a href="../classes/ParticleSystem.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Particle<wbr/>System</a></li>
 <li class="tsd-kind-class"><a href="../classes/RenderLoop.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Render<wbr/>Loop</a></li>
+<li class="tsd-kind-class"><a href="../classes/Sound.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sound</a></li>
 <li class="tsd-kind-class"><a href="../classes/SoundManager.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sound<wbr/>Manager</a></li>
 <li class="tsd-kind-class"><a href="../classes/Sprite.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sprite</a></li>
 <li class="tsd-kind-class"><a href="../classes/Tile.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Tile</a></li>
@@ -177,5 +194,9 @@ handle missing files gracefully.</p>
 <li class="tsd-kind-class"><a href="../classes/WebGLRenderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>WebGLRenderer</a></li>
 <li class="tsd-kind-interface"><a href="../interfaces/FontInstance.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-interface)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-256-path"></rect><path d="M9.51 16V15.016H11.298V8.224H9.51V7.24H14.19V8.224H12.402V15.016H14.19V16H9.51Z" fill="var(--color-text)" id="icon-256-text"></path></svg>Font<wbr/>Instance</a></li>
 <li class="tsd-kind-interface"><a href="../interfaces/ParticleEmitConfig.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Particle<wbr/>Emit<wbr/>Config</a></li>
-<li class="tsd-kind-interface"><a href="../interfaces/Renderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Renderer</a></li></ul></nav></div></div>
+<li class="tsd-kind-interface"><a href="../interfaces/Renderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Renderer</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/TilemapData.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tilemap<wbr/>Data</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/TilemapLayer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tilemap<wbr/>Layer</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/Tileset.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tileset</a></li>
+<li class="tsd-kind-type-alias"><a href="../types/TileEntry.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-4194304-path"></rect><path d="M11.31 16V8.224H8.91V7.24H14.79V8.224H12.39V16H11.31Z" fill="var(--color-text)" id="icon-4194304-text"></path></svg>Tile<wbr/>Entry</a></li></ul></nav></div></div>
 <div class="overlay"></div><script src="../assets/main.js"></script></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>WebGLRenderer | Craters - v0.3.0</title><meta name="description" content="Documentation for Craters - v0.3.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>WebGLRenderer | Craters - v0.4.0</title><meta name="description" content="Documentation for Craters - v0.4.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -6,13 +6,13 @@
 <div id="tsd-toolbar-links"></div></div>
 <ul class="results">
 <li class="state loading">Preparing search index...</li>
-<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.3.0</a></div>
+<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.4.0</a></div>
 <div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="7" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="11" width="14" height="2" fill="var(--color-text)"></rect></svg></a></div></div></header>
 <div class="container container-main">
 <div class="col-8 col-content">
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
-<li><a href="../modules.html">Craters - v0.3.0</a></li>
+<li><a href="../modules.html">Craters - v0.4.0</a></li>
 <li><span>Guides</span></li>
 <li><a href="webgl-renderer.html">WebGLRenderer</a></li></ul>
 <h1> WebGLRenderer</h1></div>
@@ -20,10 +20,11 @@
 <a href="#webglrenderer-usage-guide" id="webglrenderer-usage-guide" style="color: inherit; text-decoration: none;">
   <h1>WebGLRenderer Usage Guide</h1>
 </a>
-<p><code>WebGLRenderer</code> is a high-performance sprite renderer backed by WebGL 1. It uses an orthographic
+<p><code>WebGLRenderer</code> is an image renderer backed by WebGL 1. It uses an orthographic
 projection matrix and NEAREST texture filtering to draw images without sub-pixel seams, even
-on high-DPR displays. It has the same surface API as <code>Canvas2DRenderer</code> so the two can be
-swapped without changing call sites in <code>Tile</code> or <code>Sprite</code>.</p>
+on high-DPR displays. It implements the same <code>Renderer</code> interface (<code>createImage</code> / <code>drawImage</code>)
+as <code>Canvas2DRenderer</code>, so <code>Tile</code>, <code>Sprite</code> and <code>TilemapManager</code> work with either renderer
+unchanged. The rest of the API differs; see <a href="#limitations">Limitations</a>.</p>
 
 <a href="#setup" id="setup" style="color: inherit; text-decoration: none;">
   <h2>Setup</h2>
@@ -31,7 +32,8 @@ swapped without changing call sites in <code>Tile</code> or <code>Sprite</code>.
 <pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">WebGLRenderer</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;craters&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">renderer</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">WebGLRenderer</span><span class="hl-1">(</span><span class="hl-9">800</span><span class="hl-1">, </span><span class="hl-9">600</span><span class="hl-1">);</span><br/><span class="hl-4">document</span><span class="hl-1">.</span><span class="hl-4">body</span><span class="hl-1">.</span><span class="hl-0">appendChild</span><span class="hl-1">(</span><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-4">canvasElement</span><span class="hl-1">);</span>
 </code></pre>
 <p>The constructor compiles and links the internal vertex + fragment shaders and sets up the
-position buffer. It throws if the browser does not support WebGL.</p>
+position buffer. It throws if the browser does not support WebGL, or if a shader fails to
+compile or link.</p>
 
 <a href="#loading-images-as-textures" id="loading-images-as-textures" style="color: inherit; text-decoration: none;">
   <h2>Loading Images as Textures</h2>
@@ -39,6 +41,10 @@ position buffer. It throws if the browser does not support WebGL.</p>
 <p>Unlike <code>Canvas2DRenderer</code>, images must be uploaded to the GPU with <code>createImage()</code> before
 they can be drawn. The returned handle must be passed to <code>drawImage()</code>.</p>
 <pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">AssetsManager</span><span class="hl-1">, </span><span class="hl-4">WebGLRenderer</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;craters&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">assets</span><span class="hl-1">   = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">AssetsManager</span><span class="hl-1">();</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">renderer</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">WebGLRenderer</span><span class="hl-1">(</span><span class="hl-9">800</span><span class="hl-1">, </span><span class="hl-9">600</span><span class="hl-1">);</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">img</span><span class="hl-1">     = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadImage</span><span class="hl-1">(</span><span class="hl-2">&quot;sprites.png&quot;</span><span class="hl-1">);</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">texture</span><span class="hl-1"> = </span><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">createImage</span><span class="hl-1">(</span><span class="hl-4">img</span><span class="hl-1">); </span><span class="hl-5">// { texture, width, height }</span><br/><br/><span class="hl-5">// Draw the full texture at (100, 50)</span><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">drawImage</span><span class="hl-1">(</span><span class="hl-4">texture</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-4">img</span><span class="hl-1">.</span><span class="hl-4">width</span><span class="hl-1">, </span><span class="hl-4">img</span><span class="hl-1">.</span><span class="hl-4">height</span><span class="hl-1">, </span><span class="hl-9">100</span><span class="hl-1">, </span><span class="hl-9">50</span><span class="hl-1">, </span><span class="hl-4">img</span><span class="hl-1">.</span><span class="hl-4">width</span><span class="hl-1">, </span><span class="hl-4">img</span><span class="hl-1">.</span><span class="hl-4">height</span><span class="hl-1">);</span>
+</code></pre>
+<p>Each <code>createImage()</code> call creates a new texture. Release one you no longer need with
+<code>deleteImage()</code>:</p>
+<pre><code class="language-typescript"><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">deleteImage</span><span class="hl-1">(</span><span class="hl-4">texture</span><span class="hl-1">);</span>
 </code></pre>
 
 <a href="#drawing-from-a-spritesheet" id="drawing-from-a-spritesheet" style="color: inherit; text-decoration: none;">
@@ -52,8 +58,16 @@ they can be drawn. The returned handle must be passed to <code>drawImage()</code
 </a>
 <pre><code class="language-typescript"><span class="hl-5">// Clear with default dark colour [0.1, 0.1, 0.1, 1.0]</span><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">clear</span><span class="hl-1">();</span><br/><br/><span class="hl-5">// Clear with a custom RGBA colour (components in 0–1 range)</span><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">clear</span><span class="hl-1">([</span><span class="hl-9">0.05</span><span class="hl-1">, </span><span class="hl-9">0.05</span><span class="hl-1">, </span><span class="hl-9">0.15</span><span class="hl-1">, </span><span class="hl-9">1.0</span><span class="hl-1">]);</span>
 </code></pre>
-<p><code>clear()</code> also enables alpha blending (<code>SRC_ALPHA, ONE_MINUS_SRC_ALPHA</code>) and sets
-<code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code>, so transparent PNG sprites composite correctly.</p>
+<p><code>clear()</code> always clears the whole canvas. It accepts <code>x, y, w, h</code> arguments, but ignores them.</p>
+
+<a href="#alpha-blending" id="alpha-blending" style="color: inherit; text-decoration: none;">
+  <h2>Alpha Blending</h2>
+</a>
+<p>The constructor sets up alpha blending, so transparent PNG sprites composite correctly from the
+first draw, with or without a prior <code>clear()</code>. Textures are uploaded with premultiplied alpha
+(<code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code>) and blended with <code>ONE, ONE_MINUS_SRC_ALPHA</code>. Textures can be
+created at any time, before or after the first <code>clear()</code>. <code>clear()</code> re-applies this blend
+state, in case other code changed it on the shared WebGL context.</p>
 
 <a href="#resizing" id="resizing" style="color: inherit; text-decoration: none;">
   <h2>Resizing</h2>
@@ -66,9 +80,9 @@ orthographic projection matrix.</p>
 <a href="#using-with-tile-and-sprite" id="using-with-tile-and-sprite" style="color: inherit; text-decoration: none;">
   <h2>Using with Tile and Sprite</h2>
 </a>
-<p><code>Tile</code> and <code>Sprite</code> accept either renderer. The <code>createImage</code> / <code>drawImage</code> interface is
-identical — only the internal implementation differs.</p>
-<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">WebGLRenderer</span><span class="hl-1">, </span><span class="hl-4">AssetsManager</span><span class="hl-1">, </span><span class="hl-4">Tile</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;craters&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">renderer</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">WebGLRenderer</span><span class="hl-1">(</span><span class="hl-9">800</span><span class="hl-1">, </span><span class="hl-9">600</span><span class="hl-1">);</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">assets</span><span class="hl-1">   = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">AssetsManager</span><span class="hl-1">();</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">img</span><span class="hl-1">      = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadImage</span><span class="hl-1">(</span><span class="hl-2">&quot;tileset.png&quot;</span><span class="hl-1">);</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">texture</span><span class="hl-1">  = </span><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">createImage</span><span class="hl-1">(</span><span class="hl-4">img</span><span class="hl-1">);</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">tile</span><span class="hl-1">     = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Tile</span><span class="hl-1">(</span><span class="hl-4">renderer</span><span class="hl-1"> </span><span class="hl-3">as</span><span class="hl-1"> </span><span class="hl-7">any</span><span class="hl-1">, </span><span class="hl-4">texture</span><span class="hl-1"> </span><span class="hl-3">as</span><span class="hl-1"> </span><span class="hl-7">any</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">);</span><br/><br/><span class="hl-4">tile</span><span class="hl-1">.</span><span class="hl-0">draw</span><span class="hl-1">(</span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">100</span><span class="hl-1">, </span><span class="hl-9">100</span><span class="hl-1">); </span><span class="hl-5">// draw tile at (100, 100)</span>
+<p><code>Tile</code>, <code>Sprite</code> and <code>TilemapManager</code> take any <code>Renderer</code>, so pass the <code>WebGLRenderer</code> and the
+raw image. They call <code>createImage()</code> themselves; passing them a texture handle throws.</p>
+<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">WebGLRenderer</span><span class="hl-1">, </span><span class="hl-4">AssetsManager</span><span class="hl-1">, </span><span class="hl-4">Tile</span><span class="hl-1">, </span><span class="hl-4">Sprite</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;craters&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">renderer</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">WebGLRenderer</span><span class="hl-1">(</span><span class="hl-9">800</span><span class="hl-1">, </span><span class="hl-9">600</span><span class="hl-1">);</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">assets</span><span class="hl-1">   = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">AssetsManager</span><span class="hl-1">();</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">img</span><span class="hl-1">    = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">assets</span><span class="hl-1">.</span><span class="hl-0">loadImage</span><span class="hl-1">(</span><span class="hl-2">&quot;tileset.png&quot;</span><span class="hl-1">);</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">tile</span><span class="hl-1">   = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Tile</span><span class="hl-1">(</span><span class="hl-4">renderer</span><span class="hl-1">, </span><span class="hl-4">img</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">);</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">sprite</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Sprite</span><span class="hl-1">(</span><span class="hl-4">renderer</span><span class="hl-1">, </span><span class="hl-4">img</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, [[</span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">], [</span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">1</span><span class="hl-1">]], </span><span class="hl-9">0.2</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">, </span><span class="hl-9">32</span><span class="hl-1">);</span><br/><br/><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-0">clear</span><span class="hl-1">();</span><br/><span class="hl-4">tile</span><span class="hl-1">.</span><span class="hl-0">draw</span><span class="hl-1">(</span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">100</span><span class="hl-1">, </span><span class="hl-9">100</span><span class="hl-1">);                  </span><span class="hl-5">// draw tile at (100, 100)</span><br/><span class="hl-4">sprite</span><span class="hl-1">.</span><span class="hl-0">draw</span><span class="hl-1">(</span><span class="hl-9">200</span><span class="hl-1">, </span><span class="hl-9">100</span><span class="hl-1">, </span><span class="hl-6">undefined</span><span class="hl-1">, [</span><span class="hl-9">0</span><span class="hl-1">, </span><span class="hl-9">1</span><span class="hl-1">]);   </span><span class="hl-5">// pinned frame: row 0, column 1</span>
 </code></pre>
 
 <a href="#performance-notes" id="performance-notes" style="color: inherit; text-decoration: none;">
@@ -76,7 +90,9 @@ identical — only the internal implementation differs.</p>
 </a>
 <ul>
 <li>Use <code>createImage()</code> once per image at load time — texture upload is expensive</li>
-<li><code>drawImage()</code> is a single <code>gl.drawElements()</code> call per image — batch by grouping draws between clears</li>
+<li>Every <code>Tile</code> and <code>Sprite</code> instance uploads its own texture, even when several share one image</li>
+<li><code>drawImage()</code> is one texture bind, two matrix uploads and one <code>gl.drawElements()</code> call per
+call. There is no batching, so the cost grows linearly with the number of draws</li>
 <li>NEAREST filtering avoids bilinear bleeding at tile edges; it is not suitable for smooth scaling</li>
 <li>Sub-pixel snapping is applied automatically to destination coordinates</li>
 </ul>
@@ -87,6 +103,9 @@ identical — only the internal implementation differs.</p>
 <ul>
 <li>No primitive drawing API (<code>drawRect</code>, <code>drawCircle</code>, etc.) — use <code>Canvas2DRenderer</code> for debug overlays</li>
 <li>No <code>context</code> property — direct GL access requires <code>renderer.canvasElement.getContext(&quot;webgl&quot;)</code></li>
+<li><code>clear()</code> takes an RGBA array (0–1), not a CSS colour string, and ignores its region arguments</li>
+<li><code>FontManager</code> and <code>ParticleSystem.draw()</code> are typed for <code>Canvas2DRenderer</code> only</li>
+<li>A negative destination width / height mirrors the image (<code>Canvas2DRenderer</code> does not); there is no rotation</li>
 <li>WebGL 1 only; no WebGL 2 or WebGPU</li>
 </ul>
 
@@ -140,8 +159,9 @@ identical — only the internal implementation differs.</p>
 </a>
 <ul>
 <li><code>createImage(image)</code> → <code>{ texture: WebGLTexture, width, height }</code></li>
-<li><code>drawImage(texture, sx?, sy?, sw?, sh?, dx?, dy?, dw?, dh?)</code></li>
-<li><code>clear(rgba?, x?, y?, w?, h?)</code></li>
+<li><code>deleteImage(handle)</code>: releases a texture created by <code>createImage()</code></li>
+<li><code>drawImage(texture, sx?, sy?, sw?, sh?, dx?, dy?, dw?, dh?)</code>: same defaults as <code>Canvas2DRenderer.drawImage()</code>; <code>dw</code> and <code>dh</code> default to the texture size</li>
+<li><code>clear(rgba?, x?, y?, w?, h?)</code>: <code>rgba</code> defaults to <code>[0.1, 0.1, 0.1, 1]</code>; <code>x</code>, <code>y</code>, <code>w</code> and <code>h</code> are ignored</li>
 <li><code>resize(width?, height?, devicePixelRatio?)</code></li>
 </ul>
 </div></div>
@@ -163,7 +183,7 @@ identical — only the internal implementation differs.</p>
 <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Modules</h3></summary>
 <div class="tsd-accordion-details">
 <ul>
-<li class="current"><a href="../modules.html">Craters -<wbr/> v0.3.0</a>
+<li class="current"><a href="../modules.html">Craters -<wbr/> v0.4.0</a>
 <ul>
 <li class="current pages-entry pages-entry-menu pages-entry-depth-1"><a>Guides</a>
 <ul>
@@ -195,6 +215,7 @@ identical — only the internal implementation differs.</p>
 <li class="tsd-kind-class"><a href="../classes/Input.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Input</a></li>
 <li class="tsd-kind-class"><a href="../classes/ParticleSystem.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Particle<wbr/>System</a></li>
 <li class="tsd-kind-class"><a href="../classes/RenderLoop.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Render<wbr/>Loop</a></li>
+<li class="tsd-kind-class"><a href="../classes/Sound.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sound</a></li>
 <li class="tsd-kind-class"><a href="../classes/SoundManager.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sound<wbr/>Manager</a></li>
 <li class="tsd-kind-class"><a href="../classes/Sprite.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sprite</a></li>
 <li class="tsd-kind-class"><a href="../classes/Tile.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Tile</a></li>
@@ -203,5 +224,9 @@ identical — only the internal implementation differs.</p>
 <li class="tsd-kind-class"><a href="../classes/WebGLRenderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>WebGLRenderer</a></li>
 <li class="tsd-kind-interface"><a href="../interfaces/FontInstance.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-interface)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-256-path"></rect><path d="M9.51 16V15.016H11.298V8.224H9.51V7.24H14.19V8.224H12.402V15.016H14.19V16H9.51Z" fill="var(--color-text)" id="icon-256-text"></path></svg>Font<wbr/>Instance</a></li>
 <li class="tsd-kind-interface"><a href="../interfaces/ParticleEmitConfig.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Particle<wbr/>Emit<wbr/>Config</a></li>
-<li class="tsd-kind-interface"><a href="../interfaces/Renderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Renderer</a></li></ul></nav></div></div>
+<li class="tsd-kind-interface"><a href="../interfaces/Renderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Renderer</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/TilemapData.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tilemap<wbr/>Data</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/TilemapLayer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tilemap<wbr/>Layer</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/Tileset.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tileset</a></li>
+<li class="tsd-kind-type-alias"><a href="../types/TileEntry.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-4194304-path"></rect><path d="M11.31 16V8.224H8.91V7.24H14.79V8.224H12.39V16H11.31Z" fill="var(--color-text)" id="icon-4194304-text"></path></svg>Tile<wbr/>Entry</a></li></ul></nav></div></div>
 <div class="overlay"></div><script src="../assets/main.js"></script></body></html>

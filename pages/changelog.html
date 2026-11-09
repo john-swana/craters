@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Changelog | Craters - v0.3.0</title><meta name="description" content="Documentation for Craters - v0.3.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Changelog | Craters - v0.4.0</title><meta name="description" content="Documentation for Craters - v0.4.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -6,19 +6,55 @@
 <div id="tsd-toolbar-links"></div></div>
 <ul class="results">
 <li class="state loading">Preparing search index...</li>
-<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.3.0</a></div>
+<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.4.0</a></div>
 <div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="7" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="11" width="14" height="2" fill="var(--color-text)"></rect></svg></a></div></div></header>
 <div class="container container-main">
 <div class="col-8 col-content">
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
-<li><a href="../modules.html">Craters - v0.3.0</a></li>
+<li><a href="../modules.html">Craters - v0.4.0</a></li>
 <li><a href="changelog.html">Changelog</a></li></ul>
 <h1> Changelog</h1></div>
 <div class="tsd-panel tsd-typography"><ul>
-<li><p>v0.3.0 (2026) - Engine review fixes
-  Phase 1 (correctness):</p>
+<li><p>v0.4.0 (2026-11-09) - Fixes, render hook &amp; documentation
+  API:</p>
 <ul>
+<li><code>Sound</code> is now exported from the package entry point, along with the tilemap types <code>TilemapData</code>, <code>TilemapLayer</code>, <code>Tileset</code> and <code>TileEntry</code>.</li>
+<li>RenderLoop: new optional third constructor argument <code>render(loop)</code>, called once per animation frame after that frame&#39;s fixed steps, with <code>alpha</code> and <code>current</code> already updated — use it to interpolate between simulation states.</li>
+<li>Input: new optional constructor argument <code>new Input(pointerTarget?)</code> (default <code>document</code>). Mouse and touch listeners, and their <code>preventDefault()</code>, attach to the target, so passing the game canvas leaves taps, clicks and scrolling working on the rest of the page. Keyboard listeners stay on <code>document</code>.</li>
+<li>RigidBody: <code>applyForce(force, wake = true)</code> and <code>applyImpulse(impulse, wake = true)</code> take an optional <code>wake</code> flag (see below).</li>
+<li>FontManager: new optional 7th constructor argument and property <code>lineWidth</code> (default 1) for stroked glyphs.
+  RenderLoop:</li>
+<li>Fixed <code>stop()</code> not cancelling a loop whose first frame had not run yet (e.g. created in a background tab, where <code>requestAnimationFrame</code> is paused); a later <code>start()</code> then launched a second, untracked frame chain.</li>
+<li><code>start()</code> after <code>stop()</code> now restarts timing (accumulator and <code>alpha</code> reset, first frame only records a timestamp) instead of running up to 250 ms of catch-up steps. <code>elapsed</code> continues from where it was.</li>
+<li><code>stop()</code> called from inside the step callback now takes effect immediately: the remaining steps queued for that frame are skipped and <code>render</code> is not called for it.
+  ECS:</li>
+<li><code>World.updateEntity(entity)</code> is now a no-op for entities that are not in the world; previously it put a removed entity back into matching queries. Use <code>addEntity()</code> to bring an entity back.
+  QuadTree:</li>
+<li>A zero-width (or zero-height) box lying exactly on a split line now counts as touching both sides; previously it was dropped once its node split. All other boxes behave as before.
+  Physics:</li>
+<li><code>testCirclePolygon</code> now sets <code>response.aInB</code> (circle fully inside the polygon) and <code>response.bInA</code> (polygon fully inside the circle); previously they kept their earlier values.</li>
+<li>BEHAVIOR (RigidBody): <code>applyForce</code>/<code>applyImpulse</code> now wake a sleeping body by default; previously a sleeping body discarded forces and froze impulses. Pass <code>wake = false</code> for per-step forces such as gravity so resting bodies can sleep.</li>
+<li>BEHAVIOR (RigidBody): sleeping now works for bodies resting under gravity. The sleep check runs at the start of <code>integrate()</code> on the velocity left after the previous collision response; <code>resolveCollision()</code> wakes a sleeping body only on an impact (not on every contact), no longer resets awake bodies&#39; sleep timers, and skips pairs where neither body can move. A box dropped on a static floor with gravity applied via <code>applyForce(g, false)</code> now sleeps about 2.3 s after release.</li>
+<li>BEHAVIOR (RigidBody): the resting-contact threshold is now 2 px/s plus the normal speed the bodies&#39; forces added in their last step, which removes the gravity micro-bounce of resting bodies at one step per frame. Real impacts bounce as before.
+  Rendering:</li>
+<li>FontManager: the <code>fill</code>, <code>stroke</code> and <code>strokeStyle</code> options now take effect when the glyph atlas is built (previously glyphs were always filled and never stroked). Atlas cells get a margin so strokes are not clipped. Default output is unchanged.</li>
+<li>WebGLRenderer: blending is set up in the constructor, with premultiplied-alpha uploads and <code>ONE, ONE_MINUS_SRC_ALPHA</code> blending. Semi-transparent textures now composite correctly regardless of when they were created relative to the first <code>clear()</code>, and drawing blends even if <code>clear()</code> is never called. Opaque textures render as before.</li>
+<li>TilemapManager.load: rejects with an <code>Error</code> on a non-OK HTTP response and when a tileset image fails to load (previously it parsed the error page, or rejected with a raw <code>Event</code>).
+  Input, sound &amp; assets:</li>
+<li>SoundManager: the audio context now unlocks on touch-only devices. It listens for <code>touchend</code>, <code>click</code>, <code>mousedown</code>, <code>pointerup</code> and <code>keydown</code> (<code>touchstart</code> is not a user gesture) and keeps retrying until the context is running; afterwards it no longer resumes the context, so <code>suspendAll()</code> stays paused.</li>
+<li>Input: <code>Touch0</code> is released only when the last finger lifts, not on any finger&#39;s <code>touchend</code>.</li>
+<li>BEHAVIOR (AssetsManager): <code>loadText</code>, <code>loadJson</code> and <code>loadBinary</code> reject with an <code>Error</code> on a non-OK HTTP response instead of resolving with the error page; <code>loadImage</code> rejects with an <code>Error</code> instead of the raw <code>Event</code>.
+  Docs:</li>
+<li>Corrected README, ARCHITECTURE and every guide for the current API (imports, time units, ECS query membership, <code>Input.update()</code>, RenderLoop timing, the <code>map2d</code> tilemap format, and more); public-API source comments are now TSDoc, so they appear on the API site; corrected the release history below.</li>
+</ul>
+</li>
+<li><p>v0.3.0 (2026-06-27) - Engine review fixes
+  New since v0.2.0:</p>
+<ul>
+<li>Added <code>ParticleSystem</code> (sprite particles with per-particle gravity, drag, rotation, tinting and directional bias) and its <code>ParticleEmitConfig</code> type.</li>
+<li>Added usage guides for every module (<code>guides/</code>), published with the TypeDoc site (<code>npm run build:docs</code>).
+  Phase 1 (correctness):</li>
 <li>BREAKING (Input): <code>isPressed()</code> no longer mutates state on read — repeated reads in a frame all return the &quot;just pressed&quot; value (2). Call the new <code>Input.update()</code> once per frame to advance the 2 → 1 (held) transition.</li>
 <li>Fixed Input listeners never being removed: handlers are now stable references, so unbinding works. Added <code>Input.unbind()</code>; <code>unbindKeys()</code> retained as a deprecated alias.</li>
 <li>Fixed Canvas2DRenderer ignoring context options: they are now passed to <code>getContext(&quot;2d&quot;, options)</code> instead of <code>createElement</code> (where they were silently dropped).</li>
@@ -46,24 +82,28 @@
 <li>Added <code>World.removeQuery(query)</code> to dispose a persistent query (the missing inverse of <code>createQuery</code>), and <code>World.queryOnce(components)</code> for one-off counts/filters that must NOT register a permanent query. Previously every <code>createQuery</code> lived forever and was re-evaluated on each entity add/remove, so a query accidentally created per frame leaked and degraded add/remove without bound (measured: unplayable within minutes in a real game loop). These give consumers a non-leaking path for the count/filter use case.</li>
 </ul>
 </li>
-<li><p>v0.1.4 (unreleased)</p>
+<li><p>v0.2.0 (2026-04-17) - Physics &amp; fixed-timestep loop</p>
+<ul>
+<li>Added <code>RigidBody</code> impulse-based 2D physics (forces, impulses, damping, friction, restitution, sleeping) and split the SAT library into <code>vector</code>, <code>shapes</code> (<code>Box</code>, <code>Polygon</code>, <code>Circle</code>) and <code>collision</code> (<code>testPolygonPolygon</code>, <code>testCirclePolygon</code>, <code>testCircleCircle</code>, <code>Response</code>) modules, all exported under the <code>SAT</code> namespace.</li>
+<li>BREAKING (RenderLoop): rewritten as a fixed-timestep loop. The callback now runs once per fixed step (<code>1000 / frameRate</code> ms) instead of once per animation frame; <code>delta</code> is that fixed step rather than the measured frame time; <code>elapsed</code> is simulated time; frame time is capped at 250 ms; a new <code>alpha</code> field holds the leftover fraction of a step. <code>start()</code> no longer launches a second loop while one is running.</li>
+<li>BREAKING: removed the package&#39;s default-export object; use named imports (<code>import { RenderLoop } from &quot;craters&quot;</code>).</li>
+<li>Rendering: both renderers snap draws to physical pixels and use nearest-neighbour sampling, removing tile seams on high-DPR displays; <code>WebGLRenderer</code> throws a clear error when WebGL is unavailable; <code>Sprite.draw</code> gained a <code>sourceInset</code> argument (TilemapManager uses 0.5) to stop atlas bleeding.</li>
+<li><code>Sound.play(loop, onEnded)</code> gained looping and an end callback.</li>
+<li>Fixed CI workflows.</li>
+</ul>
+</li>
+<li><p>v0.1.2 (2025-11-27) - Collision Detection &amp; Testing</p>
 <ul>
 <li>Added SAT (Separating Axis Theorem) collision detection library with support for Circle-Circle, Circle-Polygon, and Polygon-Polygon collisions</li>
 <li>Implemented QuadTree spatial partitioning for efficient broad-phase collision detection</li>
 <li>Added primitive drawing methods to Canvas2DRenderer (drawRect, drawCircle, drawPolygon, drawLine)</li>
 <li>Enhanced Input class with mouse and touch event support (pointerPosition, Touch0 binding)</li>
-<li>Improved test coverage for ECS query registration</li>
 <li>Converted Response interface to class in SAT library for proper instantiation</li>
+<li>Added tests for Sound and ECS modules, including ECS query registration</li>
+<li>Release workflow: removed the npm scope so the package publishes as <code>craters</code> (a brief rename to <code>@swashvirus/craters</code> during this cycle was reverted; every release is published as <code>craters</code>)</li>
 </ul>
 </li>
-<li><p>v0.1.2 (2024) - Package Naming &amp; Testing</p>
-<ul>
-<li>Fixed package scope in release workflow to match actual package name</li>
-<li>Added comprehensive tests for Sound and ECS modules</li>
-<li>Updated package name to scoped @swashvirus/craters</li>
-</ul>
-</li>
-<li><p>v0.1.1 (2024) - Renderer &amp; Input Improvements</p>
+<li><p>v0.1.1 (2025-11-19) - Renderer &amp; Input Improvements</p>
 <ul>
 <li>Optimized renderer performance</li>
 <li>Improved sound and input handling</li>
@@ -71,14 +111,14 @@
 <li>Security: Bumped multiple dependencies (qs, body-parser, engine.io, socket.io, terser, karma, follow-redirects, minimist, grunt)</li>
 </ul>
 </li>
-<li><p>v0.1.0-rebase.12 (2023)</p>
+<li><p>v0.1.0-rebase.12 (2021-11-18)</p>
 <ul>
 <li>Fixed workflow to prevent overwriting modules with latest versions</li>
 <li>Renamed TilemapManager and exported Tilemap class</li>
 <li>Updated pathname in tilemap test</li>
 </ul>
 </li>
-<li><p>v0.1.0 (2023) - Initial Rebase</p>
+<li><p>v0.1.0 (2021-11-07) - Initial Rebase</p>
 <ul>
 <li>Craters development resumed and version rebased to semantic version v0.1.0</li>
 </ul>
@@ -103,7 +143,7 @@
 <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Modules</h3></summary>
 <div class="tsd-accordion-details">
 <ul>
-<li class="current"><a href="../modules.html">Craters -<wbr/> v0.3.0</a>
+<li class="current"><a href="../modules.html">Craters -<wbr/> v0.4.0</a>
 <ul>
 <li class="pages-entry pages-entry-menu pages-entry-depth-1"><a>Guides</a>
 <ul>
@@ -135,6 +175,7 @@
 <li class="tsd-kind-class"><a href="../classes/Input.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Input</a></li>
 <li class="tsd-kind-class"><a href="../classes/ParticleSystem.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Particle<wbr/>System</a></li>
 <li class="tsd-kind-class"><a href="../classes/RenderLoop.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Render<wbr/>Loop</a></li>
+<li class="tsd-kind-class"><a href="../classes/Sound.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sound</a></li>
 <li class="tsd-kind-class"><a href="../classes/SoundManager.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sound<wbr/>Manager</a></li>
 <li class="tsd-kind-class"><a href="../classes/Sprite.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sprite</a></li>
 <li class="tsd-kind-class"><a href="../classes/Tile.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Tile</a></li>
@@ -143,5 +184,9 @@
 <li class="tsd-kind-class"><a href="../classes/WebGLRenderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>WebGLRenderer</a></li>
 <li class="tsd-kind-interface"><a href="../interfaces/FontInstance.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-interface)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-256-path"></rect><path d="M9.51 16V15.016H11.298V8.224H9.51V7.24H14.19V8.224H12.402V15.016H14.19V16H9.51Z" fill="var(--color-text)" id="icon-256-text"></path></svg>Font<wbr/>Instance</a></li>
 <li class="tsd-kind-interface"><a href="../interfaces/ParticleEmitConfig.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Particle<wbr/>Emit<wbr/>Config</a></li>
-<li class="tsd-kind-interface"><a href="../interfaces/Renderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Renderer</a></li></ul></nav></div></div>
+<li class="tsd-kind-interface"><a href="../interfaces/Renderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Renderer</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/TilemapData.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tilemap<wbr/>Data</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/TilemapLayer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tilemap<wbr/>Layer</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/Tileset.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tileset</a></li>
+<li class="tsd-kind-type-alias"><a href="../types/TileEntry.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-4194304-path"></rect><path d="M11.31 16V8.224H8.91V7.24H14.79V8.224H12.39V16H11.31Z" fill="var(--color-text)" id="icon-4194304-text"></path></svg>Tile<wbr/>Entry</a></li></ul></nav></div></div>
 <div class="overlay"></div><script src="../assets/main.js"></script></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>RigidBody | Craters - v0.3.0</title><meta name="description" content="Documentation for Craters - v0.3.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>RigidBody | Craters - v0.4.0</title><meta name="description" content="Documentation for Craters - v0.4.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -6,26 +6,34 @@
 <div id="tsd-toolbar-links"></div></div>
 <ul class="results">
 <li class="state loading">Preparing search index...</li>
-<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.3.0</a></div>
+<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.4.0</a></div>
 <div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="7" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="11" width="14" height="2" fill="var(--color-text)"></rect></svg></a></div></div></header>
 <div class="container container-main">
 <div class="col-8 col-content">
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
-<li><a href="../modules.html">Craters - v0.3.0</a></li>
+<li><a href="../modules.html">Craters - v0.4.0</a></li>
 <li><a href="../modules/SAT.html">SAT</a></li>
 <li><a href="SAT.RigidBody.html">RigidBody</a></li></ul>
 <h1>Class RigidBody</h1></div>
 <section class="tsd-panel tsd-comment">
-<div class="tsd-comment tsd-typography"><p>RigidBody class for 2D physics simulation
-Supports dynamic and static bodies, forces, impulses, and collision response</p>
+<div class="tsd-comment tsd-typography"><p>RigidBody class for 2D physics simulation.
+Supports dynamic and static bodies, forces, impulses, and collision response.</p>
+<p>Units: positions in px, time in seconds, velocities in px/s, accelerations in
+px/s², angles in radians. Collision response is single-pass and impulse-based;
+collisions and forces never rotate a body (there is no inertia/torque model).
+Pair a body with a SAT shape and copy <code>position</code> to <code>shape.pos</code> after
+<a href="SAT.RigidBody.html#integrate">integrate</a> and <a href="SAT.RigidBody.html#resolveCollision">resolveCollision</a>.</p>
+<p>Sleeping: a body that stays slow for <a href="SAT.RigidBody.html#sleepTimerMax">sleepTimerMax</a> steps
+falls asleep and is skipped until woken. Apply per-step forces such as
+gravity with <code>applyForce(force, false)</code> so resting bodies can fall asleep.</p>
 </div></section>
 <section class="tsd-panel tsd-hierarchy">
 <h4>Hierarchy</h4>
 <ul class="tsd-hierarchy">
 <li><span class="target">RigidBody</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L8">rigidbody.ts:8</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L18">rigidbody.ts:18</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -83,165 +91,242 @@ Supports dynamic and static bodies, forces, impulses, and collision response</p>
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>position: <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><span class="tsd-signature-symbol"> = ...</span></h5></li>
+<h5>position: <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><span class="tsd-signature-symbol"> = ...</span></h5>
+<div class="tsd-comment tsd-typography"><p>position in px; stored by reference (not copied)</p>
+</div></li>
 <li>
-<h5>mass: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 1</span></h5></li>
+<h5>mass: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 1</span></h5>
+<div class="tsd-comment tsd-typography"><p>mass; 0 creates a static body</p>
+</div></li>
 <li>
-<h5>restitution: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0.5</span></h5></li>
+<h5>restitution: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0.5</span></h5>
+<div class="tsd-comment tsd-typography"><p>bounciness, 0–1</p>
+</div></li>
 <li>
-<h5>friction: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0.3</span></h5></li></ul></div>
+<h5>friction: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0.3</span></h5>
+<div class="tsd-comment tsd-typography"><p>surface friction, 0–1</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.RigidBody.html" class="tsd-signature-type" data-tsd-kind="Class">RigidBody</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L50">rigidbody.ts:50</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L97">rigidbody.ts:97</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="acceleration" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>acceleration</span><a href="#acceleration" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">acceleration<span class="tsd-signature-symbol">:</span> <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></div><aside class="tsd-sources">
+<div class="tsd-signature">acceleration<span class="tsd-signature-symbol">:</span> <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></div>
+<div class="tsd-comment tsd-typography"><p><code>force × inverseMass</code> from the last <a href="SAT.RigidBody.html#integrate">integrate</a> step, in px/s². Overwritten every step.</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L15">rigidbody.ts:15</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L27">rigidbody.ts:27</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="angle" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>angle</span><a href="#angle" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">angle<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
+<div class="tsd-signature">angle<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>Rotation in radians. Changes only through a manually set <a href="SAT.RigidBody.html#angularVelocity">angularVelocity</a>.</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L11">rigidbody.ts:11</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L22">rigidbody.ts:22</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="angularAcceleration" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>angular<wbr/>Acceleration</span><a href="#angularAcceleration" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">angular<wbr/>Acceleration<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
+<div class="tsd-signature">angular<wbr/>Acceleration<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>Not used by the integrator (there is no torque/inertia model).</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L19">rigidbody.ts:19</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L32">rigidbody.ts:32</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="angularDamping" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>angular<wbr/>Damping</span><a href="#angularDamping" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">angular<wbr/>Damping<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
+<div class="tsd-signature">angular<wbr/>Damping<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>Angular damping: fraction of angular velocity retained per second, like <a href="SAT.RigidBody.html#linearDamping">linearDamping</a>. Default 0.98.</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L48">rigidbody.ts:48</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L89">rigidbody.ts:89</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="angularVelocity" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>angular<wbr/>Velocity</span><a href="#angularVelocity" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">angular<wbr/>Velocity<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
+<div class="tsd-signature">angular<wbr/>Velocity<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>Angular velocity in rad/s. Never changed by collisions or forces; set it manually.</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L18">rigidbody.ts:18</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L30">rigidbody.ts:30</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="force" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>force</span><a href="#force" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">force<span class="tsd-signature-symbol">:</span> <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></div><aside class="tsd-sources">
+<div class="tsd-signature">force<span class="tsd-signature-symbol">:</span> <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></div>
+<div class="tsd-comment tsd-typography"><p>Accumulated force (from <a href="SAT.RigidBody.html#applyForce">applyForce</a>); cleared by every <a href="SAT.RigidBody.html#integrate">integrate</a> call.</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L30">rigidbody.ts:30</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L52">rigidbody.ts:52</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="friction" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>friction</span><a href="#friction" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">friction<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
+<div class="tsd-signature">friction<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>Surface friction, 0 = ice, 1 = rubber. A colliding pair uses the average of the two values.</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L27">rigidbody.ts:27</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L49">rigidbody.ts:49</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="inverseMass" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>inverse<wbr/>Mass</span><a href="#inverseMass" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">inverse<wbr/>Mass<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
+<div class="tsd-signature">inverse<wbr/>Mass<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p><code>1 / mass</code>, or 0 for static bodies. Used by all dynamics.</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L23">rigidbody.ts:23</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L40">rigidbody.ts:40</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="isSleeping" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Sleeping</span><a href="#isSleeping" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">is<wbr/>Sleeping<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div><aside class="tsd-sources">
+<div class="tsd-signature">is<wbr/>Sleeping<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+<div class="tsd-comment tsd-typography"><p>Whether the body is asleep (skipped by <a href="SAT.RigidBody.html#integrate">integrate</a>).</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L37">rigidbody.ts:37</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L65">rigidbody.ts:65</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="isStatic" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Static</span><a href="#isStatic" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">is<wbr/>Static<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div><aside class="tsd-sources">
+<div class="tsd-signature">is<wbr/>Static<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+<div class="tsd-comment tsd-typography"><p>Static bodies never move. Set via a mass of 0, <a href="SAT.RigidBody.html#setStatic">setStatic</a> or <a href="SAT.RigidBody.html#setMass">setMass</a>.</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L34">rigidbody.ts:34</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L62">rigidbody.ts:62</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="linearDamping" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>linear<wbr/>Damping</span><a href="#linearDamping" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">linear<wbr/>Damping<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
+<div class="tsd-signature">linear<wbr/>Damping<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>Linear damping to simulate air resistance: the fraction of velocity
+RETAINED PER SECOND (e.g. 0.99 = lose 1%/s; 1 = no damping), applied via
+<code>Math.pow(d, dt)</code> so the result does not depend on step size. Lower values
+damp more. Default 0.99. NOTE: before 0.3.0 the value was applied once per
+step (frame-rate dependent — heavier damping at higher FPS).</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L47">rigidbody.ts:47</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L87">rigidbody.ts:87</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="mass" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>mass</span><a href="#mass" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">mass<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
+<div class="tsd-signature">mass<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>Mass. Change it with <a href="SAT.RigidBody.html#setMass">setMass</a>: assigning it directly does
+not update <a href="SAT.RigidBody.html#inverseMass">inverseMass</a> or <a href="SAT.RigidBody.html#isStatic">isStatic</a>.</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L22">rigidbody.ts:22</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L38">rigidbody.ts:38</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="position" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>position</span><a href="#position" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">position<span class="tsd-signature-symbol">:</span> <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></div><aside class="tsd-sources">
+<div class="tsd-signature">position<span class="tsd-signature-symbol">:</span> <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></div>
+<div class="tsd-comment tsd-typography"><p>Position in px: the point that matches the paired shape&#39;s <code>pos</code>. Stored by reference (not copied).</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L10">rigidbody.ts:10</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L20">rigidbody.ts:20</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="restitution" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>restitution</span><a href="#restitution" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">restitution<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
+<div class="tsd-signature">restitution<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>Bounciness, 0 = no bounce, 1 = perfect bounce. A colliding pair uses the
+lower of the two values; it is ignored (treated as 0) for resting contacts
+(see <a href="SAT.RigidBody.html#resolveCollision">resolveCollision</a>).</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L26">rigidbody.ts:26</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L47">rigidbody.ts:47</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="sleepThreshold" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>sleep<wbr/>Threshold</span><a href="#sleepThreshold" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">sleep<wbr/>Threshold<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
+<div class="tsd-signature">sleep<wbr/>Threshold<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>Sleep threshold, compared with the SQUARED linear speed ((px/s)²) and the
+squared angular speed ((rad/s)²). Default 20, i.e. below about 4.5 px/s.</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L38">rigidbody.ts:38</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L70">rigidbody.ts:70</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="sleepTimer" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>sleep<wbr/>Timer</span><a href="#sleepTimer" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">sleep<wbr/>Timer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
+<div class="tsd-signature">sleep<wbr/>Timer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>Consecutive <a href="SAT.RigidBody.html#integrate">integrate</a> calls spent below <a href="SAT.RigidBody.html#sleepThreshold">sleepThreshold</a>.</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L39">rigidbody.ts:39</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L72">rigidbody.ts:72</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="sleepTimerMax" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>sleep<wbr/>Timer<wbr/>Max</span><a href="#sleepTimerMax" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">sleep<wbr/>Timer<wbr/>Max<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
+<div class="tsd-signature">sleep<wbr/>Timer<wbr/>Max<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>Number of slow <a href="SAT.RigidBody.html#integrate">integrate</a> calls (steps, not frames) before
+the body sleeps: it falls asleep once <a href="SAT.RigidBody.html#sleepTimer">sleepTimer</a> exceeds
+this value. Default 60.</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L40">rigidbody.ts:40</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L78">rigidbody.ts:78</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="torque" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>torque</span><a href="#torque" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">torque<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
+<div class="tsd-signature">torque<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>Not used by the integrator (there is no torque/inertia model).</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L31">rigidbody.ts:31</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L54">rigidbody.ts:54</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="velocity" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>velocity</span><a href="#velocity" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">velocity<span class="tsd-signature-symbol">:</span> <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></div><aside class="tsd-sources">
+<div class="tsd-signature">velocity<span class="tsd-signature-symbol">:</span> <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></div>
+<div class="tsd-comment tsd-typography"><p>Linear velocity in px/s.</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L14">rigidbody.ts:14</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L25">rigidbody.ts:25</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="applyForce" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>apply<wbr/>Force</span><a href="#applyForce" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="applyForce.applyForce-1">apply<wbr/>Force<span class="tsd-signature-symbol">(</span>force<span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#applyForce.applyForce-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="applyForce.applyForce-1">apply<wbr/>Force<span class="tsd-signature-symbol">(</span>force<span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a>, wake<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#applyForce.applyForce-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Apply a force to the center of mass</p>
+<div class="tsd-comment tsd-typography"><p>Apply a force (mass × px/s²) to the center of mass. It accumulates until
+the next <a href="SAT.RigidBody.html#integrate">integrate</a>, which clears it, so apply continuous
+forces (e.g. gravity) every step. Ignored by static bodies.</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>force: <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h5></li></ul></div>
+<h5>force: <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h5>
+<div class="tsd-comment tsd-typography"><p>the force to add</p>
+</div></li>
+<li>
+<h5>wake: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = true</span></h5>
+<div class="tsd-comment tsd-typography"><p>wake the body and restart its sleep timer, like
+  <a href="SAT.RigidBody.html#wake">wake</a> (default true). Pass <code>false</code> for forces applied
+  every step, such as gravity, so a resting body can fall asleep; a
+  sleeping body then ignores the force and stays asleep.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L104">rigidbody.ts:104</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L165">rigidbody.ts:165</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="applyImpulse" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>apply<wbr/>Impulse</span><a href="#applyImpulse" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="applyImpulse.applyImpulse-1">apply<wbr/>Impulse<span class="tsd-signature-symbol">(</span>impulse<span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#applyImpulse.applyImpulse-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="applyImpulse.applyImpulse-1">apply<wbr/>Impulse<span class="tsd-signature-symbol">(</span>impulse<span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a>, wake<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#applyImpulse.applyImpulse-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Apply an impulse (instant velocity change)</p>
+<div class="tsd-comment tsd-typography"><p>Apply an impulse (instant velocity change): <code>velocity += impulse × inverseMass</code>.
+Ignored by static bodies.</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>impulse: <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h5></li></ul></div>
+<h5>impulse: <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h5>
+<div class="tsd-comment tsd-typography"><p>the impulse to apply</p>
+</div></li>
+<li>
+<h5>wake: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = true</span></h5>
+<div class="tsd-comment tsd-typography"><p>wake the body and restart its sleep timer, like
+  <a href="SAT.RigidBody.html#wake">wake</a> (default true). With <code>false</code> a sleeping body
+  ignores the impulse and stays asleep.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L112">rigidbody.ts:112</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L181">rigidbody.ts:181</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getKineticEnergy" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Kinetic<wbr/>Energy</span><a href="#getKineticEnergy" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="getKineticEnergy.getKineticEnergy-1">get<wbr/>Kinetic<wbr/>Energy<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><a href="#getKineticEnergy.getKineticEnergy-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Get the kinetic energy of the body</p>
+<div class="tsd-comment tsd-typography"><p>Get the linear kinetic energy of the body, <code>0.5 × mass × speed²</code>
+(rotational energy is not included).</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L305">rigidbody.ts:305</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L429">rigidbody.ts:429</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getMomentum" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Momentum</span><a href="#getMomentum" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="getMomentum.getMomentum-1">get<wbr/>Momentum<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><a href="#getMomentum.getMomentum-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Get the momentum of the body</p>
+<div class="tsd-comment tsd-typography"><p>Get the momentum of the body as a new Vector, <code>mass × velocity</code>.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L314">rigidbody.ts:314</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L438">rigidbody.ts:438</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="integrate" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>integrate</span><a href="#integrate" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -259,17 +344,38 @@ Supports dynamic and static bodies, forces, impulses, and collision response</p>
   (maxSpeed = 4000 px/s, the resting-contact threshold) assume. With a
   fixed-step RenderLoop, pass <code>loop.deltaSeconds</code> (NOT <code>loop.delta</code>, which
   is milliseconds — that would scale every velocity by 1000×).</p>
+<p>Static bodies are skipped. The sleep state is updated first, from the
+velocity the previous step left behind (after its collision response), and
+a sleeping body only has its forces cleared. Otherwise:
+velocity += force/mass·dt, damping, position += velocity·dt,
+angle += angularVelocity·dt, forces cleared.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L126">rigidbody.ts:126</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L203">rigidbody.ts:203</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="resolveCollision" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>resolve<wbr/>Collision</span><a href="#resolveCollision" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="resolveCollision.resolveCollision-1">resolve<wbr/>Collision<span class="tsd-signature-symbol">(</span>other<span class="tsd-signature-symbol">: </span><a href="SAT.RigidBody.html" class="tsd-signature-type" data-tsd-kind="Class">RigidBody</a>, response<span class="tsd-signature-symbol">: </span><a href="SAT.Response.html" class="tsd-signature-type" data-tsd-kind="Class">Response</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#resolveCollision.resolveCollision-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Resolve collision using impulse-based response
-This should be called when a collision is detected with a Response object</p>
+<div class="tsd-comment tsd-typography"><p>Resolve a collision using impulse-based response.</p>
+<p>Argument order matters: <code>response</code> must come from a SAT test whose FIRST
+shape belongs to this body, i.e. <code>testPolygonPolygon(thisShape, otherShape, response)</code>
+(<code>response.overlapN</code> points from this body toward <code>other</code>). Swapping the
+order pushes the bodies into each other.</p>
+<p>Resting contact: an approach slower than 2 px/s plus the normal velocity
+the two bodies gained from forces in their last step (e.g. one step of
+gravity) counts as resting rather than as an impact.</p>
+<p>Steps: returns if both bodies are static; wakes a sleeping body only if the
+contact is an impact (resting and separating contacts leave it asleep, and
+awake bodies keep their sleep timers); a body that is still asleep acts as
+immovable for this contact; moves the bodies apart along the normal by 40%
+of <code>(overlap − 0.5 px)</code>, split by inverse mass; returns if already
+separating; scales the approach speed down for overlaps &gt; 8 px (to zero at
+16 px); applies a normal impulse with <code>min(restitution)</code> (0 for resting
+contacts); caps each dynamic body&#39;s speed at 4000 px/s; applies Coulomb
+friction with the average friction. No rotation is produced.</p>
+<p>Positions change, so re-sync shapes (<code>shape.pos.copy(body.position)</code>) afterwards.</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
@@ -280,13 +386,14 @@ This should be called when a collision is detected with a Response object</p>
 <h5>response: <a href="SAT.Response.html" class="tsd-signature-type" data-tsd-kind="Class">Response</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L209">rigidbody.ts:209</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L317">rigidbody.ts:317</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="setMass" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Mass</span><a href="#setMass" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="setMass.setMass-1">set<wbr/>Mass<span class="tsd-signature-symbol">(</span>mass<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SAT.RigidBody.html" class="tsd-signature-type" data-tsd-kind="Class">RigidBody</a><a href="#setMass.setMass-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Set mass and recalculate inverse mass</p>
+<div class="tsd-comment tsd-typography"><p>Set mass and recalculate inverse mass. A mass of 0 makes the body static;
+a mass &gt; 0 makes it dynamic (<code>isStatic = false</code>).</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
@@ -295,13 +402,13 @@ This should be called when a collision is detected with a Response object</p>
 <h5>mass: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.RigidBody.html" class="tsd-signature-type" data-tsd-kind="Class">RigidBody</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L340">rigidbody.ts:340</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L465">rigidbody.ts:465</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="setPosition" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Position</span><a href="#setPosition" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="setPosition.setPosition-1">set<wbr/>Position<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SAT.RigidBody.html" class="tsd-signature-type" data-tsd-kind="Class">RigidBody</a><a href="#setPosition.setPosition-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Set position directly</p>
+<div class="tsd-comment tsd-typography"><p>Set position directly (px). Does not wake the body or move any shape.</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
@@ -312,13 +419,14 @@ This should be called when a collision is detected with a Response object</p>
 <h5>y: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.RigidBody.html" class="tsd-signature-type" data-tsd-kind="Class">RigidBody</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L331">rigidbody.ts:331</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L455">rigidbody.ts:455</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="setSleeping" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Sleeping</span><a href="#setSleeping" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="setSleeping.setSleeping-1">set<wbr/>Sleeping<span class="tsd-signature-symbol">(</span>sleeping<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#setSleeping.setSleeping-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Manually set sleep state</p>
+<div class="tsd-comment tsd-typography"><p>Manually set sleep state. <code>true</code> zeroes velocity, angular velocity and
+accumulated forces; <code>false</code> resets <a href="SAT.RigidBody.html#sleepTimer">sleepTimer</a>.</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
@@ -327,13 +435,17 @@ This should be called when a collision is detected with a Response object</p>
 <h5>sleeping: <span class="tsd-signature-type">boolean</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L184">rigidbody.ts:184</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L270">rigidbody.ts:270</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="setStatic" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Static</span><a href="#setStatic" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="setStatic.setStatic-1">set<wbr/>Static<span class="tsd-signature-symbol">(</span>isStatic<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SAT.RigidBody.html" class="tsd-signature-type" data-tsd-kind="Class">RigidBody</a><a href="#setStatic.setStatic-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Set the body as static (immovable)</p>
+<div class="tsd-comment tsd-typography"><p>Set the body as static (immovable).</p>
+<p><code>setStatic(true)</code> zeroes mass, inverse mass, velocity and angular velocity.
+<code>setStatic(false)</code> only clears the flag: mass and inverse mass stay 0, so
+the body still cannot move. To make it dynamic again use
+<a href="SAT.RigidBody.html#setMass">setMass</a> with a mass &gt; 0.</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
@@ -342,13 +454,13 @@ This should be called when a collision is detected with a Response object</p>
 <h5>isStatic: <span class="tsd-signature-type">boolean</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.RigidBody.html" class="tsd-signature-type" data-tsd-kind="Class">RigidBody</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L89">rigidbody.ts:89</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L142">rigidbody.ts:142</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="setVelocity" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Velocity</span><a href="#setVelocity" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="setVelocity.setVelocity-1">set<wbr/>Velocity<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SAT.RigidBody.html" class="tsd-signature-type" data-tsd-kind="Class">RigidBody</a><a href="#setVelocity.setVelocity-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Set velocity directly</p>
+<div class="tsd-comment tsd-typography"><p>Set velocity directly (px/s). Also wakes the body.</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
@@ -359,17 +471,17 @@ This should be called when a collision is detected with a Response object</p>
 <h5>y: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.RigidBody.html" class="tsd-signature-type" data-tsd-kind="Class">RigidBody</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L321">rigidbody.ts:321</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L445">rigidbody.ts:445</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="wake" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>wake</span><a href="#wake" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="wake.wake-1">wake<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#wake.wake-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Wake up the body</p>
+<div class="tsd-comment tsd-typography"><p>Wake up the body and restart its sleep timer. Same as <code>setSleeping(false)</code>.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/rigidbody.ts#L201">rigidbody.ts:201</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/rigidbody.ts#L289">rigidbody.ts:289</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
@@ -388,7 +500,7 @@ This should be called when a collision is detected with a Response object</p>
 <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Modules</h3></summary>
 <div class="tsd-accordion-details">
 <ul>
-<li class="current"><a href="../modules.html">Craters -<wbr/> v0.3.0</a>
+<li class="current"><a href="../modules.html">Craters -<wbr/> v0.4.0</a>
 <ul>
 <li class="pages-entry pages-entry-menu pages-entry-depth-1"><a>Guides</a>
 <ul>

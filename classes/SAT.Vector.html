@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Vector | Craters - v0.3.0</title><meta name="description" content="Documentation for Craters - v0.3.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Vector | Craters - v0.4.0</title><meta name="description" content="Documentation for Craters - v0.4.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -6,22 +6,29 @@
 <div id="tsd-toolbar-links"></div></div>
 <ul class="results">
 <li class="state loading">Preparing search index...</li>
-<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.3.0</a></div>
+<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.4.0</a></div>
 <div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="7" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="11" width="14" height="2" fill="var(--color-text)"></rect></svg></a></div></div></header>
 <div class="container container-main">
 <div class="col-8 col-content">
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
-<li><a href="../modules.html">Craters - v0.3.0</a></li>
+<li><a href="../modules.html">Craters - v0.4.0</a></li>
 <li><a href="../modules/SAT.html">SAT</a></li>
 <li><a href="SAT.Vector.html">Vector</a></li></ul>
 <h1>Class Vector</h1></div>
+<section class="tsd-panel tsd-comment">
+<div class="tsd-comment tsd-typography"><p>2D vector used throughout Craters (physics, collision, rendering).</p>
+<p>Mutating methods change the vector in place and return <code>this</code> for chaining;
+<a href="SAT.Vector.html#clone">clone</a> returns a new vector, and <a href="SAT.Vector.html#dot">dot</a>,
+<a href="SAT.Vector.html#len">len</a> and <a href="SAT.Vector.html#len2">len2</a> return numbers. Craters draws in
+canvas coordinates (x right, y down).</p>
+</div></section>
 <section class="tsd-panel tsd-hierarchy">
 <h4>Hierarchy</h4>
 <ul class="tsd-hierarchy">
 <li><span class="target">Vector</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L1">vector.ts:1</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L9">vector.ts:9</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -66,24 +73,28 @@
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>x: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></h5></li>
+<h5>x: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></h5>
+<div class="tsd-comment tsd-typography"><p>x component (default 0)</p>
+</div></li>
 <li>
-<h5>y: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></h5></li></ul></div>
+<h5>y: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></h5>
+<div class="tsd-comment tsd-typography"><p>y component (default 0)</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L5">vector.ts:5</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L17">vector.ts:17</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="x" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>x</span><a href="#x" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">x<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L2">vector.ts:2</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L10">vector.ts:10</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="y" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>y</span><a href="#y" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">y<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L3">vector.ts:3</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L11">vector.ts:11</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="add" class="tsd-anchor"></a>
@@ -91,6 +102,8 @@
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="add.add-1">add<span class="tsd-signature-symbol">(</span>other<span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><a href="#add.add-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Add <code>other</code> component-wise in place. Returns <code>this</code>.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
@@ -98,20 +111,24 @@
 <h5>other: <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L50">vector.ts:50</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L75">vector.ts:75</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="clone" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>clone</span><a href="#clone" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="clone.clone-1">clone<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><a href="#clone.clone-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Return a new, independent vector with the same components.</p>
+</div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L16">vector.ts:16</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L30">vector.ts:30</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="copy" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>copy</span><a href="#copy" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="copy.copy-1">copy<span class="tsd-signature-symbol">(</span>other<span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><a href="#copy.copy-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Copy <code>other</code>&#39;s components into this vector. Returns <code>this</code>.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
@@ -119,12 +136,14 @@
 <h5>other: <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L10">vector.ts:10</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L23">vector.ts:23</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="dot" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>dot</span><a href="#dot" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="dot.dot-1">dot<span class="tsd-signature-symbol">(</span>other<span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><a href="#dot.dot-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Dot product with <code>other</code>.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
@@ -132,44 +151,55 @@
 <h5>other: <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L100">vector.ts:100</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L136">vector.ts:136</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="len" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>len</span><a href="#len" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="len.len-1">len<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><a href="#len.len-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Euclidean length.</p>
+</div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L108">vector.ts:108</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L146">vector.ts:146</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="len2" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>len2</span><a href="#len2" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="len2.len2-1">len2<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><a href="#len2.len2-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Squared length (cheaper than <a href="SAT.Vector.html#len">len</a>).</p>
+</div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L104">vector.ts:104</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L141">vector.ts:141</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="normalize" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>normalize</span><a href="#normalize" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="normalize.normalize-1">normalize<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><a href="#normalize.normalize-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Scale to unit length in place; a zero vector is left unchanged. Returns <code>this</code>.</p>
+</div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L41">vector.ts:41</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L65">vector.ts:65</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="perp" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>perp</span><a href="#perp" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="perp.perp-1">perp<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><a href="#perp.perp-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Perpendicular in place: <code>(x, y) → (y, -x)</code>, the same as <code>rotate(-Math.PI / 2)</code>
+(counter-clockwise on a y-down screen). Returns <code>this</code>.</p>
+</div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L20">vector.ts:20</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L38">vector.ts:38</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="project" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>project</span><a href="#project" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="project.project-1">project<span class="tsd-signature-symbol">(</span>other<span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><a href="#project.project-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Project onto <code>other</code> (any non-zero length; a zero vector yields NaN) in place. Returns <code>this</code>.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
@@ -177,12 +207,14 @@
 <h5>other: <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L68">vector.ts:68</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L96">vector.ts:96</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="projectN" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>projectN</span><a href="#projectN" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="projectN.projectN-1">projectN<span class="tsd-signature-symbol">(</span>other<span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><a href="#projectN.projectN-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Project onto <code>other</code>, which must be unit length (skips the division by <code>other.len2()</code>). Returns <code>this</code>.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
@@ -190,12 +222,16 @@
 <h5>other: <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L75">vector.ts:75</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L104">vector.ts:104</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="reflect" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>reflect</span><a href="#reflect" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="reflect.reflect-1">reflect<span class="tsd-signature-symbol">(</span>axis<span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><a href="#reflect.reflect-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Mirror across the line through <code>axis</code> in place (<code>2·proj − v</code>): keeps the
+component along <code>axis</code> and negates the perpendicular one. To bounce off a
+surface pass its tangent, or use <code>reflectN(unitNormal).reverse()</code>. Returns <code>this</code>.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
@@ -203,12 +239,14 @@
 <h5>axis: <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L82">vector.ts:82</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L116">vector.ts:116</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="reflectN" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>reflectN</span><a href="#reflectN" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="reflectN.reflectN-1">reflectN<span class="tsd-signature-symbol">(</span>axis<span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><a href="#reflectN.reflectN-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Like <a href="SAT.Vector.html#reflect">reflect</a>, for a unit-length <code>axis</code>. Returns <code>this</code>.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
@@ -216,20 +254,25 @@
 <h5>axis: <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L91">vector.ts:91</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L126">vector.ts:126</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="reverse" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>reverse</span><a href="#reverse" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="reverse.reverse-1">reverse<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><a href="#reverse.reverse-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Negate both components in place. Returns <code>this</code>.</p>
+</div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L35">vector.ts:35</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L58">vector.ts:58</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="rotate" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>rotate</span><a href="#rotate" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="rotate.rotate-1">rotate<span class="tsd-signature-symbol">(</span>angle<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><a href="#rotate.rotate-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Rotate in place by <code>angle</code> radians using the standard rotation matrix
+(positive angles turn clockwise on a y-down screen). Returns <code>this</code>.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
@@ -237,12 +280,14 @@
 <h5>angle: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L27">vector.ts:27</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L49">vector.ts:49</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="scale" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>scale</span><a href="#scale" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="scale.scale-1">scale<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><a href="#scale.scale-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Multiply x by <code>x</code> and y by <code>y</code> (defaults to <code>x</code>) in place. Returns <code>this</code>.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
@@ -252,12 +297,14 @@
 <h5>y: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = x</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L62">vector.ts:62</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L89">vector.ts:89</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="sub" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>sub</span><a href="#sub" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="sub.sub-1">sub<span class="tsd-signature-symbol">(</span>other<span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a><a href="#sub.sub-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Subtract <code>other</code> component-wise in place. Returns <code>this</code>.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
@@ -265,7 +312,7 @@
 <h5>other: <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="SAT.Vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/john-swana/craters/blob/a373886/src/vector.ts#L56">vector.ts:56</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/john-swana/craters/blob/196b1b6/src/vector.ts#L82">vector.ts:82</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
@@ -284,7 +331,7 @@
 <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Modules</h3></summary>
 <div class="tsd-accordion-details">
 <ul>
-<li class="current"><a href="../modules.html">Craters -<wbr/> v0.3.0</a>
+<li class="current"><a href="../modules.html">Craters -<wbr/> v0.4.0</a>
 <ul>
 <li class="pages-entry pages-entry-menu pages-entry-depth-1"><a>Guides</a>
 <ul>

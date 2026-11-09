@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Input | Craters - v0.3.0</title><meta name="description" content="Documentation for Craters - v0.3.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Input | Craters - v0.4.0</title><meta name="description" content="Documentation for Craters - v0.4.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script><link rel="stylesheet" href="../assets/pages.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -6,13 +6,13 @@
 <div id="tsd-toolbar-links"></div></div>
 <ul class="results">
 <li class="state loading">Preparing search index...</li>
-<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.3.0</a></div>
+<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Craters - v0.4.0</a></div>
 <div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="7" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="11" width="14" height="2" fill="var(--color-text)"></rect></svg></a></div></div></header>
 <div class="container container-main">
 <div class="col-8 col-content">
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
-<li><a href="../modules.html">Craters - v0.3.0</a></li>
+<li><a href="../modules.html">Craters - v0.4.0</a></li>
 <li><span>Guides</span></li>
 <li><a href="input.html">Input</a></li></ul>
 <h1> Input</h1></div>
@@ -40,34 +40,64 @@ named <strong>actions</strong> so game logic stays decoupled from physical keys.
 </tr>
 <tr>
 <td><code>2</code></td>
-<td>Just pressed (this tick only — transitions to 1 on next read)</td>
+<td>Just pressed (since the last <code>update()</code>)</td>
 </tr>
 <tr>
 <td><code>1</code></td>
 <td>Held down</td>
 </tr>
 </tbody></table>
-<p><code>isPressed()</code> automatically advances state from <code>2 → 1</code> on each call, so a value of <code>2</code>
-is only seen once per press event.</p>
+<p><code>isPressed()</code> only reads the state; repeated reads in the same step all return the same
+value. Call <code>input.update()</code> once at the end of each fixed step to advance <code>2 → 1</code>, so a
+<code>2</code> is seen for exactly one step per press.</p>
 
 <a href="#basic-setup" id="basic-setup" style="color: inherit; text-decoration: none;">
   <h2>Basic Setup</h2>
 </a>
-<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Input</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;craters&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">input</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Input</span><span class="hl-1">(); </span><span class="hl-5">// starts listening immediately</span><br/><br/><span class="hl-5">// Map physical keys to action names</span><br/><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">bind</span><span class="hl-1">(</span><span class="hl-4">Input</span><span class="hl-1">.</span><span class="hl-8">KEY</span><span class="hl-1">.</span><span class="hl-8">SPACEBAR</span><span class="hl-1">, </span><span class="hl-2">&quot;JUMP&quot;</span><span class="hl-1">);</span><br/><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">bind</span><span class="hl-1">(</span><span class="hl-4">Input</span><span class="hl-1">.</span><span class="hl-8">KEY</span><span class="hl-1">.</span><span class="hl-8">LEFT_ARROW</span><span class="hl-1">, </span><span class="hl-2">&quot;LEFT&quot;</span><span class="hl-1">);</span><br/><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">bind</span><span class="hl-1">(</span><span class="hl-4">Input</span><span class="hl-1">.</span><span class="hl-8">KEY</span><span class="hl-1">.</span><span class="hl-8">RIGHT_ARROW</span><span class="hl-1">, </span><span class="hl-2">&quot;RIGHT&quot;</span><span class="hl-1">);</span><br/><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">bind</span><span class="hl-1">(</span><span class="hl-2">&quot;Mouse0&quot;</span><span class="hl-1">, </span><span class="hl-2">&quot;FIRE&quot;</span><span class="hl-1">); </span><span class="hl-5">// left mouse button</span><br/><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">bind</span><span class="hl-1">(</span><span class="hl-2">&quot;Touch0&quot;</span><span class="hl-1">, </span><span class="hl-2">&quot;TAP&quot;</span><span class="hl-1">);  </span><span class="hl-5">// first touch point</span>
+<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Input</span><span class="hl-1">, </span><span class="hl-4">RenderLoop</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;craters&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">input</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Input</span><span class="hl-1">(); </span><span class="hl-5">// starts listening immediately (pointer events on `document`)</span><br/><br/><span class="hl-5">// Map physical keys to action names</span><br/><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">bind</span><span class="hl-1">(</span><span class="hl-4">Input</span><span class="hl-1">.</span><span class="hl-8">KEY</span><span class="hl-1">.</span><span class="hl-8">SPACEBAR</span><span class="hl-1">, </span><span class="hl-2">&quot;JUMP&quot;</span><span class="hl-1">);</span><br/><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">bind</span><span class="hl-1">(</span><span class="hl-4">Input</span><span class="hl-1">.</span><span class="hl-8">KEY</span><span class="hl-1">.</span><span class="hl-8">LEFT_ARROW</span><span class="hl-1">, </span><span class="hl-2">&quot;LEFT&quot;</span><span class="hl-1">);</span><br/><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">bind</span><span class="hl-1">(</span><span class="hl-4">Input</span><span class="hl-1">.</span><span class="hl-8">KEY</span><span class="hl-1">.</span><span class="hl-8">RIGHT_ARROW</span><span class="hl-1">, </span><span class="hl-2">&quot;RIGHT&quot;</span><span class="hl-1">);</span><br/><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">bind</span><span class="hl-1">(</span><span class="hl-2">&quot;Mouse0&quot;</span><span class="hl-1">, </span><span class="hl-2">&quot;FIRE&quot;</span><span class="hl-1">); </span><span class="hl-5">// left mouse button</span><br/><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">bind</span><span class="hl-1">(</span><span class="hl-2">&quot;Touch0&quot;</span><span class="hl-1">, </span><span class="hl-2">&quot;TAP&quot;</span><span class="hl-1">);  </span><span class="hl-5">// first touch point</span>
 </code></pre>
 
 <a href="#querying-input-in-the-game-loop" id="querying-input-in-the-game-loop" style="color: inherit; text-decoration: none;">
   <h2>Querying Input in the Game Loop</h2>
 </a>
-<pre><code class="language-typescript"><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">RenderLoop</span><span class="hl-1">((</span><span class="hl-4">loop</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-3">if</span><span class="hl-1"> (</span><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">isPressed</span><span class="hl-1">(</span><span class="hl-2">&quot;JUMP&quot;</span><span class="hl-1">) === </span><span class="hl-9">2</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-4">player</span><span class="hl-1">.</span><span class="hl-0">jump</span><span class="hl-1">();         </span><span class="hl-5">// just pressed — trigger once</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">  </span><span class="hl-3">if</span><span class="hl-1"> (</span><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">isPressed</span><span class="hl-1">(</span><span class="hl-2">&quot;LEFT&quot;</span><span class="hl-1">)) {</span><br/><span class="hl-1">    </span><span class="hl-4">player</span><span class="hl-1">.</span><span class="hl-0">moveLeft</span><span class="hl-1">();     </span><span class="hl-5">// held — trigger every tick</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">  </span><span class="hl-3">if</span><span class="hl-1"> (</span><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">isPressed</span><span class="hl-1">(</span><span class="hl-2">&quot;RIGHT&quot;</span><span class="hl-1">)) {</span><br/><span class="hl-1">    </span><span class="hl-4">player</span><span class="hl-1">.</span><span class="hl-0">moveRight</span><span class="hl-1">();</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">  </span><span class="hl-3">if</span><span class="hl-1"> (</span><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">isPressed</span><span class="hl-1">(</span><span class="hl-2">&quot;FIRE&quot;</span><span class="hl-1">) === </span><span class="hl-9">2</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-0">spawnBullet</span><span class="hl-1">(</span><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-4">pointerPosition</span><span class="hl-1">.</span><span class="hl-4">x</span><span class="hl-1">, </span><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-4">pointerPosition</span><span class="hl-1">.</span><span class="hl-4">y</span><span class="hl-1">);</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">});</span>
+<pre><code class="language-typescript"><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">RenderLoop</span><span class="hl-1">((</span><span class="hl-4">loop</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-3">if</span><span class="hl-1"> (</span><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">isPressed</span><span class="hl-1">(</span><span class="hl-2">&quot;JUMP&quot;</span><span class="hl-1">) === </span><span class="hl-9">2</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-4">player</span><span class="hl-1">.</span><span class="hl-0">jump</span><span class="hl-1">();         </span><span class="hl-5">// just pressed — trigger once</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">  </span><span class="hl-3">if</span><span class="hl-1"> (</span><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">isPressed</span><span class="hl-1">(</span><span class="hl-2">&quot;LEFT&quot;</span><span class="hl-1">)) {</span><br/><span class="hl-1">    </span><span class="hl-4">player</span><span class="hl-1">.</span><span class="hl-0">moveLeft</span><span class="hl-1">();     </span><span class="hl-5">// held — trigger every tick</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">  </span><span class="hl-3">if</span><span class="hl-1"> (</span><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">isPressed</span><span class="hl-1">(</span><span class="hl-2">&quot;RIGHT&quot;</span><span class="hl-1">)) {</span><br/><span class="hl-1">    </span><span class="hl-4">player</span><span class="hl-1">.</span><span class="hl-0">moveRight</span><span class="hl-1">();</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">  </span><span class="hl-3">if</span><span class="hl-1"> (</span><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">isPressed</span><span class="hl-1">(</span><span class="hl-2">&quot;FIRE&quot;</span><span class="hl-1">) === </span><span class="hl-9">2</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-0">spawnBullet</span><span class="hl-1">(</span><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-4">pointerPosition</span><span class="hl-1">.</span><span class="hl-4">x</span><span class="hl-1">, </span><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-4">pointerPosition</span><span class="hl-1">.</span><span class="hl-4">y</span><span class="hl-1">);</span><br/><span class="hl-1">  }</span><br/><br/><span class="hl-1">  </span><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">update</span><span class="hl-1">(); </span><span class="hl-5">// end of step: &quot;just pressed&quot; (2) becomes &quot;held&quot; (1)</span><br/><span class="hl-1">});</span>
 </code></pre>
+<p>Without the <code>update()</code> call, <code>=== 2</code> stays true for as long as the key is held.</p>
+<blockquote>
+<p><strong>Note:</strong> keyboard auto-repeat sends repeated <code>keydown</code> events, and each one sets the
+state back to <code>2</code>. A press and release that both happen between two steps are not
+observed. To trigger strictly once per physical press, remember whether the action was
+already down:</p>
+<pre><code class="language-typescript"><span class="hl-6">let</span><span class="hl-1"> </span><span class="hl-4">jumpHeld</span><span class="hl-1"> = </span><span class="hl-6">false</span><span class="hl-1">;</span><br/><span class="hl-5">// inside the loop:</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">jump</span><span class="hl-1"> = </span><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">isPressed</span><span class="hl-1">(</span><span class="hl-2">&quot;JUMP&quot;</span><span class="hl-1">);</span><br/><span class="hl-3">if</span><span class="hl-1"> (</span><span class="hl-4">jump</span><span class="hl-1"> === </span><span class="hl-9">2</span><span class="hl-1"> &amp;&amp; !</span><span class="hl-4">jumpHeld</span><span class="hl-1">) </span><span class="hl-4">player</span><span class="hl-1">.</span><span class="hl-0">jump</span><span class="hl-1">();</span><br/><span class="hl-4">jumpHeld</span><span class="hl-1"> = </span><span class="hl-4">jump</span><span class="hl-1"> !== </span><span class="hl-9">0</span><span class="hl-1">;</span>
+</code></pre>
+</blockquote>
+
+<a href="#pointer-target" id="pointer-target" style="color: inherit; text-decoration: none;">
+  <h2>Pointer Target</h2>
+</a>
+<p>By default, mouse and touch listeners are attached to <code>document</code>. Pass an element, usually
+the game canvas, to listen only there:</p>
+<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">input</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Input</span><span class="hl-1">(</span><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-4">canvasElement</span><span class="hl-1">);</span>
+</code></pre>
+<p>With a target:</p>
+<ul>
+<li>Mouse presses, mouse moves and touches are only seen when they happen on the target.
+<code>mouseup</code> is still listened for on <code>document</code>, so a button pressed on the canvas and
+released outside it is released.</li>
+<li>The touch listeners&#39; <code>preventDefault()</code> (which stops scrolling, zoom, emulated mouse
+events and clicks) applies only to touches that start on the target. The rest of the
+page keeps working normally: HTML buttons, links and scrolling.</li>
+<li>Keyboard listeners stay on <code>document</code>.</li>
+</ul>
 
 <a href="#pointer-position" id="pointer-position" style="color: inherit; text-decoration: none;">
   <h2>Pointer Position</h2>
 </a>
-<p><code>pointerPosition</code> is updated by mouse move and touch move events. It reflects
-<code>clientX</code> / <code>clientY</code> in CSS pixels.</p>
-<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> { </span><span class="hl-8">x</span><span class="hl-1">, </span><span class="hl-8">y</span><span class="hl-1"> } = </span><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-4">pointerPosition</span><span class="hl-1">;</span>
+<p><code>pointerPosition</code> is updated by <code>mousemove</code>, <code>touchstart</code> and <code>touchmove</code> events on the
+pointer target. It holds
+<code>clientX</code> / <code>clientY</code> in CSS pixels, i.e. <strong>viewport</strong> coordinates, not canvas or world
+coordinates. Subtract the canvas position (and add your camera offset) to convert:</p>
+<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> { </span><span class="hl-8">x</span><span class="hl-1">, </span><span class="hl-8">y</span><span class="hl-1"> } = </span><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-4">pointerPosition</span><span class="hl-1">;</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">rect</span><span class="hl-1"> = </span><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-4">canvasElement</span><span class="hl-1">.</span><span class="hl-0">getBoundingClientRect</span><span class="hl-1">();</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">worldX</span><span class="hl-1"> = </span><span class="hl-4">x</span><span class="hl-1"> - </span><span class="hl-4">rect</span><span class="hl-1">.</span><span class="hl-4">left</span><span class="hl-1"> + </span><span class="hl-4">camera</span><span class="hl-1">.</span><span class="hl-4">x</span><span class="hl-1">;</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-8">worldY</span><span class="hl-1"> = </span><span class="hl-4">y</span><span class="hl-1"> - </span><span class="hl-4">rect</span><span class="hl-1">.</span><span class="hl-4">top</span><span class="hl-1"> + </span><span class="hl-4">camera</span><span class="hl-1">.</span><span class="hl-4">y</span><span class="hl-1">;</span>
 </code></pre>
 
 <a href="#keyboard-constants-inputkey" id="keyboard-constants-inputkey" style="color: inherit; text-decoration: none;">
@@ -77,8 +107,10 @@ is only seen once per press event.</p>
 <pre><code><span class="hl-8">BACKSPACE</span><span class="hl-1">, </span><span class="hl-8">TAB</span><span class="hl-1">, </span><span class="hl-8">ENTER</span><br/><span class="hl-8">SHIFT_LEFT</span><span class="hl-1">, </span><span class="hl-8">SHIFT_RIGHT</span><span class="hl-1">, </span><span class="hl-8">CTRL_LEFT</span><span class="hl-1">, </span><span class="hl-8">CTRL_RIGHT</span><span class="hl-1">, </span><span class="hl-8">ALT_LEFT</span><span class="hl-1">, </span><span class="hl-8">ALT_RIGHT</span><br/><span class="hl-8">ESCAPE</span><span class="hl-1">, </span><span class="hl-8">SPACEBAR</span><span class="hl-1">, </span><span class="hl-8">CAPS_LOCK</span><span class="hl-1">, </span><span class="hl-8">PAUSE</span><br/><span class="hl-8">PAGE_UP</span><span class="hl-1">, </span><span class="hl-8">PAGE_DOWN</span><span class="hl-1">, </span><span class="hl-8">HOME</span><span class="hl-1">, </span><span class="hl-8">END</span><span class="hl-1">, </span><span class="hl-8">INSERT</span><span class="hl-1">, </span><span class="hl-8">DELETE</span><br/><span class="hl-8">LEFT_ARROW</span><span class="hl-1">, </span><span class="hl-8">UP_ARROW</span><span class="hl-1">, </span><span class="hl-8">RIGHT_ARROW</span><span class="hl-1">, </span><span class="hl-8">DOWN_ARROW</span><br/><span class="hl-8">A</span><span class="hl-1">–</span><span class="hl-8">Z</span><span class="hl-1">, </span><span class="hl-8">ZERO</span><span class="hl-1">–</span><span class="hl-8">NINE</span><span class="hl-1">, </span><span class="hl-8">NUMPAD_ZERO</span><span class="hl-1">–</span><span class="hl-8">NUMPAD_NINE</span><br/><span class="hl-8">MULTIPLY</span><span class="hl-1">, </span><span class="hl-8">ADD</span><span class="hl-1">, </span><span class="hl-8">SUBTRACT</span><span class="hl-1">, </span><span class="hl-8">DECIMAL</span><span class="hl-1">, </span><span class="hl-8">DIVIDE</span><br/><span class="hl-8">F1</span><span class="hl-1">–</span><span class="hl-8">F12</span><br/><span class="hl-8">SEMICOLON</span><span class="hl-1">, </span><span class="hl-8">EQUAL</span><span class="hl-1">, </span><span class="hl-8">COMMA</span><span class="hl-1">, </span><span class="hl-8">MINUS</span><span class="hl-1">, </span><span class="hl-8">PERIOD</span><span class="hl-1">, </span><span class="hl-8">SLASH</span><br/><span class="hl-8">BACKQUOTE</span><span class="hl-1">, </span><span class="hl-8">BRACKET_LEFT</span><span class="hl-1">, </span><span class="hl-8">BRACKET_RIGHT</span><span class="hl-1">, </span><span class="hl-8">BACKSLASH</span><span class="hl-1">, </span><span class="hl-8">QUOTE</span>
 </code></pre>
 <p>For any key not in the list, pass the raw <code>KeyboardEvent.code</code> string directly:</p>
-<pre><code class="language-typescript"><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">bind</span><span class="hl-1">(</span><span class="hl-2">&quot;KeyQ&quot;</span><span class="hl-1">, </span><span class="hl-2">&quot;ABILITY&quot;</span><span class="hl-1">);</span>
+<pre><code class="language-typescript"><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">bind</span><span class="hl-1">(</span><span class="hl-2">&quot;NumpadEnter&quot;</span><span class="hl-1">, </span><span class="hl-2">&quot;CONFIRM&quot;</span><span class="hl-1">);</span>
 </code></pre>
+<p><code>Input.KEY</code> is typed as a string map, so a misspelled name such as <code>Input.KEY.SPACE</code>
+compiles but is <code>undefined</code> at runtime.</p>
 
 <a href="#mouse-buttons" id="mouse-buttons" style="color: inherit; text-decoration: none;">
   <h2>Mouse Buttons</h2>
@@ -86,6 +118,8 @@ is only seen once per press event.</p>
 <p>Mouse buttons are bound as <code>&quot;Mouse0&quot;</code> (left), <code>&quot;Mouse1&quot;</code> (middle), <code>&quot;Mouse2&quot;</code> (right):</p>
 <pre><code class="language-typescript"><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">bind</span><span class="hl-1">(</span><span class="hl-2">&quot;Mouse0&quot;</span><span class="hl-1">, </span><span class="hl-2">&quot;SHOOT&quot;</span><span class="hl-1">);</span><br/><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">bind</span><span class="hl-1">(</span><span class="hl-2">&quot;Mouse2&quot;</span><span class="hl-1">, </span><span class="hl-2">&quot;AIM&quot;</span><span class="hl-1">);</span>
 </code></pre>
+<p><code>Input</code> does not suppress the browser context menu, so a right-click also opens it.
+With a pointer target, only presses on the target are reported.</p>
 
 <a href="#touch" id="touch" style="color: inherit; text-decoration: none;">
   <h2>Touch</h2>
@@ -94,43 +128,75 @@ is only seen once per press event.</p>
 touch point&#39;s <code>clientX</code> / <code>clientY</code>.</p>
 <pre><code class="language-typescript"><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">bind</span><span class="hl-1">(</span><span class="hl-2">&quot;Touch0&quot;</span><span class="hl-1">, </span><span class="hl-2">&quot;TAP&quot;</span><span class="hl-1">);</span>
 </code></pre>
+<ul>
+<li><code>&quot;Touch0&quot;</code> stays held while any finger is down and is released when the last finger lifts.
+Putting down an additional finger reports a new press (<code>2</code>).</li>
+<li>The touch listeners call <code>preventDefault()</code> for touches on the pointer target, which
+stops scrolling, zoom and the emulated mouse events there, so taps on the target never
+trigger <code>&quot;Mouse0&quot;</code> bindings. Bind <code>&quot;Touch0&quot;</code> as well.</li>
+<li>With the default target (<code>document</code>) this applies to the whole page, including clicks on
+HTML elements. Pass the game canvas as the pointer target (see <em>Pointer Target</em> above)
+to keep the rest of the page interactive.</li>
+</ul>
 
 <a href="#cleanup" id="cleanup" style="color: inherit; text-decoration: none;">
   <h2>Cleanup</h2>
 </a>
 <p>Remove all event listeners when tearing down a scene or replacing the input instance:</p>
-<pre><code class="language-typescript"><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">unbindKeys</span><span class="hl-1">();</span>
+<pre><code class="language-typescript"><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">unbind</span><span class="hl-1">();</span>
 </code></pre>
+<p><code>unbind()</code> removes the listeners from <code>document</code> and from the pointer target. It keeps
+bindings and press states. Afterwards only the keyboard listeners can be re-attached
+(<code>bindKeys()</code>); to get mouse and touch back, create a new <code>Input</code>.</p>
 
 <a href="#api-reference" id="api-reference" style="color: inherit; text-decoration: none;">
   <h2>API Reference</h2>
 </a>
 
-<a href="#new-input" id="new-input" style="color: inherit; text-decoration: none;">
-  <h3><code>new Input()</code></h3>
+<a href="#new-inputpointertarget-htmlelement--document" id="new-inputpointertarget-htmlelement--document" style="color: inherit; text-decoration: none;">
+  <h3><code>new Input(pointerTarget?: HTMLElement | Document)</code></h3>
 </a>
-<p>Instantiates and immediately attaches keyboard, mouse, and touch listeners to <code>document</code>.</p>
+<p>Instantiates and immediately attaches listeners: keyboard and <code>mouseup</code> on <code>document</code>;
+mouse move, mouse down and touch on <code>pointerTarget</code> (default <code>document</code>).</p>
 
-<a href="#bindkey-action" id="bindkey-action" style="color: inherit; text-decoration: none;">
-  <h3><code>bind(key, action)</code></h3>
+<a href="#bindkey-string-action-string-void" id="bindkey-string-action-string-void" style="color: inherit; text-decoration: none;">
+  <h3><code>bind(key: string, action: string): void</code></h3>
 </a>
-<p>Maps a key code (from <code>Input.KEY</code> or a raw <code>KeyboardEvent.code</code> / <code>&quot;Mouse0&quot;</code> / <code>&quot;Touch0&quot;</code>)
-to an action name string.</p>
+<p>Maps a key code (from <code>Input.KEY</code> or a raw <code>KeyboardEvent.code</code> / <code>&quot;Mouse0&quot;</code>–<code>&quot;Mouse2&quot;</code> /
+<code>&quot;Touch0&quot;</code>) to an action name string. Several keys may share one action (releasing any of
+them sets it to <code>0</code>); rebinding a key replaces its action. Resets the action&#39;s state to <code>0</code>.</p>
 
-<a href="#ispressedaction-number" id="ispressedaction-number" style="color: inherit; text-decoration: none;">
-  <h3><code>isPressed(action): number</code></h3>
+<a href="#ispressedaction-string-number" id="ispressedaction-string-number" style="color: inherit; text-decoration: none;">
+  <h3><code>isPressed(action: string): number</code></h3>
 </a>
-<p>Returns the press state (<code>0</code>, <code>1</code>, or <code>2</code>). Calling it while state is <code>2</code> transitions it to <code>1</code>.</p>
+<p>Returns the press state (<code>0</code>, <code>1</code>, or <code>2</code>; <code>0</code> for an unknown action). Does not change the state.</p>
 
-<a href="#unbindkeys" id="unbindkeys" style="color: inherit; text-decoration: none;">
-  <h3><code>unbindKeys()</code></h3>
+<a href="#update-void" id="update-void" style="color: inherit; text-decoration: none;">
+  <h3><code>update(): void</code></h3>
 </a>
-<p>Removes all event listeners from <code>document</code>.</p>
+<p>Advances every action at <code>2</code> to <code>1</code>. Call once at the end of each fixed step.</p>
+
+<a href="#unbind-void" id="unbind-void" style="color: inherit; text-decoration: none;">
+  <h3><code>unbind(): void</code></h3>
+</a>
+<p>Removes all keyboard, mouse and touch listeners from <code>document</code> and the pointer target.
+Bindings are kept.</p>
+
+<a href="#bindkeys-void" id="bindkeys-void" style="color: inherit; text-decoration: none;">
+  <h3><code>bindKeys(): void</code></h3>
+</a>
+<p>Re-attaches the keyboard listeners (the constructor calls it).</p>
+
+<a href="#unbindkeys-void-deprecated" id="unbindkeys-void-deprecated" style="color: inherit; text-decoration: none;">
+  <h3><code>unbindKeys(): void</code> <em>(deprecated)</em></h3>
+</a>
+<p>Alias of <code>unbind()</code>.</p>
 
 <a href="#pointerposition--x-number-y-number-" id="pointerposition--x-number-y-number-" style="color: inherit; text-decoration: none;">
   <h3><code>pointerPosition: { x: number, y: number }</code></h3>
 </a>
-<p>Last known pointer position in CSS pixels (updated by mouse move and touch move).</p>
+<p>Last known pointer position in viewport CSS pixels (updated by mouse move, touch start and
+touch move on the pointer target).</p>
 
 <a href="#inputkey" id="inputkey" style="color: inherit; text-decoration: none;">
   <h3><code>Input.KEY</code></h3>
@@ -155,7 +221,7 @@ to an action name string.</p>
 <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Modules</h3></summary>
 <div class="tsd-accordion-details">
 <ul>
-<li class="current"><a href="../modules.html">Craters -<wbr/> v0.3.0</a>
+<li class="current"><a href="../modules.html">Craters -<wbr/> v0.4.0</a>
 <ul>
 <li class="current pages-entry pages-entry-menu pages-entry-depth-1"><a>Guides</a>
 <ul>
@@ -187,6 +253,7 @@ to an action name string.</p>
 <li class="tsd-kind-class"><a href="../classes/Input.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Input</a></li>
 <li class="tsd-kind-class"><a href="../classes/ParticleSystem.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Particle<wbr/>System</a></li>
 <li class="tsd-kind-class"><a href="../classes/RenderLoop.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Render<wbr/>Loop</a></li>
+<li class="tsd-kind-class"><a href="../classes/Sound.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sound</a></li>
 <li class="tsd-kind-class"><a href="../classes/SoundManager.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sound<wbr/>Manager</a></li>
 <li class="tsd-kind-class"><a href="../classes/Sprite.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Sprite</a></li>
 <li class="tsd-kind-class"><a href="../classes/Tile.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>Tile</a></li>
@@ -195,5 +262,9 @@ to an action name string.</p>
 <li class="tsd-kind-class"><a href="../classes/WebGLRenderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg>WebGLRenderer</a></li>
 <li class="tsd-kind-interface"><a href="../interfaces/FontInstance.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-interface)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-256-path"></rect><path d="M9.51 16V15.016H11.298V8.224H9.51V7.24H14.19V8.224H12.402V15.016H14.19V16H9.51Z" fill="var(--color-text)" id="icon-256-text"></path></svg>Font<wbr/>Instance</a></li>
 <li class="tsd-kind-interface"><a href="../interfaces/ParticleEmitConfig.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Particle<wbr/>Emit<wbr/>Config</a></li>
-<li class="tsd-kind-interface"><a href="../interfaces/Renderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Renderer</a></li></ul></nav></div></div>
+<li class="tsd-kind-interface"><a href="../interfaces/Renderer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Renderer</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/TilemapData.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tilemap<wbr/>Data</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/TilemapLayer.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tilemap<wbr/>Layer</a></li>
+<li class="tsd-kind-interface"><a href="../interfaces/Tileset.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Tileset</a></li>
+<li class="tsd-kind-type-alias"><a href="../types/TileEntry.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-4194304-path"></rect><path d="M11.31 16V8.224H8.91V7.24H14.79V8.224H12.39V16H11.31Z" fill="var(--color-text)" id="icon-4194304-text"></path></svg>Tile<wbr/>Entry</a></li></ul></nav></div></div>
 <div class="overlay"></div><script src="../assets/main.js"></script></body></html>
